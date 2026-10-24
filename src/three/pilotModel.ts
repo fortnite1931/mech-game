@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
+import { ASSET_BASE } from '../utils/baseUrl.ts';
 
 /**
  * Пилот — GLB с текстурой, скелетом (29 костей) и клипами:
@@ -11,8 +12,8 @@ import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
  * и модель не видна/зависает в T-позе.
  */
 
-const PILOT_URL = '/library/pilot_anim.glb';
-const PILOT_IDLE_URL = '/library/pilot_idle.glb';
+const PILOT_URL = `${ASSET_BASE}library/pilot_anim.glb`;
+const PILOT_IDLE_URL = `${ASSET_BASE}library/pilot_idle.glb`;
 const PILOT_HEIGHT = 1.8;
 
 let cachedRigged: THREE.Group | null = null;

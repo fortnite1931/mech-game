@@ -977,8 +977,8 @@ interface GlbMech {
 }
 
 const glbMechs: Record<string, GlbMech> = {
-  mech_robot: { id: 'mech_robot', url: '/library/exported-model.glb', scene: null, clips: [] },
-  mech_industrial: { id: 'mech_industrial', url: '/library/anim_industrial.glb', scene: null, clips: [] },
+  mech_robot: { id: 'mech_robot', url: `${ASSET_BASE}library/exported-model.glb`, scene: null, clips: [] },
+  mech_industrial: { id: 'mech_industrial', url: `${ASSET_BASE}library/anim_industrial.glb`, scene: null, clips: [] },
 };
 
 /** Масштаб и посадка на землю: рост 7 м (как у процедурных мехов), ноги на y=0.
@@ -1050,6 +1050,7 @@ export function buildMechRobot(): THREE.Group { return buildGlbMech('mech_robot'
 export function buildMechIndustrial(): THREE.Group { return buildGlbMech('mech_industrial'); }
 
 import { clonePilot, getPilotAnimationClips } from './pilotModel.ts';
+import { ASSET_BASE } from '../utils/baseUrl.ts';
 
 /** Пока GLB не догрузился — пустая группа (иначе редактор рисует сломанного пилота). */
 export function buildPilotGlb(): THREE.Group {
