@@ -20,10 +20,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        // игра — публикуемый клиент (главная страница на платформах)
-        main: path.resolve(__dirname, "index.html"),
-        // редактор — отдельное превью/конструктор (доступен по /editor.html)
-        editor: path.resolve(__dirname, "editor.html"),
+        // редактор (для разработки локально; на GitHub его заменит игра через workflow)
+        editor: path.resolve(__dirname, "index.html"),
+        // игра — публикуемый клиент (на платформах/Pages)
+        game: path.resolve(__dirname, "game.html"),
       },
       output: {
         entryFileNames: "assets/[name]-[hash].js",
