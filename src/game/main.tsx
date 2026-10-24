@@ -243,6 +243,40 @@ function Game() {
         />
       )}
 
+      {/* экран завершения: победа/поражение */}
+      {playing && hud?.over && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/70">
+          <div className="max-w-md px-6 text-center">
+            <div
+              className={`mb-2 text-4xl font-black uppercase tracking-widest ${
+                hud.over === "won" ? "text-emerald-400" : "text-red-400"
+              }`}
+            >
+              {hud.over === "won" ? "Контракт выполнен" : "Поражение"}
+            </div>
+            <p className="mb-6 text-[13px] text-stone-400">
+              {hud.over === "won"
+                ? "Все зоны карты очищены. Отличная работа, водитель!"
+                : "Мех уничтожен. Попробуй ещё раз, водитель."}
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={restartGame}
+                className="flex-1 rounded border border-emerald-500/50 bg-emerald-500/15 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-emerald-300 hover:bg-emerald-500/25"
+              >
+                Заново
+              </button>
+              <button
+                onClick={toMenu}
+                className="flex-1 rounded border border-white/10 bg-white/[0.04] px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-stone-300 hover:border-white/25"
+              >
+                В меню
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* кнопка-шестерёнка: админка (временная) */}
       {playing && !adminOpen && (
         <button

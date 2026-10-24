@@ -136,6 +136,8 @@ export interface HudState {
   mechHp?: number; mechMaxHp?: number;
   /** Ближайший мех, в который можно сесть (когда игрок пешком). */
   nearestMech?: { name: string; dist: number } | null;
+  /** Ближайшая незачищенная зона карты. */
+  zone?: { name: string; left: number } | null;
   over: null | 'won' | 'lost'; hurt: number;
   /** Пилот вне кабины: WASD — свободное движение, ЛКМ по меху — сесть. */
   ejected?: boolean;

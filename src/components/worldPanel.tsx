@@ -69,6 +69,62 @@ export function WorldPanel({ world, onWorld }: {
         </div>
       </Section>
 
+      <Section title="Зоны (цели)">
+        <div className="mb-1.5 text-[9px] leading-relaxed text-stone-600">
+          Зона — точка интереса на карте. Когда игрок входит в неё, там спавнятся
+          враги; зачисти всех — зона «очищена». Очисти все зоны — победа.
+        </div>
+        {(world.zones ?? []).map((z, i) => (
+          <div key={z.id} className="mb-2 rounded-md border border-white/[0.07] bg-black/25 p-2">
+            <div className="mb-1 flex items-center gap-1.5">
+              <input
+                value={z.name}
+                onChange={(e) => {
+                  const list = (world.zones ?? []).slice();
+                  list[i] = { ...list[i], name: e.target.value };
+                  onChange({ zones: list });
+                }}
+                className="flex-1 rounded border border-white/10 bg-black/40 px-1.5 py-1 text-[11px] text-stone-200 focus:border-amber-500/50 focus:outline-none"
+              />
+              <button
+                onClick={() => onChange({ zones: (world.zones ?? []).filter((_, j) => j !== i) })}
+                className="rounded border border-white/10 px-1.5 py-1 text-[10px] text-stone-500 hover:border-red-500/40 hover:text-red-300"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {(["x", "z", "r"] as const).map((k) => (
+                <div key={k}>
+                  <div className="mb-0.5 text-[9px] uppercase text-stone-600">{k}</div>
+                  <input
+                    type="number" step={10}
+                    value={z[k]}
+                    onChange={(e) => {
+                      const v = parseFloat(e.target.value);
+                      if (!Number.isFinite(v)) return;
+                      const list = (world.zones ?? []).slice();
+                      list[i] = { ...list[i], [k]: v };
+                      onChange({ zones: list });
+                    }}
+                    className="w-full rounded border border-white/10 bg-black/40 px-1.5 py-1 font-mono text-[10px] text-stone-200 focus:border-amber-500/50 focus:outline-none"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        <Btn
+          onClick={() => {
+            const zones = world.zones ?? [];
+            onChange({ zones: [...zones, { id: 'zone_' + Date.now(), name: `Зона ${zones.length + 1}`, x: 0, z: 0, r: 80 }] });
+          }}
+          className="w-full"
+        >
+          + Добавить зону
+        </Btn>
+      </Section>
+
       <div className="mt-2 text-[10px] leading-relaxed text-stone-600">
         Оазисы — редкие зелёные острова. Seed управляет всей генерацией мира:
         биомы, пропы и точка старта детерминированы. Случайный спавн работает,

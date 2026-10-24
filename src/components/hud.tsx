@@ -127,6 +127,13 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
           </div>
         )}
       </div>
+      {/* текущая зона карты: цель зачистки */}
+      {hud?.zone && (
+        <div className="absolute left-1/2 top-[7%] -translate-x-1/2 rounded border border-amber-500/40 bg-black/75 px-3 py-1.5 text-center backdrop-blur">
+          <div className="text-[11px] font-bold text-amber-200">{hud.zone.name}</div>
+          <div className="font-mono text-[10px] text-stone-400">Врагов в зоне: {hud.zone.left}</div>
+        </div>
+      )}
       {view === 'cockpit' && !ejected && (
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-60">
           <svg width="120" height="120" viewBox="-60 -60 120 120" fill="none" stroke={color} strokeWidth="1">

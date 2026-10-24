@@ -993,6 +993,7 @@ export class EditorEngine {
       oasisChance: num(c.oasisChance, 0, 0.5, base.oasisChance),
       worldRadius: num(c.worldRadius, 0, 8, base.worldRadius),
       edgeType: edges.includes(c.edgeType as EdgeType) ? (c.edgeType as EdgeType) : base.edgeType,
+      zones: Array.isArray(c.zones) ? c.zones.filter((z) => z && typeof z.x === 'number' && typeof z.z === 'number' && typeof z.r === 'number') : (base.zones ?? []),
       randomSpawn: c.randomSpawn === true,
       enabled: c.enabled !== false,
     };

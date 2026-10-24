@@ -8,6 +8,7 @@ import type { MechConfig, ViewMode, VisionMode, HudState, WeaponDef, Scenario, E
 import { Enemy } from './enemies.ts';
 import { WorldChunks, type PropItem } from './worldChunks.ts';
 import { findSpawn } from './worldGen.ts';
+import type { ZoneDef } from './worldGen.ts';
 import type { WorldConfig } from './worldGen.ts';
 import { getAsset, type MechAnimState } from './assets.ts';
 import { interactionKind, type BarrelContents } from './interaction.ts';
@@ -234,6 +235,11 @@ export class PlayController {
   /** Последний вызов startClimb — для перезапуска, когда догрузятся клипы. */
   private climbPending: { id: string | undefined; group: THREE.Group; assetId: string } | null = null;
   private climbHasClip = false;
+  /** Зоны карты (цели зачистки). */
+  private zoneDefs: ZoneDef[] = [];
+  private zoneSpawned = new Set<string>();
+  /** Принадлежность врага зоне. */
+  private enemyZone = new WeakMap<Enemy, string>();
 
   /** Модель пилота ещё не догрузилась — стоит процедурный запасной силуэт. */
   private pilotIsFallback = false;
@@ -499,6 +505,8 @@ export class PlayController {
       this.world = new WorldChunks(this.host.scene, (x, z) => this.host.groundHeight(x, z));
       this.world.setConfig(this.worldCfg, getAsset);
     }
+    this.zoneDefs = this.worldCfg?.zones ?? [];
+    this.zoneSpawned.clear();
     this.targets = this.host.getTargets().filter((t) => t.id !== this.ownId).map((t) => {
       const box = new THREE.Box3().setFromObject(t.group);
       const center = box.getCenter(new THREE.Vector3());
@@ -1622,7 +1630,7 @@ export class PlayController {
       this.updateStamina(dt);
       this.updateFreeCamera(dt);
       this.updateProjectiles(dt);
-      if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); }
+      if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); this.updateZones(); }
     this.hurt = Math.max(0, this.hurt - dt * 1.5);
     this.fx.update(dt);
     // тряска камеры затухает и пешком — иначе после выхода из меха «трясёт» вечно
@@ -2460,6 +2468,101 @@ export class PlayController {
     this.waveT = next ? next.delaySec : 0;
   }
 
+  // ======================= зоны (цели) =======================
+  /** Состав населённого пункта зоны — по её радиусу. */
+  private zoneKinds(z: ZoneDef): EnemyKindId[] {
+    if (z.r > 150) return ['mech_juggernaut', 'mech_molot', 'turret', 'infantry'];
+    if (z.r > 80) return ['mech_scout', 'mech_molot', 'turret', 'infantry'];
+    return ['mech_scout', 'infantry', 'turret'];
+  }
+
+  private spawnZoneEnemies(z: ZoneDef): void {
+    const kinds = this.zoneKinds(z);
+    const count = Math.max(4, Math.round(z.r / 22));
+    for (let k = 0; k < count; k++) {
+      const kind: EnemyKindId = kinds[Math.floor(Math.random() * kinds.length)];
+      const a = Math.random() * Math.PI * 2;
+      const rr = Math.sqrt(Math.random()) * z.r * 0.85;
+      const spawnPt = new THREE.Vector3(z.x + Math.cos(a) * rr, 0, z.z + Math.sin(a) * rr);
+      this.boundXZ(spawnPt);
+      const cx = spawnPt.x, cz = spawnPt.z;
+      const group = this.host.spawnEnemy(kind === 'infantry' ? 'survivor' : kind, cx, cz);
+      if (!group) continue;
+      const box = new THREE.Box3().setFromObject(group);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const meshes: THREE.Mesh[] = [];
+      const id = 'zone_' + z.id + '_' + k;
+      group.traverse((o) => { o.userData.objectId = id; if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh); });
+      const e = new Enemy(group, kind, id, {
+        hpMul: this.scenario.enemyHpMul, dmgMul: this.scenario.enemyDmgMul,
+        groundHeight: (x, z) => this.host.groundHeight(x, z),
+        blocked: (x, z, r) => this.solidAt(x, z, r),
+        fx: this.fx,
+      });
+      const npcCfg = this.scenario.npc;
+      if (npcCfg) {
+        e.setPatrol({
+          enabled: kind !== 'turret' && npcCfg.enabled,
+          radius: npcCfg.patrolRadius, speedMul: npcCfg.patrolSpeed, waypoints: npcCfg.waypoints,
+          pauseSec: npcCfg.pauseSec, aggro: npcCfg.aggro, alertSec: npcCfg.alertSec,
+          leash: npcCfg.leash, returnHome: npcCfg.returnHome,
+        });
+      }
+      this.enemyZone.set(e, z.id);
+      group.userData.zoneId = z.id;
+      this.targets.push({
+        id, group, name: 'Враг (' + z.name + ')', category: kind === 'infantry' ? 'Персонажи' : 'Мехи',
+        assetId: kind === 'infantry' ? 'survivor' : kind, role: 'enemy',
+        box, center, hp: e.hp, maxHp: e.maxHp, meshes,
+        radius: Math.max(size.x, size.z) * 0.5, solid: kind !== 'turret', enemy: e, transient: true,
+      });
+      this.targetMeshes.push(...meshes);
+      this.enemies.push(e);
+    }
+  }
+
+  /** Игровая логика зон: активация при входе, зачистка, победа. */
+  private updateZones(): void {
+    const defs = this.zoneDefs;
+    if (!defs.length || this.over) return;
+    // вошли в зону — активируем её население
+    for (const z of defs) {
+      if (this.zoneSpawned.has(z.id)) continue;
+      const d = Math.hypot(z.x - this.pos.x, z.z - this.pos.z);
+      if (d <= z.r) {
+        this.zoneSpawned.add(z.id);
+        this.spawnZoneEnemies(z);
+        this.pushLog(`Зона «${z.name}»: враги обнаружены! Зачисти зону.`);
+      }
+    }
+    // все ли активированные зоны очищены?
+    let cleaned = 0;
+    for (const z of defs) {
+      if (!this.zoneSpawned.has(z.id)) continue;
+      const left = this.enemies.filter((e) => this.enemyZone.get(e) === z.id && e.alive).length;
+      if (left <= 0) cleaned++;
+    }
+    if (cleaned === defs.length) {
+      this.over = 'won';
+      this.pushLog('Все зоны очищены — контракт выполнен!');
+      sfx.select(this.pos);
+    }
+  }
+
+  /** Ближайшая незачищенная зона для HUD. */
+  private zoneLabel(): { name: string; left: number } | null {
+    let best: { name: string; left: number; d: number } | null = null;
+    for (const z of this.zoneDefs) {
+      if (!this.zoneSpawned.has(z.id)) continue;
+      const left = this.enemies.filter((e) => this.enemyZone.get(e) === z.id && e.alive).length;
+      if (left <= 0) continue;
+      const d = Math.hypot(z.x - this.pos.x, z.z - this.pos.z);
+      if (!best || d < best.d) best = { name: z.name, left, d };
+    }
+    return best ? { name: best.name, left: best.left } : null;
+  }
+
   // ======================= camera =======================
   private updateCamera(dt: number) {
     const cam = this.host.camera, cfg = this.cfg;
@@ -2547,6 +2650,7 @@ export class PlayController {
       mechHp: this.ejected ? 0 : Math.round(this.mechHp()),
       mechMaxHp: this.ejected ? 0 : this.mechMaxHp(),
       nearestMech: this.ejected ? this.nearestMechInfo() : null,
+      zone: this.zoneLabel(),
       wave: this.waveIdx + 1, wavesTotal: this.scenario.waves.length,
       enemiesLeft: this.enemiesAlive(),
       over: this.over, hurt: Math.round(this.hurt * 100) / 100,

@@ -45,11 +45,22 @@ export interface WorldConfig {
   worldRadius: number;
   /** Чем закрываем край карты: горы, скалы, вода (провал), лес или ничем. */
   edgeType: EdgeType;
+  /** Зоны (цели зачистки) на карте. */
+  zones?: ZoneDef[];
   enabled?: boolean;
   randomSpawn?: boolean;
 }
 
 export type EdgeType = 'none' | 'mountains' | 'cliffs' | 'water' | 'forest';
+
+/** Зона карты: точка интереса с радиусом. Враги внутри — цель зачистки. */
+export interface ZoneDef {
+  id: string;
+  name: string;
+  x: number;
+  z: number;
+  r: number;
+}
 
 export const DEFAULT_WORLD_CONFIG: WorldConfig = {
   seed: 1337,
