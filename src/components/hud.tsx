@@ -81,7 +81,7 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   craftOptions?: { id: string; name: string; desc: string; ok: boolean; missing: string }[];
   /** Стройка базы: построить объект по kind (данные из PlayController). */
   onBuild?: (kind: string) => void;
-  buildOptions?: { kind: string; name: string; cost: string; ok: boolean }[];
+  buildOptions?: { kind: string; name: string; cost: string; ok: boolean; reason?: string | null }[];
 }) {
   const color = config.hudColor;
   const view = hud?.view ?? config.defaultView;
@@ -259,6 +259,9 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
                 </button>
               </div>
               <div className="mt-0.5 font-mono text-[9px] text-stone-500">цена: {b.cost}</div>
+              {!b.ok && b.reason && (
+                <div className="mt-0.5 text-[9px] text-amber-400/90">⛔ {b.reason}</div>
+              )}
             </div>
           ))}
           <div className="mt-1 text-[10px] text-stone-600">

@@ -664,6 +664,103 @@ function buildGenerator() {
   [[-0.8, -0.4], [0.8, -0.4], [-0.8, 0.4], [0.8, 0.4]].forEach(([x, z]) => g.add(box(0.2, 0.2, 0.2, mt.concreteBroken, x, 0.1, z)));
   return g;
 }
+
+// ----------------------- здания (стройка базы) -----------------------
+/** Бетонная площадка — фундамент для зданий. */
+function buildFoundation() {
+  const mt = getSharedMaterials();
+  const g = new THREE.Group();
+  g.add(box(6.0, 0.3, 6.0, mt.concrete, 0, 0.15, 0));
+  g.add(box(6.1, 0.08, 6.1, mt.rustDark, 0, 0.04, 0));
+  [-2.6, 2.6].forEach((x) => [-2.6, 2.6].forEach((z) => {
+    g.add(box(0.25, 0.16, 0.25, mt.concreteBroken, x, 0.08, z));
+    g.add(cyl(0.03, 0.03, 0.25, mt.rustHeavy, x, 0.4, z, 8));
+  }));
+  return g;
+}
+
+/** Завод — открывает крафт мехов. */
+function buildFactory() {
+  const mt = getSharedMaterials();
+  const g = new THREE.Group();
+  const W = 7, D = 5, H = 4;
+  g.add(box(W, H, D, mt.mechArmor, 0, H / 2, 0));
+  // крыша с «зубцами»
+  g.add(box(W + 0.4, 0.3, D + 0.4, mt.mechDark, 0, H + 0.15, 0));
+  for (let x = -3; x <= 3; x += 1.5) g.add(box(0.7, 1.2, 0.7, mt.mechDark, x, H + 1.0, 0));
+  // труба
+  g.add(cyl(0.35, 0.5, 3.2, mt.rustDark, 2.2, H + 2.0, 1.2, 14));
+  g.add(cyl(0.4, 0.4, 0.15, mt.rustHeavy, 2.2, H + 3.7, 1.2, 14));
+  // ворота
+  g.add(box(2.0, 2.2, 0.12, mt.steelDark, 0, 1.1, D / 2 + 0.06));
+  g.add(box(1.6, 1.8, 0.06, mt.rustDark, 0, 1.1, D / 2 + 0.12));
+  // окна
+  [-2, 2].forEach((x) => {
+    g.add(box(1.2, 0.8, 0.1, mt.steelDark, x, 2.4, D / 2 + 0.06));
+    g.add(box(1.0, 0.6, 0.05, mt.lightWarm, x, 2.4, D / 2 + 0.1));
+  });
+  // бетонная подложка
+  g.add(box(W + 0.6, 0.25, D + 0.6, mt.concrete, 0, 0.12, 0));
+  return g;
+}
+
+/** Электростанция. */
+function buildPowerPlant() {
+  const mt = getSharedMaterials();
+  const g = new THREE.Group();
+  const W = 5.5, D = 4, H = 3;
+  g.add(box(W, H, D, mt.mechArmor, 0, H / 2, 0));
+  g.add(box(W + 0.3, 0.25, D + 0.3, mt.mechDark, 0, H + 0.12, 0));
+  // две трубы-градирни
+  g.add(cyl(0.5, 0.7, 2.8, mt.concrete, -1.6, H + 1.8, 1.2, 14));
+  g.add(cyl(0.4, 0.6, 2.4, mt.concrete, 1.6, H + 1.6, 1.2, 14));
+  // бак
+  g.add(cyl(0.9, 0.9, 1.4, mt.rustDark, -1.8, 0.7, -1.2, 16));
+  g.add(cyl(0.95, 0.95, 0.1, mt.rustHeavy, -1.8, 1.45, -1.2, 16));
+  // индикатор
+  g.add(box(0.15, 0.15, 0.05, mt.lightWarm, 0, 2.2, D / 2 + 0.1));
+  g.add(box(W + 0.5, 0.2, D + 0.5, mt.concrete, 0, 0.1, 0));
+  return g;
+}
+
+/** Нефтебашня (добыча). */
+function buildOilTower() {
+  const mt = getSharedMaterials();
+  const g = new THREE.Group();
+  // вышка
+  g.add(box(1.6, 8.5, 1.6, mt.rustDark, 0, 4.3, 0));
+  for (let y = 1; y < 8; y += 1.6) {
+    g.add(box(1.8, 0.08, 1.8, mt.steelDark, 0, y, 0));
+  }
+  // резервуар
+  g.add(cyl(1.4, 1.4, 2.0, mt.rustHeavy, -2.4, 1.0, 0, 18));
+  g.add(cyl(1.45, 1.45, 0.12, mt.steelDark, -2.4, 2.05, 0, 18));
+  // буровая мачта
+  g.add(cyl(0.12, 0.12, 4.0, mt.steelLight, 0.3, 6.6, 0.3, 8).rotateZ(0.25));
+  g.add(sph(0.2, mt.rustHeavy, 0.5, 8.8, 0.5));
+  // фундамент
+  g.add(box(5.2, 0.25, 4.2, mt.concrete, -0.4, 0.12, 0));
+  return g;
+}
+
+/** Добытчик ресурсов (экстрактор). */
+function buildExtractor() {
+  const mt = getSharedMaterials();
+  const g = new THREE.Group();
+  const W = 4.5, D = 3.5, H = 2.4;
+  g.add(box(W, H, D, mt.mechArmor, 0, H / 2, 0));
+  g.add(box(W + 0.3, 0.2, D + 0.3, mt.mechDark, 0, H + 0.1, 0));
+  // труба-конвейер
+  const conv = box(3.4, 0.5, 0.5, mt.rustDark, 1.8, H + 0.5, 0.6);
+  conv.rotation.z = -0.12; g.add(conv);
+  for (let x = 0.6; x < 3.2; x += 0.5) g.add(cyl(0.08, 0.08, 0.6, mt.steelLight, x, H + 0.5, 0.6, 10));
+  // бункер
+  g.add(cyl(0.7, 1.0, 1.0, mt.rustHeavy, -1.6, H + 0.7, -0.8, 14));
+  // огни
+  g.add(box(0.12, 0.12, 0.05, mt.lightWarm, 0.5, 1.6, D / 2 + 0.1));
+  g.add(box(W + 0.4, 0.2, D + 0.4, mt.concrete, 0, 0.1, 0));
+  return g;
+}
 function buildAntenna() {
   const mt = getSharedMaterials();
   const g = new THREE.Group();
@@ -1148,6 +1245,11 @@ export const ASSETS: AssetDef[] = [
   { id: 'rock', name: 'Скалы', category: 'Ландшафт', desc: 'Группа камней пустоши.', build: buildRock },
   { id: 'dead_tree', name: 'Сухое дерево', category: 'Ландшафт', desc: 'Мёртвое дерево с корнями.', build: buildDeadTree },
   { id: 'grass', name: 'Пучок травы', category: 'Ландшафт', desc: 'Кривые пучки зелёно-сухой травы.', build: buildGrass },
+  { id: 'foundation', name: 'Бетонная площадка', category: 'Инфраструктура', desc: 'Фундамент под здания. Сначала зачисти территорию, потом залей бетон.', build: buildFoundation },
+  { id: 'factory', name: 'Завод', category: 'Инфраструктура', desc: 'Позволяет крафтить мехов. Требует бетонную площадку.', build: buildFactory },
+  { id: 'power_plant', name: 'Электростанция', category: 'Инфраструктура', desc: 'Обеспечивает энергией базу. Требует бетонную площадку.', build: buildPowerPlant },
+  { id: 'oil_tower', name: 'Нефтебашня', category: 'Инфраструктура', desc: 'Добыча топлива. Требует бетонную площадку.', build: buildOilTower },
+  { id: 'extractor', name: 'Добытчик ресурсов', category: 'Инфраструктура', desc: 'Добывает ресурсы из недр. Требует бетонную площадку.', build: buildExtractor },
 ];
 
 /** Динамические ассеты (например, импортированные из GLB во время сессии). */

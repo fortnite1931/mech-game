@@ -3,7 +3,7 @@
     "app": "WASTELAND FORGE",
     "version": "2.0",
     "engine": "three.js",
-    "exportedAt": "2026-10-24T14:15:32.490Z"
+    "exportedAt": "2026-10-24T14:43:40.341Z"
   },
   "types": [
     {
@@ -1677,101 +1677,79 @@
   "scene": [
     {
       "id": "obj_39_2jv",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Стена бункера"
     },
     {
       "id": "obj_41_7lk",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Мешки с песком"
     },
     {
-      "id": "obj_43_4eq",
-      "role": "neutral",
-      "name": "Бочка ржавая"
-    },
-    {
-      "id": "obj_44_1i4",
-      "role": "neutral",
-      "name": "Бочка токсичная"
-    },
-    {
       "id": "obj_45_4ip",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Контейнер ржавый"
     },
     {
       "id": "obj_46_1wq",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Рельсы — сегмент"
     },
     {
-      "id": "obj_47_5bw",
-      "role": "neutral",
-      "name": "Балка гнутая"
-    },
-    {
-      "id": "obj_48_r8",
-      "role": "neutral",
-      "name": "Куча металлолома"
-    },
-    {
-      "id": "obj_49_gw",
-      "role": "neutral",
-      "name": "Бетонный блок"
-    },
-    {
       "id": "obj_50_7ji",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Блок разрушенный"
     },
     {
       "id": "obj_51_7em",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Плита полуразрушенная"
     },
     {
       "id": "obj_52_203",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Сторожевая вышка"
     },
     {
       "id": "obj_53_4jw",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Генератор"
     },
     {
       "id": "obj_55_51h",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Фонарь ржавый"
     },
     {
       "id": "obj_56_783",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Купол теплицы"
     },
     {
       "id": "obj_58_57j",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Остов машины"
     },
     {
       "id": "obj_59_3ba",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Скалы"
     },
     {
-      "id": "obj_61_4fh",
-      "role": "neutral",
-      "name": "Покрышки"
-    },
-    {
-      "id": "obj_42_6jp",
-      "role": "neutral",
-      "name": "Группа бочек"
-    },
-    {
       "id": "obj_60_2pa",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Сухое дерево"
     },
@@ -1783,56 +1761,109 @@
     },
     {
       "id": "obj_32_7aq",
-      "role": "neutral",
+      "typeId": "type_mech_scout",
+      "role": "enemy",
       "name": "«Ястреб» (игрок)"
     },
     {
-      "id": "obj_54_628",
-      "role": "neutral",
-      "name": "Антенна-мачта"
-    },
-    {
       "id": "obj_57_sv",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "КПП со шлагбаумом"
     },
     {
+      "id": "obj_35_51f",
+      "typeId": "type_mech_juggernaut",
+      "role": "enemy",
+      "name": "«Титан» (враг)"
+    },
+    {
+      "id": "obj_43_4eq",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Бочка ржавая"
+    },
+    {
+      "id": "obj_44_1i4",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Бочка токсичная"
+    },
+    {
+      "id": "obj_47_5bw",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Балка гнутая"
+    },
+    {
+      "id": "obj_48_r8",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Куча металлолома"
+    },
+    {
+      "id": "obj_49_gw",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Бетонный блок"
+    },
+    {
+      "id": "obj_61_4fh",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Покрышки"
+    },
+    {
+      "id": "obj_42_6jp",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Группа бочек"
+    },
+    {
+      "id": "obj_54_628",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Антенна-мачта"
+    },
+    {
       "id": "obj_62_2e6",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Ящик разбитый"
     },
     {
       "id": "obj_33_5iq",
-      "role": "neutral",
+      "typeId": "type_mech_molot",
+      "role": "enemy",
       "name": "«Молот» (враг)"
     },
     {
       "id": "obj_34_538",
-      "role": "neutral",
+      "typeId": "type_mech_scout",
+      "role": "enemy",
       "name": "«Ястреб» (враг)"
     },
     {
-      "id": "obj_35_51f",
-      "role": "neutral",
-      "name": "«Титан» (враг)"
-    },
-    {
       "id": "obj_36_w4",
-      "role": "neutral",
+      "typeId": "type_turret",
+      "role": "enemy",
       "name": "Турель «Шершень» (враг)"
     },
     {
       "id": "obj_37_xt",
-      "role": "neutral",
+      "typeId": "type_turret",
+      "role": "enemy",
       "name": "Турель «Шершень-2» (враг)"
     },
     {
       "id": "obj_38_57t",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Модуль аванпоста"
     },
     {
       "id": "obj_40_6tg",
+      "typeId": "type_barrel_fuel",
       "role": "neutral",
       "name": "Стена бункера"
     }
@@ -1891,7 +1922,7 @@
   },
   "player": {
     "chassis": "mech_scout",
-    "playerObjectId": "auto",
+    "playerObjectId": "obj_63_65k",
     "playerStart": "mech",
     "pilotObjectId": "auto",
     "spawnMode": "spawn_object",
@@ -2465,7 +2496,7 @@
       "position": [
         -2,
         0.075,
-        9
+        -58.178
       ],
       "rotation": [
         0,
@@ -2484,7 +2515,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_41_7lk",
@@ -2493,7 +2525,7 @@
       "position": [
         0.5,
         -0.02,
-        5.5
+        -61.678
       ],
       "rotation": [
         0,
@@ -2512,63 +2544,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_43_4eq",
-      "assetId": "barrel",
-      "name": "Бочка ржавая",
-      "position": [
-        -6.5,
-        0,
-        4.2
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_44_1i4",
-      "assetId": "barrel_toxic",
-      "name": "Бочка токсичная",
-      "position": [
-        6.5,
-        0,
-        -4
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_45_4ip",
@@ -2577,7 +2554,7 @@
       "position": [
         -12,
         -0.13,
-        5
+        -62.178
       ],
       "rotation": [
         0,
@@ -2596,7 +2573,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_46_1wq",
@@ -2605,7 +2583,7 @@
       "position": [
         12,
         0.05,
-        -8
+        -75.178
       ],
       "rotation": [
         0,
@@ -2624,91 +2602,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_47_5bw",
-      "assetId": "girder",
-      "name": "Балка гнутая",
-      "position": [
-        4,
-        0.041,
-        -9
-      ],
-      "rotation": [
-        0,
-        40,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_48_r8",
-      "assetId": "scrap",
-      "name": "Куча металлолома",
-      "position": [
-        -4,
-        0.332,
-        -11
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_49_gw",
-      "assetId": "barrier",
-      "name": "Бетонный блок",
-      "position": [
-        8,
-        0,
-        1
-      ],
-      "rotation": [
-        0,
-        -35,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_50_7ji",
@@ -2717,7 +2612,7 @@
       "position": [
         -8,
         0.237,
-        -1
+        -68.178
       ],
       "rotation": [
         0,
@@ -2736,7 +2631,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_51_7em",
@@ -2745,7 +2641,7 @@
       "position": [
         1,
         0.099,
-        13
+        -54.178
       ],
       "rotation": [
         0,
@@ -2764,7 +2660,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_52_203",
@@ -2773,7 +2670,7 @@
       "position": [
         -14,
         0.225,
-        -13
+        -80.178
       ],
       "rotation": [
         0,
@@ -2792,7 +2689,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_53_4jw",
@@ -2801,7 +2699,7 @@
       "position": [
         11.5,
         0.007,
-        3.5
+        -63.678
       ],
       "rotation": [
         0,
@@ -2820,7 +2718,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_55_51h",
@@ -2829,7 +2728,7 @@
       "position": [
         -1,
         0,
-        -5
+        -72.178
       ],
       "rotation": [
         0,
@@ -2848,7 +2747,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_56_783",
@@ -2857,7 +2757,7 @@
       "position": [
         -11,
         0.257,
-        10
+        -57.178
       ],
       "rotation": [
         0,
@@ -2876,7 +2776,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_58_57j",
@@ -2885,12 +2786,12 @@
       "position": [
         -18,
         -0.264,
-        2
+        -65.178
       ],
       "rotation": [
-        0,
-        115,
-        0
+        -180,
+        65,
+        -180
       ],
       "scale": [
         1,
@@ -2904,7 +2805,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_59_3ba",
@@ -2913,7 +2815,7 @@
       "position": [
         20,
         1.01,
-        14
+        -53.178
       ],
       "rotation": [
         0,
@@ -2932,63 +2834,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_61_4fh",
-      "assetId": "tires",
-      "name": "Покрышки",
-      "position": [
-        3,
-        0.288,
-        3
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_42_6jp",
-      "assetId": "barrel_group",
-      "name": "Группа бочек",
-      "position": [
-        -5,
-        0.027,
-        3
-      ],
-      "rotation": [
-        0,
-        30,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_60_2pa",
@@ -2997,7 +2844,7 @@
       "position": [
         -20,
         -0.326,
-        -5
+        -72.178
       ],
       "rotation": [
         0,
@@ -3016,7 +2863,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_63_65k",
@@ -3024,8 +2872,8 @@
       "name": "Мех «Робот» (GLB + анимации)",
       "position": [
         4.5,
-        0.006,
-        -13.5
+        -0.013,
+        42.5
       ],
       "rotation": [
         0,
@@ -3054,7 +2902,7 @@
       "position": [
         0,
         0.6,
-        0
+        -67.178
       ],
       "rotation": [
         0,
@@ -3073,35 +2921,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_54_628",
-      "assetId": "antenna",
-      "name": "Антенна-мачта",
-      "position": [
-        14,
-        0.203,
-        11
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_mech_scout"
     },
     {
       "id": "obj_57_sv",
@@ -3110,7 +2931,7 @@
       "position": [
         16,
         0.075,
-        -1
+        -68.178
       ],
       "rotation": [
         0,
@@ -3129,7 +2950,269 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_35_51f",
+      "assetId": "mech_juggernaut",
+      "name": "«Титан» (враг)",
+      "position": [
+        -9,
+        -0.03,
+        -74.178
+      ],
+      "rotation": [
+        -180,
+        50,
+        -180
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "enemy",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_mech_juggernaut"
+    },
+    {
+      "id": "obj_43_4eq",
+      "assetId": "barrel",
+      "name": "Бочка ржавая",
+      "position": [
+        -6.5,
+        0,
+        -62.978
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_44_1i4",
+      "assetId": "barrel_toxic",
+      "name": "Бочка токсичная",
+      "position": [
+        6.5,
+        0,
+        -71.178
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_47_5bw",
+      "assetId": "girder",
+      "name": "Балка гнутая",
+      "position": [
+        4,
+        0.041,
+        -76.178
+      ],
+      "rotation": [
+        0,
+        40,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_48_r8",
+      "assetId": "scrap",
+      "name": "Куча металлолома",
+      "position": [
+        -4,
+        0.332,
+        -78.178
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_49_gw",
+      "assetId": "barrier",
+      "name": "Бетонный блок",
+      "position": [
+        8,
+        0,
+        -66.178
+      ],
+      "rotation": [
+        0,
+        -35,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_61_4fh",
+      "assetId": "tires",
+      "name": "Покрышки",
+      "position": [
+        3,
+        0.288,
+        -64.178
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_42_6jp",
+      "assetId": "barrel_group",
+      "name": "Группа бочек",
+      "position": [
+        -5,
+        0.027,
+        -64.178
+      ],
+      "rotation": [
+        0,
+        30,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_54_628",
+      "assetId": "antenna",
+      "name": "Антенна-мачта",
+      "position": [
+        14,
+        0.203,
+        -56.178
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_62_2e6",
@@ -3138,7 +3221,7 @@
       "position": [
         7.5,
         0.191,
-        5.5
+        -61.678
       ],
       "rotation": [
         0,
@@ -3157,7 +3240,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_33_5iq",
@@ -3166,7 +3250,7 @@
       "position": [
         12,
         0.753,
-        10
+        -57.178
       ],
       "rotation": [
         0,
@@ -3185,7 +3269,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_mech_molot"
     },
     {
       "id": "obj_34_538",
@@ -3194,7 +3279,7 @@
       "position": [
         15,
         0.905,
-        14
+        -53.178
       ],
       "rotation": [
         0,
@@ -3213,35 +3298,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
-    },
-    {
-      "id": "obj_35_51f",
-      "assetId": "mech_juggernaut",
-      "name": "«Титан» (враг)",
-      "position": [
-        -9,
-        -0.03,
-        -7
-      ],
-      "rotation": [
-        0,
-        130,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "enemy",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_mech_scout"
     },
     {
       "id": "obj_36_w4",
@@ -3250,12 +3308,12 @@
       "position": [
         5,
         0,
-        8.5
+        -58.678
       ],
       "rotation": [
-        0,
-        -140,
-        0
+        180,
+        -40,
+        180
       ],
       "scale": [
         1,
@@ -3269,7 +3327,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_turret"
     },
     {
       "id": "obj_37_xt",
@@ -3278,7 +3337,7 @@
       "position": [
         18,
         0.271,
-        12
+        -55.178
       ],
       "rotation": [
         0,
@@ -3297,7 +3356,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_turret"
     },
     {
       "id": "obj_38_57t",
@@ -3306,7 +3366,7 @@
       "position": [
         9,
         -0.018,
-        6
+        -61.178
       ],
       "rotation": [
         0,
@@ -3325,7 +3385,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     },
     {
       "id": "obj_40_6tg",
@@ -3334,7 +3395,7 @@
       "position": [
         3.2,
         0.075,
-        9
+        -58.178
       ],
       "rotation": [
         0,
@@ -3353,7 +3414,8 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
     }
   ]
 }

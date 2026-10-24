@@ -1208,7 +1208,11 @@ export class PlayController {
 
   /** Список рецептов из сценария с состоянием «хватает деталей». */
   craftOptions(): { id: string; name: string; desc: string; ok: boolean; missing: string }[] {
+    const hasFactory = this.hasFactory();
     return (this.scenario.craft ?? []).map((r) => {
+      if (!hasFactory) {
+        return { id: r.id, name: r.name, desc: r.desc, ok: false, missing: 'Завод не построен (T — стройка)' };
+      }
       const missing = r.parts
         .filter((p) => this.inventory.count(p.item) < p.count)
         .map((p) => `${ITEMS[p.item].short}×${p.count - this.inventory.count(p.item)}`);
@@ -1218,6 +1222,7 @@ export class PlayController {
 
   /** Собрать мех: списывает детали и ставит готовый корпус рядом с игроком. */
   craftMech(recipeId: string): boolean {
+    if (!this.hasFactory()) { this.pushLog('Мехи собираются на заводе — построй завод (T).'); return false; }
     const recipe = (this.scenario.craft ?? []).find((r) => r.id === recipeId);
     if (!recipe) return false;
     const chassis = craft(this.inventory, recipe);
@@ -1243,6 +1248,11 @@ export class PlayController {
   // ======================= стройка базы =======================
   /** Рецепты построек: название → цена в ресурсах инвентаря. */
   private static BUILD_RECIPES: Record<string, Partial<Record<ItemId, number>>> = {
+    foundation: { scrap: 5, plate: 2 },
+    factory: { plate: 6, gear: 2, hydraulic: 1 },
+    power_plant: { plate: 4, gear: 2, fuel_cell: 2 },
+    oil_tower: { plate: 4, gear: 1 },
+    extractor: { plate: 3, gear: 1 },
     barrier: { scrap: 4 },
     bunker_wall: { plate: 3, scrap: 2 },
     sandbags: { scrap: 2 },
@@ -1250,25 +1260,50 @@ export class PlayController {
     barrel: { scrap: 1 },
   };
 
-  /** Список доступных построек с ценами (для панели «Стройка»). */
-  buildOptions(): { kind: string; name: string; cost: string; ok: boolean }[] {
-    const out: { kind: string; name: string; cost: string; ok: boolean }[] = [];
+  /** Здания, требующие бетонную площадку рядом. */
+  private static BUILD_NEED_FOUNDATION = new Set(['factory', 'power_plant', 'oil_tower', 'extractor']);
+
+  /** Что уже построено игроком (для прогрессии). */
+  private builtKinds = new Set<string>();
+
+  private hasFactory(): boolean { return this.builtKinds.has('factory'); }
+
+  /** Список доступных построек с ценами и причинами блокировки (для панели «Стройка»). */
+  buildOptions(): { kind: string; name: string; cost: string; ok: boolean; reason: string | null }[] {
+    const out: { kind: string; name: string; cost: string; ok: boolean; reason: string | null }[] = [];
     for (const [kind, cost] of Object.entries(PlayController.BUILD_RECIPES)) {
       const def = getAsset(kind);
       if (!def) continue;
       const costStr = Object.entries(cost)
         .map(([id, n]) => `${ITEMS[id as ItemId].short}×${n}`)
         .join(', ');
-      const ok = Object.entries(cost).every(([id, n]) => this.inventory.count(id as ItemId) >= (n ?? 0));
-      out.push({ kind, name: def.name, cost: costStr, ok });
+      const okRes = Object.entries(cost).every(([id, n]) => this.inventory.count(id as ItemId) >= (n ?? 0));
+      const reason = this.buildBlockReason(kind);
+      out.push({ kind, name: def.name, cost: costStr, ok: okRes && !reason, reason });
     }
     return out;
+  }
+
+  /** Причина, почему постройка сейчас невозможна (null — можно строить). */
+  private buildBlockReason(kind: string): string | null {
+    const needFoundation = PlayController.BUILD_NEED_FOUNDATION.has(kind);
+    // подготовка территории: рядом не должно быть живых врагов
+    const enemiesNear = this.enemies.some((e) => e.alive && Math.hypot(e.group.position.x - this.pos.x, e.group.position.z - this.pos.z) < 30);
+    if (enemiesNear) return 'Территория не зачищена — рядом враги';
+    if (needFoundation) {
+      const hasF = this.targets.some((t) => t.assetId === 'foundation' && !t.transient &&
+        Math.hypot(t.center.x - this.pos.x, t.center.z - this.pos.z) < 14);
+      if (!hasF) return 'Требуется бетонная площадка рядом (построй сначала фундамент)';
+    }
+    return null;
   }
 
   /** Построить объект перед мехом, списав ресурсы. */
   buildStructure(kind: string): boolean {
     const cost = PlayController.BUILD_RECIPES[kind];
     if (!cost) return false;
+    const reason = this.buildBlockReason(kind);
+    if (reason) { this.pushLog(reason + '.'); return false; }
     for (const [id, n] of Object.entries(cost)) {
       if (this.inventory.count(id as ItemId) < (n ?? 0)) {
         this.pushLog('Не хватает ресурсов на стройку.');
@@ -1309,6 +1344,7 @@ export class PlayController {
     for (const [id2, n] of Object.entries(cost)) {
       this.inventory.take(id2 as ItemId, n ?? 0);
     }
+    this.builtKinds.add(kind);
     this.pushLog(`Построено: ${def.name}.`);
     sfx.select(this.pos);
     this.cb.onHud(this.buildHud());
