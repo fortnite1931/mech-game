@@ -12,7 +12,8 @@ import { DEFAULT_MECH_CONFIG, DEFAULT_SCENARIO, mergeMechConfig } from './playTy
 import type { BarrelContents } from './interaction.ts';
 import type { MechConfig, Scenario, WeaponId } from './playTypes.ts';
 import { DEFAULT_WORLD_CONFIG } from './worldGen.ts';
-import type { WorldConfig } from './worldGen.ts';
+import type { WorldConfig, EdgeType } from './worldGen.ts';
+import { edgeHeight } from './worldGen.ts';
 import { CollisionDebug, objectCollision, type CollisionShape } from './collision.ts';
 import { propProfile } from './propPhysics.ts';
 import { audio } from './audio.ts';
@@ -417,7 +418,8 @@ export class EditorEngine {
       const dd = Math.sqrt((x - cx) ** 2 + (z - cz) ** 2);
       if (dd < r) crater -= Math.cos((dd / r) * Math.PI * 0.5) * d;
     });
-    return (n + crater) * flat;
+    // края карты: горы/скалы/вода/лес (если задан радиус мира)
+    return (n + crater) * flat + edgeHeight(this.world, x, z);
   }
 
   // ---------------- environment ----------------
@@ -983,12 +985,14 @@ export class EditorEngine {
   private clampWorld(c: Partial<WorldConfig>, base: WorldConfig): WorldConfig {
     const num = (v: unknown, min: number, max: number, def: number) =>
       typeof v === 'number' && isFinite(v) ? THREE.MathUtils.clamp(v, min, max) : def;
+    const edges: EdgeType[] = ['none', 'mountains', 'cliffs', 'water', 'forest'];
     return {
       seed: typeof c.seed === 'number' && isFinite(c.seed) ? Math.max(0, Math.floor(c.seed)) : base.seed,
       chunkSize: num(c.chunkSize, 8, 64, base.chunkSize),
       propDensity: num(c.propDensity, 0, 4, base.propDensity),
       oasisChance: num(c.oasisChance, 0, 0.5, base.oasisChance),
       worldRadius: num(c.worldRadius, 0, 8, base.worldRadius),
+      edgeType: edges.includes(c.edgeType as EdgeType) ? (c.edgeType as EdgeType) : base.edgeType,
       randomSpawn: c.randomSpawn === true,
       enabled: c.enabled !== false,
     };

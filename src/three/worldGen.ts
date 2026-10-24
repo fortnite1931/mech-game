@@ -41,11 +41,15 @@ export interface WorldConfig {
   chunkSize: number;
   propDensity: number;
   oasisChance: number;
-  /** Радиус мира в чанках. 0 = считать от видимости (дальность тумана) с запасом. */
+  /** Радиус карты в километрах. 0 = бесконечный мир (без краёв). */
   worldRadius: number;
+  /** Чем закрываем край карты: горы, скалы, вода (провал), лес или ничем. */
+  edgeType: EdgeType;
   enabled?: boolean;
   randomSpawn?: boolean;
 }
+
+export type EdgeType = 'none' | 'mountains' | 'cliffs' | 'water' | 'forest';
 
 export const DEFAULT_WORLD_CONFIG: WorldConfig = {
   seed: 1337,
@@ -53,8 +57,52 @@ export const DEFAULT_WORLD_CONFIG: WorldConfig = {
   propDensity: 1,
   oasisChance: 0.02,
   worldRadius: 0,
+  edgeType: 'none',
   enabled: true,
 };
+
+/** Радиус карты в метрах (0 — бесконечный мир). */
+export function worldBoundMeters(cfg: WorldConfig): number {
+  return cfg.worldRadius > 0 ? cfg.worldRadius * 1000 : 0;
+}
+
+const smooth01 = (t: number) => t * t * (3 - 2 * t);
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+/**
+ * Добавка высоты у края карты по типу края (горы/скалы/вода/лес).
+ * Возвращает 0, если радиус не задан или тип 'none'.
+ * Подъём начинается заранее (за буфер до границы), чтобы край был виден издалека.
+ */
+export function edgeHeight(cfg: WorldConfig, x: number, z: number): number {
+  const R = worldBoundMeters(cfg);
+  if (R <= 0 || cfg.edgeType === 'none') return 0;
+  const d = Math.sqrt(x * x + z * z);
+  switch (cfg.edgeType) {
+    case 'mountains': {
+      const over = d - R + 250; // начинаем за 250 м до границы
+      const t = clamp01(over / 500);
+      return smooth01(t) * 260;
+    }
+    case 'cliffs': {
+      const over = d - R + 60;
+      const t = clamp01(over / 160);
+      return smooth01(t) * 600;
+    }
+    case 'water': {
+      const over = d - R + 250;
+      const t = clamp01(over / 500);
+      return -smooth01(t) * 140;
+    }
+    case 'forest': {
+      const over = d - R + 350;
+      const t = clamp01(over / 700);
+      return smooth01(t) * 90;
+    }
+    default:
+      return 0;
+  }
+}
 
 export type BiomeId = 'ash' | 'crack' | 'ice' | 'mine' | 'oasis';
 

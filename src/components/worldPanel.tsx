@@ -15,7 +15,7 @@ export function WorldPanel({ world, onWorld }: {
           onChange={() => onChange({ randomSpawn: !world.randomSpawn })} />
         <div className="mt-1.5 rounded-md border border-white/[0.07] bg-black/25 p-2 text-[10px] leading-relaxed text-stone-500">
           {world.enabled !== false
-            ? 'Стен нет: земля и чанки продолжаются в любую сторону. Радиус чанков ниже — только сколько участков держим вокруг игрока (подгрузка/выгрузка).'
+            ? 'При радиусе 0 земля и чанки продолжаются в любую сторону. Задай радиус карты ниже и выбери тип края — мир замкнётся горами, водой или лесом.'
             : 'Конечная площадка 240×240 м. За её пределами мех не выезжает — так удобнее собирать сцену вручную.'}
         </div>
       </Section>
@@ -44,14 +44,28 @@ export function WorldPanel({ world, onWorld }: {
           onChange={(v) => onChange({ propDensity: v })} format={(v) => v.toFixed(1)} />
         <Slider label="Шанс оазиса" value={world.oasisChance} min={0} max={0.2} step={0.005}
           onChange={(v) => onChange({ oasisChance: v })} format={(v) => v.toFixed(3)} />
-        <Slider label="Радиус чанков" value={world.worldRadius} min={0} max={10} step={1}
+        <Slider label="Радиус карты, км" value={world.worldRadius} min={0} max={8} step={1}
           onChange={(v) => onChange({ worldRadius: v })}
-          format={(v) => (v === 0 ? 'авто' : v.toFixed(0))} />
+          format={(v) => (v === 0 ? 'бесконечно' : v.toFixed(0))} />
+        <div className="mb-2 mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-stone-500">
+          Край карты
+        </div>
+        <select
+          value={world.edgeType}
+          onChange={(e) => onChange({ edgeType: e.target.value as WorldConfig['edgeType'] })}
+          disabled={world.worldRadius === 0}
+          className="w-full rounded-md border border-white/10 bg-black/40 px-2 py-1.5 text-[11px] text-stone-200 focus:border-amber-500/50 focus:outline-none disabled:opacity-40"
+        >
+          <option value="none">Нет (плоскость)</option>
+          <option value="mountains">Горы (плавный подъём)</option>
+          <option value="cliffs">Скалы (крутой обрыв)</option>
+          <option value="water">Вода (провал к морю)</option>
+          <option value="forest">Лес (непроходимая чаща)</option>
+        </select>
         <div className="mt-1 text-[9px] leading-relaxed text-stone-600">
-          0 = считать от видимости (дальность тумана) с запасом: мир существует дальше
-          края зрения, поэтому на горизонте ничего не возникает из ниоткуда.
-          Лёгкие батчи стоят почти ничего — 1 draw call на вид. Дорогие «живые»
-          объекты рядом с игроком — их по-прежнему немного.
+          Край закрывает границу карты, когда задан радиус больше 0. Чем ближе к
+          границе — тем выше горы (или глубже вода), и выйти за неё нельзя:
+          физика не выпустит, чанки за краем не генерируются.
         </div>
       </Section>
 

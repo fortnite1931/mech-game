@@ -455,6 +455,12 @@ export class PlayController {
     const L = this.limit;
     v.x = clamp(v.x, -L, L);
     v.z = clamp(v.z, -L, L);
+    // карта с границами: не выпускаем за радиус мира (за ним — горы/вода/лес)
+    const R = this.worldCfg && this.worldCfg.worldRadius > 0 ? this.worldCfg.worldRadius * 1000 : 0;
+    if (R > 0) {
+      const d = Math.hypot(v.x, v.z);
+      if (d > R) { const k = R / d; v.x *= k; v.z *= k; }
+    }
   }
 
   // ======================= lifecycle =======================
@@ -1412,8 +1418,14 @@ export class PlayController {
   private worldRadiusChunks(): number {
     const byView = this.host.viewDistance ? this.host.viewDistance() : 70;
     const cs = this.worldCfg?.chunkSize ?? 24;
-    // запас 60% от видимости + минимум 4 чанка (96 м)
+    // радиус 60% от видимости + запас 4 чанка (96 м)
     const chunks = Math.ceil((byView * 1.6) / cs);
+    // если задана карта с границами — не генерируем дальше её радиуса
+    const R = this.worldCfg?.worldRadius ?? 0;
+    if (R > 0) {
+      const mapChunks = Math.ceil((R * 1000) / cs);
+      return clamp(Math.min(chunks, mapChunks), 4, 10);
+    }
     return clamp(chunks, 4, 10);
   }
 
