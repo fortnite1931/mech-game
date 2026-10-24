@@ -20,8 +20,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        // редактор (для разработки локально; на GitHub его заменит игра через workflow)
-        editor: path.resolve(__dirname, "index.html"),
+        // редактор (локально по умолчанию; на GitHub главную заменит игра через workflow)
+        main: path.resolve(__dirname, "index.html"),
+        // редактор как отдельная страница /editor.html на GitHub Pages
+        editor: path.resolve(__dirname, "editor.html"),
         // игра — публикуемый клиент (на платформах/Pages)
         game: path.resolve(__dirname, "game.html"),
       },
