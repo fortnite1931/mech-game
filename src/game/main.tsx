@@ -27,6 +27,19 @@ const ADMIN_DEFAULTS: AdminVals = {
   dmgFromPlayer: 1, dmgToPlayer: 1,
   enemyHpMul: 1, enemyDmgMul: 1,
 };
+
+/** Настройки админки автосохраняются в браузере (переживают перезагрузку). */
+const ADMIN_STORAGE_KEY = "wf_admin_balance";
+function loadAdmin(): AdminVals {
+  try {
+    const raw = localStorage.getItem(ADMIN_STORAGE_KEY);
+    if (raw) {
+      const v = JSON.parse(raw) as Partial<AdminVals>;
+      return { ...ADMIN_DEFAULTS, ...v };
+    }
+  } catch { /* ignore */ }
+  return ADMIN_DEFAULTS;
+}
 function Game() {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<EditorEngine | null>(null);
@@ -36,8 +49,35 @@ function Game() {
   const [showHelp, setShowHelp] = useState(false);
   const [objects, setObjects] = useState<SceneObjectState[]>([]);
   const [cfg, setCfg] = useState<MechConfig | null>(null);
-  const [admin, setAdmin] = useState<AdminVals>(ADMIN_DEFAULTS);
+  const [admin, setAdmin] = useState<AdminVals>(loadAdmin);
   const [adminOpen, setAdminOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // автосохранение админки при изменении
+  useEffect(() => {
+    try { localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(admin)); } catch { /* ignore */ }
+  }, [admin]);
+
+  /** Импорт настроек из JSON-файла */
+  const importAdminJson = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const v = JSON.parse(String(reader.result)) as Partial<AdminVals>;
+        const next = { ...ADMIN_DEFAULTS, ...v };
+        setAdmin(next);
+        const play = engineRef.current?.play;
+        if (play) {
+          play.setBalance({
+            mechSpeed: next.mechSpeed, pilotWalk: next.pilotWalk, pilotRun: next.pilotRun,
+            dmgFromPlayer: next.dmgFromPlayer, dmgToPlayer: next.dmgToPlayer,
+          });
+          play.setEnemyMults(next.enemyHpMul, next.enemyDmgMul);
+        }
+      } catch { /* ignore */ }
+    };
+    reader.readAsText(file);
+  };
 
   /** Применить настройку админки сразу в игру. */
   const applyAdmin = (patch: Partial<AdminVals>) => {
@@ -262,6 +302,34 @@ function Game() {
                 </div>
               </div>
             ))}
+            <div className="mb-2 flex gap-1.5">
+              <button
+                onClick={() => {
+                  const blob = new Blob([JSON.stringify(admin, null, 2)], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = "wasteland-balance.json";
+                  a.click();
+                  setTimeout(() => URL.revokeObjectURL(url), 4000);
+                }}
+                className="flex-1 rounded border border-white/10 bg-white/[0.03] py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-300 hover:border-amber-500/40 hover:text-amber-300"
+              >
+                Скачать JSON
+              </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="flex-1 rounded border border-white/10 bg-white/[0.03] py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-300 hover:border-amber-500/40 hover:text-amber-300"
+              >
+                Импорт JSON
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file" accept="application/json,.json"
+                className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) importAdminJson(f); e.target.value = ""; }}
+              />
+            </div>
             <button
               onClick={() => { setAdmin(ADMIN_DEFAULTS); applyAdmin(ADMIN_DEFAULTS); }}
               className="mt-1 w-full rounded border border-white/10 bg-white/[0.03] py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-400 hover:border-red-500/40 hover:text-red-300"
