@@ -66,7 +66,16 @@ function Game() {
     engineRef.current = engine;
     engine.init();
     engine.loadDemoScene();
+    // F12 — открыть/закрыть админку прямо поверх игры (без рестарта)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === "F12") {
+        e.preventDefault();
+        setAdminOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
     return () => {
+      window.removeEventListener("keydown", onKey);
       engine.dispose();
       engineRef.current = null;
     };
@@ -91,6 +100,18 @@ function Game() {
       setPlaying(true);
       setHud(null);
       setCfg({ ...e.mechConfig });
+      // применяем сохранённые настройки админки к новой игре
+      const play = e.play;
+      if (play) {
+        play.setBalance({
+          mechSpeed: admin.mechSpeed,
+          pilotWalk: admin.pilotWalk,
+          pilotRun: admin.pilotRun,
+          dmgFromPlayer: admin.dmgFromPlayer,
+          dmgToPlayer: admin.dmgToPlayer,
+        });
+        play.setEnemyMults(admin.enemyHpMul, admin.enemyDmgMul);
+      }
     }
   };
 
@@ -158,6 +179,7 @@ function Game() {
                 <p><b className="text-stone-300">Shift</b> — ускорение · <b className="text-stone-300">Пробел</b> — прыжок/струи</p>
                 <p><b className="text-stone-300">ЛКМ</b> — огонь · <b className="text-stone-300">ПКМ</b> — целиться</p>
                 <p><b className="text-stone-300">F</b> — выйти из меха / вернуться · <b className="text-stone-300">Esc</b> — меню</p>
+                <p className="mt-1 text-stone-500"><b className="text-stone-400">F12</b> — админка баланса (поверх игры)</p>
               </div>
             )}
           </div>
@@ -181,23 +203,23 @@ function Game() {
         />
       )}
 
-      {/* Админка (временная): ручная балансировка — убрать перед релизом */}
+      {/* Админка (временная): открывается поверх игры по F12, без рестарта */}
       {adminOpen && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70">
-          <div className="w-full max-w-sm rounded-xl border border-white/10 bg-stone-950/95 p-4 shadow-2xl">
+        <div className="pointer-events-none absolute inset-0 z-30">
+          <div className="pointer-events-auto absolute right-4 top-4 w-[320px] rounded-xl border border-amber-500/20 bg-stone-950/90 p-4 shadow-2xl backdrop-blur">
             <div className="mb-3 flex items-center justify-between">
               <div className="text-[12px] font-black uppercase tracking-wider text-amber-300">
                 ⚙ Админка
               </div>
               <button
                 onClick={() => setAdminOpen(false)}
-                className="rounded border border-white/10 px-2 py-1 text-[10px] font-bold text-stone-400 hover:border-red-500/40 hover:text-red-300"
+                className="rounded border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/20"
               >
-                Закрыть
+                ▶ Продолжить
               </button>
             </div>
             <div className="mb-2 text-[10px] leading-relaxed text-stone-500">
-              Настройки применяются к игре сразу. Убрать перед публикацией.
+              Применяется сразу, игра не останавливается. F12 — открыть/закрыть.
             </div>
             {([
               ["mechSpeed", "Скорость меха ×"],
@@ -213,20 +235,28 @@ function Game() {
                   <span className="text-[11px] text-stone-300">{label}</span>
                   <span className="font-mono text-[11px] text-amber-300">{admin[key].toFixed(2)}</span>
                 </div>
-                <input
-                  type="range" min={0.1} max={5} step={0.05}
-                  value={admin[key]}
-                  onChange={(e) => applyAdmin({ [key]: parseFloat(e.target.value) } as Partial<AdminVals>)}
-                  className="wf-slider w-full"
-                />
-                <button
-                  onClick={() => applyAdmin({ [key]: 1 } as Partial<AdminVals>)}
-                  className="mt-0.5 text-[9px] text-stone-600 hover:text-stone-400"
-                >
-                  сброс
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="range" min={0.1} max={5} step={0.05}
+                    value={admin[key]}
+                    onChange={(e) => applyAdmin({ [key]: parseFloat(e.target.value) } as Partial<AdminVals>)}
+                    className="wf-slider flex-1"
+                  />
+                  <button
+                    onClick={() => applyAdmin({ [key]: 1 } as Partial<AdminVals>)}
+                    className="shrink-0 text-[9px] uppercase text-stone-600 hover:text-stone-400"
+                  >
+                    сброс
+                  </button>
+                </div>
               </div>
             ))}
+            <button
+              onClick={() => { setAdmin(ADMIN_DEFAULTS); applyAdmin(ADMIN_DEFAULTS); }}
+              className="mt-1 w-full rounded border border-white/10 bg-white/[0.03] py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-400 hover:border-red-500/40 hover:text-red-300"
+            >
+              Сбросить всё
+            </button>
           </div>
         </div>
       )}
