@@ -456,16 +456,17 @@ export default function App() {
     setTimeout(() => startPlay(), 30);
   };
 
-  /** Превью для Яндекс: сохраняет проект и открывает игру в отдельной вкладке. */
+  /** Превью для Яндекс: экспортирует проект и открывает игру с ним — через URL. */
   const yandexPreview = async () => {
     const e = engineRef.current;
     if (!e) return;
     try {
       const json = e.exportJSON();
-      localStorage.setItem('wf_yandex_preview_project', json);
-      window.open('game.html', '_blank');
-      log('Проект сохранён для превью Яндекс, игра открыта в новой вкладке.', 'ok');
-      toast('Превью Яндекс открыто в новой вкладке', 'ok');
+      const encoded = encodeURIComponent(json);
+      // окно игры открываем с проектом прямо в адресе (без localStorage и гонок)
+      window.open(`game.html?project=${encoded}`, '_blank');
+      log('Проект передан в превью Яндекс через адрес. Открыто в новой вкладке.', 'ok');
+      toast('Превью Яндекс открыто с текущим проектом', 'ok');
     } catch (err) {
       toast('Не удалось подготовить превью Яндекс', 'err');
       log(`Ошибка превью Яндекс: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');

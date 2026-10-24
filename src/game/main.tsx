@@ -129,16 +129,18 @@ function Game() {
     });
     engineRef.current = engine;
     engine.init();
-    // если редактор сохранил проект для превью Яндекс — грузим именно его,
+    // проект из редактора приходит в адресе (game.html?project=...) — грузим его,
     // иначе демо-сцена
     (async () => {
-      const raw = localStorage.getItem("wf_yandex_preview_project");
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("project");
       if (raw) {
-        const res = await engine.importProjectJSON(raw);
-        if (!res.ok) engine.loadDemoScene();
-      } else {
-        engine.loadDemoScene();
+        try {
+          const res = await engine.importProjectJSON(decodeURIComponent(raw));
+          if (res.ok) return;
+        } catch { /* ignore */ }
       }
+      engine.loadDemoScene();
     })();
     // M — открыть/закрыть админку прямо поверх игры (без рестарта)
     const onKey = (e: KeyboardEvent) => {
