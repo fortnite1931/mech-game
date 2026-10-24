@@ -40,6 +40,20 @@ function loadAdmin(): AdminVals {
   } catch { /* ignore */ }
   return ADMIN_DEFAULTS;
 }
+
+/** Зоны карты (админка). */
+type AdminZone = { id: string; name: string; x: number; z: number; r: number };
+const ZONES_STORAGE_KEY = "wf_admin_zones";
+function loadZones(): AdminZone[] {
+  try {
+    const raw = localStorage.getItem(ZONES_STORAGE_KEY);
+    if (raw) {
+      const v = JSON.parse(raw) as AdminZone[];
+      if (Array.isArray(v)) return v.filter((z) => z && typeof z.x === "number" && typeof z.z === "number" && typeof z.r === "number");
+    }
+  } catch { /* ignore */ }
+  return [];
+}
 function Game() {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<EditorEngine | null>(null);
@@ -52,11 +66,21 @@ function Game() {
   const [admin, setAdmin] = useState<AdminVals>(loadAdmin);
   const [adminOpen, setAdminOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [zones, setZonesState] = useState<AdminZone[]>(loadZones);
 
   // автосохранение админки при изменении
   useEffect(() => {
     try { localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(admin)); } catch { /* ignore */ }
   }, [admin]);
+  useEffect(() => {
+    try { localStorage.setItem(ZONES_STORAGE_KEY, JSON.stringify(zones)); } catch { /* ignore */ }
+  }, [zones]);
+
+  /** Применить зоны сразу в игру. */
+  const applyZones = (next: AdminZone[]) => {
+    setZonesState(next);
+    engineRef.current?.play?.setZones(next);
+  };
 
   /** Импорт настроек из JSON-файла */
   const importAdminJson = (file: File) => {
@@ -151,6 +175,7 @@ function Game() {
           dmgToPlayer: admin.dmgToPlayer,
         });
         play.setEnemyMults(admin.enemyHpMul, admin.enemyDmgMul);
+        play.setZones(zones);
       }
     }
   };
@@ -364,6 +389,55 @@ function Game() {
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) importAdminJson(f); e.target.value = ""; }}
               />
             </div>
+            <div className="mb-2 mt-3 border-t border-white/10 pt-2 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+              Зоны (цели)
+            </div>
+            {zones.map((z, i) => (
+              <div key={z.id} className="mb-2 rounded border border-white/10 bg-white/[0.02] p-2">
+                <div className="mb-1 flex items-center gap-1.5">
+                  <input
+                    value={z.name}
+                    onChange={(e) => {
+                      const next = zones.slice();
+                      next[i] = { ...next[i], name: e.target.value };
+                      applyZones(next);
+                    }}
+                    className="flex-1 rounded border border-white/10 bg-black/40 px-1.5 py-0.5 text-[11px] text-stone-200 focus:border-amber-500/50 focus:outline-none"
+                  />
+                  <button
+                    onClick={() => applyZones(zones.filter((_, j) => j !== i))}
+                    className="rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-stone-500 hover:border-red-500/40 hover:text-red-300"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {(["x", "z", "r"] as const).map((k) => (
+                    <div key={k}>
+                      <div className="mb-0.5 text-[9px] uppercase text-stone-600">{k}</div>
+                      <input
+                        type="number" step={10}
+                        value={z[k]}
+                        onChange={(e) => {
+                          const v = parseFloat(e.target.value);
+                          if (!Number.isFinite(v)) return;
+                          const next = zones.slice();
+                          next[i] = { ...next[i], [k]: v };
+                          applyZones(next);
+                        }}
+                        className="w-full rounded border border-white/10 bg-black/40 px-1.5 py-0.5 font-mono text-[10px] text-stone-200 focus:border-amber-500/50 focus:outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <button
+              onClick={() => applyZones([...zones, { id: "zone_" + Date.now(), name: `Зона ${zones.length + 1}`, x: 0, z: 0, r: 120 }])}
+              className="mb-2 w-full rounded border border-amber-500/30 bg-amber-500/10 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-300 hover:bg-amber-500/20"
+            >
+              + Добавить зону
+            </button>
             <button
               onClick={() => { setAdmin(ADMIN_DEFAULTS); applyAdmin(ADMIN_DEFAULTS); }}
               className="mt-1 w-full rounded border border-white/10 bg-white/[0.03] py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-400 hover:border-red-500/40 hover:text-red-300"

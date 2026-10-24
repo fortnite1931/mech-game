@@ -413,6 +413,13 @@ export class PlayController {
     this.scenario.enemyHpMul = hpMul;
     this.scenario.enemyDmgMul = dmgMul;
   }
+  /** Текущие зоны карты (для админки). */
+  getZones(): ZoneDef[] { return this.zoneDefs.slice(); }
+  /** Переопределить зоны на лету (админка). */
+  setZones(list: ZoneDef[]) {
+    this.zoneDefs = list.slice();
+    this.zoneSpawned.clear();
+  }
 
   /** Настройки поведений типа объекта — перекрывают MechConfig в превью. */
   setRuntime(rt: { movement: MovementSettings; weapons: WeaponsSettings }) {
