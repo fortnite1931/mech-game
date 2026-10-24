@@ -66,9 +66,9 @@ function Game() {
     engineRef.current = engine;
     engine.init();
     engine.loadDemoScene();
-    // F12 — открыть/закрыть админку прямо поверх игры (без рестарта)
+    // M — открыть/закрыть админку прямо поверх игры (без рестарта)
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "F12") {
+      if (e.code === "KeyM") {
         e.preventDefault();
         setAdminOpen((v) => !v);
       }
@@ -179,7 +179,7 @@ function Game() {
                 <p><b className="text-stone-300">Shift</b> — ускорение · <b className="text-stone-300">Пробел</b> — прыжок/струи</p>
                 <p><b className="text-stone-300">ЛКМ</b> — огонь · <b className="text-stone-300">ПКМ</b> — целиться</p>
                 <p><b className="text-stone-300">F</b> — выйти из меха / вернуться · <b className="text-stone-300">Esc</b> — меню</p>
-                <p className="mt-1 text-stone-500"><b className="text-stone-400">F12</b> — админка баланса (поверх игры)</p>
+                <p className="mt-1 text-stone-500"><b className="text-stone-400">M</b> — админка баланса (кнопка ⚙ внизу справа)</p>
               </div>
             )}
           </div>
@@ -203,7 +203,18 @@ function Game() {
         />
       )}
 
-      {/* Админка (временная): открывается поверх игры по F12, без рестарта */}
+      {/* кнопка-шестерёнка: админка (временная) */}
+      {playing && !adminOpen && (
+        <button
+          onClick={() => setAdminOpen(true)}
+          title="Админка баланса (M)"
+          className="pointer-events-auto absolute bottom-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/55 text-base text-stone-400 backdrop-blur transition-all hover:border-amber-500/50 hover:text-amber-300"
+        >
+          ⚙
+        </button>
+      )}
+
+      {/* Админка (временная): открывается поверх игры по M, без рестарта */}
       {adminOpen && (
         <div className="pointer-events-none absolute inset-0 z-30">
           <div className="pointer-events-auto absolute right-4 top-4 w-[320px] rounded-xl border border-amber-500/20 bg-stone-950/90 p-4 shadow-2xl backdrop-blur">
@@ -219,7 +230,7 @@ function Game() {
               </button>
             </div>
             <div className="mb-2 text-[10px] leading-relaxed text-stone-500">
-              Применяется сразу, игра не останавливается. F12 — открыть/закрыть.
+              Применяется сразу, игра не останавливается. M — открыть/закрыть.
             </div>
             {([
               ["mechSpeed", "Скорость меха ×"],
