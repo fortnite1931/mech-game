@@ -1237,6 +1237,26 @@ export class PlayController {
     this.ownId = objectId;
     this.chassisAsset = assetId;
     this.chassisInfo = CHASSIS[assetId] || CHASSIS.mech_scout;
+    // у импортированных мехов (mech_custom_*) нет записи в CHASSIS:
+    // считаем точку кабины/радиус прямо из модели
+    if (!CHASSIS[assetId]) {
+      const b = new THREE.Box3().setFromObject(group);
+      const sz = b.getSize(new THREE.Vector3());
+      const cx = b.getCenter(new THREE.Vector3());
+      const invRadius = Math.max(0.8, Math.max(sz.x, sz.z) * 0.5);
+      this.chassisInfo = {
+        name: this.chassisInfo.name,
+        cockpit: [
+          (cx.x - b.min.x) * 0.5,
+          Math.max(0.3, sz.y * 0.45),
+          Math.max(0.6, sz.z * 0.35),
+        ] as [number, number, number],
+        radius: invRadius,
+        tonnage: Math.round(sz.x * sz.y * sz.z * 0.35),
+        speedMul: 0.9,
+        turnMul: 0.95,
+      };
+    }
     this.bindMechParts(group);
     this.ejected = false;
     if (this.pilot) this.pilot.visible = false;

@@ -1031,7 +1031,13 @@ export class EditorEngine {
     }, undefined, (err) => console.warn("GLB import error", err));
     const at = this.camera.position.clone().add(this.camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(9));
     at.y = 0;
-    return this.addAsset(id, at) ? id : "";
+    const objectId = this.addAsset(id, at);
+    if (objectId) {
+      // импортированный мех сразу становится мехом игрока (если игрок ещё не назначен)
+      const hasPlayer = Array.from(this.objects.values()).some((o) => o.state.role === 'player' && o.state.assetId.startsWith('mech_'));
+      if (!hasPlayer) this.updateObject(objectId, { role: 'player' }, true);
+    }
+    return objectId;
   }
 
   startPlay(config: MechConfig, scenario: Scenario, cbs: PlayCallbacks, tuning = false): boolean {
