@@ -1,0 +1,1810 @@
+{
+  "meta": {
+    "app": "WASTELAND FORGE",
+    "version": "2.0",
+    "engine": "three.js",
+    "exportedAt": "2026-10-18T16:43:25.166Z"
+  },
+  "types": [
+    {
+      "id": "type_mech",
+      "name": "Мех (базовый)",
+      "category": "mech",
+      "role": "neutral",
+      "desc": "Общие настройки для всех шасси. Наследники переопределяют нужные поля.",
+      "props": {
+        "chassis": "mech_scout",
+        "tonnage": 35
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 34,
+            "accel": 0.6,
+            "turnSpeed": 70,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 300,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_player",
+      "name": "Мех игрока",
+      "category": "mech",
+      "role": "player",
+      "assetId": "mech_scout",
+      "desc": "Машина под управлением пилота в превью.",
+      "props": {
+        "chassis": "mech_scout",
+        "tonnage": 35
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 7,
+            "accel": 0.6,
+            "turnSpeed": 91,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 35,
+            "gravity": 34,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 300,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": true,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_mech_scout",
+      "name": "«Ястреб» — разведчик",
+      "category": "mech",
+      "role": "enemy",
+      "assetId": "mech_scout",
+      "desc": "Лёгкий быстрый враг.",
+      "props": {
+        "chassis": "mech_scout",
+        "tonnage": 35
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 43,
+            "accel": 0.6,
+            "turnSpeed": 91,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 300,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_mech_juggernaut",
+      "name": "«Титан» — тяжёлый",
+      "category": "mech",
+      "role": "enemy",
+      "assetId": "mech_juggernaut",
+      "desc": "Тяжёлый штурмовой враг.",
+      "props": {
+        "chassis": "mech_juggernaut",
+        "tonnage": 95
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 24,
+            "accel": 0.6,
+            "turnSpeed": 49,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 814,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_mech_molot",
+      "name": "«Молот» — штурмовик",
+      "category": "mech",
+      "role": "enemy",
+      "assetId": "mech_molot",
+      "desc": "Средний боевой враг.",
+      "props": {
+        "chassis": "mech_molot",
+        "tonnage": 60
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 34,
+            "accel": 0.6,
+            "turnSpeed": 70,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 514,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_reserve_mech",
+      "name": "Резервный мех",
+      "category": "mech",
+      "role": "reserve",
+      "assetId": "mech_juggernaut",
+      "desc": "Стоит в сцене точкой появления: пилот может пересесть.",
+      "props": {
+        "chassis": "mech_juggernaut",
+        "tonnage": 95
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 24,
+            "accel": 0.6,
+            "turnSpeed": 49,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 814,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_pilot",
+      "name": "Пилот",
+      "category": "pilot",
+      "role": "neutral",
+      "desc": "Персонаж вне меха. Выходит из машины и может сесть в любой резерв.",
+      "props": {},
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 14,
+            "accel": 0.9,
+            "turnSpeed": 180,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": false,
+            "jetThrust": 5,
+            "gravity": 5,
+            "jetRefill": 1
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 100,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": false,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "light",
+            "stepOver": true,
+            "kick": 0.1,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 60,
+            "contents": "none",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_turret",
+      "name": "Турель «Шершень»",
+      "category": "turret",
+      "role": "enemy",
+      "assetId": "turret",
+      "desc": "Стационарная турель, ведёт огонь по пилоту.",
+      "props": {},
+      "behaviors": [
+        {
+          "id": "ai_turret",
+          "enabled": true,
+          "settings": {
+            "range": 90,
+            "damage": 8,
+            "fireInterval": 1.2,
+            "turnSpeed": 2.5,
+            "aimTolerance": 0.12,
+            "idleScan": 0.3
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 120,
+            "contents": "none",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        },
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "heavy",
+            "stepOver": false,
+            "kick": 0.35,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_barrel_fuel",
+      "name": "Бочка с топливом",
+      "category": "prop",
+      "role": "neutral",
+      "assetId": "barrel",
+      "desc": "Детонирует по цепочке.",
+      "props": {
+        "contents": "fuel"
+      },
+      "behaviors": [
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "medium",
+            "stepOver": true,
+            "kick": 0.35,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 20,
+            "contents": "fuel",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_barrel_tox",
+      "name": "Бочка токсичная",
+      "category": "prop",
+      "role": "neutral",
+      "assetId": "barrel_tox",
+      "props": {
+        "contents": "tox"
+      },
+      "behaviors": [
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "medium",
+            "stepOver": true,
+            "kick": 0.35,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 20,
+            "contents": "tox",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        }
+      ]
+    }
+  ],
+  "sheets": [
+    {
+      "id": "sheet_pilot",
+      "name": "Пилот",
+      "comment": "Персонаж, который вышел из меха. Базовая логика: посадка в резерв, урон, движение.",
+      "rows": [
+        {
+          "id": "row_mve1ez0y1j",
+          "event": "on_spawn",
+          "comment": "Старт без машины — пилот оказался на земле",
+          "then": [
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 0
+              }
+            },
+            {
+              "action": "walk_to",
+              "params": {
+                "speed": 4
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Пилот покинул машину"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1k",
+          "event": "on_key",
+          "comment": "E рядом с резервом — садится в машину",
+          "condition": {
+            "condition": "nearest_type",
+            "params": {
+              "target": "reserve",
+              "maxDistance": 4
+            }
+          },
+          "then": [
+            {
+              "action": "board",
+              "params": {
+                "target": "nearest_reserve"
+              }
+            },
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 1
+              }
+            }
+          ],
+          "else": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Рядом нет доступного меха"
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1l",
+          "event": "on_collision",
+          "comment": "Врезался в резервный мех — можно сесть",
+          "condition": {
+            "condition": "nearest_type",
+            "params": {
+              "target": "reserve",
+              "maxDistance": 6
+            }
+          },
+          "then": [
+            {
+              "action": "board",
+              "params": {
+                "target": "self"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1m",
+          "event": "on_update",
+          "comment": "Идёт к цели, пока пилот не в машине",
+          "condition": {
+            "condition": "is_pilot",
+            "params": {
+              "value": false
+            }
+          },
+          "then": [
+            {
+              "action": "walk_to",
+              "params": {
+                "speed": 4
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1n",
+          "event": "on_damaged",
+          "comment": "Ранение: не спамим чаще раза в 2 секунды",
+          "condition": {
+            "condition": "cooldown",
+            "params": {
+              "interval": 2
+            }
+          },
+          "then": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Пилот ранен"
+              }
+            },
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "sparks",
+                "scale": 0.6
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1o",
+          "event": "on_destroyed",
+          "comment": "Пилот погиб — поражение",
+          "then": [
+            {
+              "action": "end_game",
+              "params": {
+                "result": "lost"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_player_mech",
+      "name": "Мех игрока",
+      "comment": "Машина под управлением игрока: высадка пилота, перегрев, гибель.",
+      "rows": [
+        {
+          "id": "row_mve1ez0y1p",
+          "event": "on_spawn",
+          "comment": "Игра начинается в кабине",
+          "then": [
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 1
+              }
+            },
+            {
+              "action": "set_camera",
+              "params": {
+                "view": "third"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1q",
+          "event": "on_key",
+          "comment": "F — выйти из машины пешком",
+          "condition": {
+            "condition": "is_pilot",
+            "params": {
+              "value": true
+            }
+          },
+          "then": [
+            {
+              "action": "spawn_pilot",
+              "params": {
+                "offset": 3
+              }
+            },
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 0
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1r",
+          "event": "on_overheat",
+          "comment": "Аварийное отключение на 3.5 секунды",
+          "then": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Перегрев реактора"
+              }
+            },
+            {
+              "action": "wait",
+              "params": {
+                "seconds": 3.5
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1s",
+          "event": "on_damaged",
+          "comment": "Попадание: искры и звук",
+          "then": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "sparks",
+                "scale": 1
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "hit"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1t",
+          "event": "on_destroyed",
+          "comment": "Мех уничтожен — поражение",
+          "then": [
+            {
+              "action": "end_game",
+              "params": {
+                "result": "lost"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_reserve",
+      "name": "Резервы",
+      "comment": "Точки появления запасных машин: пилот сел — машина спит, пилот вышел — машина снова охраняет.",
+      "rows": [
+        {
+          "id": "row_mve1ez0y1u",
+          "event": "on_spawn",
+          "comment": "Без пилота резерв охраняет район",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "patrol"
+              }
+            },
+            {
+              "action": "enable_behavior",
+              "params": {
+                "behavior": "ai_mech",
+                "enabled": true
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1v",
+          "event": "on_pilot_enter",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "idle"
+              }
+            },
+            {
+              "action": "enable_behavior",
+              "params": {
+                "behavior": "ai_mech",
+                "enabled": false
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Пилот занял резервный мех"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0y1w",
+          "event": "on_pilot_exit",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "patrol"
+              }
+            },
+            {
+              "action": "enable_behavior",
+              "params": {
+                "behavior": "ai_mech",
+                "enabled": true
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Резервный мех остался без пилота"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_enemies",
+      "name": "Враги",
+      "comment": "Поведение боевых машин и турелей: патруль → преследование → атака.",
+      "rows": [
+        {
+          "id": "row_mve1ez0z1x",
+          "event": "on_spawn",
+          "comment": "Враг появляется в режиме патруля",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "patrol"
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "step"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z1y",
+          "event": "on_update",
+          "comment": "Пилот ближе радиуса — преследовать",
+          "condition": {
+            "condition": "cooldown",
+            "params": {
+              "interval": 0.2
+            }
+          },
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "chase"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z1z",
+          "event": "on_update",
+          "comment": "Вошли в дистанцию боя — атака",
+          "condition": {
+            "condition": "distance",
+            "params": {
+              "target": "player",
+              "op": "<",
+              "value": 45
+            }
+          },
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "attack"
+              }
+            },
+            {
+              "action": "move_towards",
+              "params": {
+                "target": "player",
+                "speed": 4
+              }
+            },
+            {
+              "action": "turn_to",
+              "params": {
+                "target": "player"
+              }
+            },
+            {
+              "action": "fire",
+              "params": {
+                "slot": "1"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z20",
+          "event": "on_damaged",
+          "then": [
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "hit"
+              }
+            },
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "sparks",
+                "scale": 0.8
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z21",
+          "event": "on_destroyed",
+          "comment": "Учёт убийства и взрыв",
+          "then": [
+            {
+              "action": "add_variable",
+              "params": {
+                "name": "kills",
+                "delta": 1
+              }
+            },
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "explosion",
+                "scale": 2
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "explosion"
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Враг уничтожен"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_waves",
+      "name": "Волны",
+      "comment": "Сценарий боя: волны врагов, победа и поражение.",
+      "rows": [
+        {
+          "id": "row_mve1ez0z22",
+          "event": "on_spawn",
+          "comment": "Первая волна через 5 секунд",
+          "then": [
+            {
+              "action": "start_wave",
+              "params": {
+                "index": "0",
+                "delay": 5
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z23",
+          "event": "on_enemy_killed",
+          "comment": "Врагов не осталось — следующая волна",
+          "condition": {
+            "condition": "has_enemies",
+            "params": {
+              "target": "enemy"
+            }
+          },
+          "then": [
+            {
+              "action": "start_wave",
+              "params": {
+                "index": "next",
+                "delay": 8
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z24",
+          "event": "on_wave_started",
+          "comment": "Волны кончились — победа",
+          "condition": {
+            "condition": "var_compare",
+            "params": {
+              "name": "wave",
+              "op": ">",
+              "value": 3
+            }
+          },
+          "then": [
+            {
+              "action": "end_game",
+              "params": {
+                "result": "won"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z25",
+          "event": "on_wave_started",
+          "condition": {
+            "condition": "var_compare",
+            "params": {
+              "name": "wave",
+              "op": "<=",
+              "value": 3
+            }
+          },
+          "then": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Началась волна"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_props",
+      "name": "Пропы и бочки",
+      "comment": "Разрушаемые объекты: смятие, цепные взрывы топлива и токсичных бочек.",
+      "rows": [
+        {
+          "id": "row_mve1ez0z26",
+          "event": "on_damaged",
+          "comment": "Проп повреждён — пыль",
+          "then": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "dust",
+                "scale": 0.7
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z27",
+          "event": "on_destroyed",
+          "comment": "Пустая бочка или мусор просто сминаются",
+          "condition": {
+            "condition": "var_compare",
+            "params": {
+              "name": "contents",
+              "op": "=",
+              "value": 0
+            }
+          },
+          "then": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "dust",
+                "scale": 1.4
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Пустой проп смят"
+              }
+            }
+          ],
+          "else": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "explosion",
+                "scale": 1.2
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "explosion"
+              }
+            },
+            {
+              "action": "damage",
+              "params": {
+                "target": "nearby",
+                "amount": 45
+              }
+            },
+            {
+              "action": "shake_camera",
+              "params": {
+                "amount": 0.4
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Цепной взрыв!"
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_world",
+      "name": "Мир",
+      "comment": "Фоновые вещи мира: подгрузка чанков и атмосфера.",
+      "rows": [
+        {
+          "id": "row_mve1ez0z28",
+          "event": "on_timer",
+          "comment": "Мир достраивается порциями по мере движения",
+          "then": [
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "chunk",
+                "value": 0,
+                "delta": 1
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mve1ez0z29",
+          "event": "on_spawn",
+          "comment": "Фоновая атмосфера: редкий гул реактора",
+          "then": [
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "overheat"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    }
+  ],
+  "globals": [
+    {
+      "id": "var_wave",
+      "name": "Номер волны",
+      "kind": "number",
+      "def": 0
+    },
+    {
+      "id": "var_enemies_left",
+      "name": "Врагов осталось",
+      "kind": "number",
+      "def": 0
+    },
+    {
+      "id": "var_waves_total",
+      "name": "Волн всего",
+      "kind": "number",
+      "def": 3
+    },
+    {
+      "id": "var_pilot_mech",
+      "name": "Мех пилота",
+      "kind": "string",
+      "def": ""
+    }
+  ],
+  "scene": [],
+  "sounds": [],
+  "environment": {
+    "fogDensity": 0.016,
+    "dust": 0.7,
+    "sunIntensity": 2.4,
+    "sunAngle": 35,
+    "exposure": 1.05,
+    "skyColor": "#c97a2e",
+    "groundTint": "#bfae98",
+    "grid": true,
+    "showCollisions": false,
+    "snap": true,
+    "snapSize": 0.5,
+    "timePreset": "dust-storm",
+    "soundBindings": [
+      {
+        "eventId": "step",
+        "soundId": "_____1792341346706",
+        "volume": 1,
+        "spatial": false,
+        "rate": 1.95,
+        "fadeOut": 0.45
+      }
+    ],
+    "fx": {
+      "dust": true,
+      "fog": true,
+      "sky": true,
+      "sun": true,
+      "shadows": true,
+      "postfx": true,
+      "ground": true
+    }
+  },
+  "world": {
+    "seed": 1337,
+    "chunkSize": 24,
+    "propDensity": 1,
+    "oasisChance": 0.02,
+    "worldRadius": 4,
+    "randomSpawn": false,
+    "enabled": true
+  },
+  "player": {
+    "chassis": "mech_scout",
+    "playerObjectId": "auto",
+    "defaultView": "third",
+    "defaultVision": "normal",
+    "cockpit": {
+      "fov": 78,
+      "height": 0,
+      "forward": 0,
+      "frameOpacity": 0.9,
+      "scanlines": true,
+      "sway": 0.6,
+      "pitchLimit": 45
+    },
+    "third": {
+      "distance": 11,
+      "height": 3.4,
+      "fov": 55,
+      "smoothing": 7,
+      "autoFollow": true
+    },
+    "shoulder": {
+      "distance": 5.5,
+      "height": 4,
+      "side": 1.9,
+      "fov": 50
+    },
+    "tactical": {
+      "distance": 26,
+      "pitch": 52,
+      "fov": 42,
+      "autoFollow": false
+    },
+    "hudColor": "#7cf5b0",
+    "sensitivity": 1,
+    "invertY": false,
+    "cameraNeedsMMB": true,
+    "weapons": [
+      "autocannon",
+      "laser",
+      "missiles",
+      "mg"
+    ],
+    "maxSpeed": 34,
+    "turnSpeed": 70,
+    "torsoTwist": 110,
+    "accel": 0.6,
+    "jumpJets": true,
+    "sfx": true
+  },
+  "scenario": {
+    "playerHp": 2000,
+    "enemyHpMul": 1,
+    "enemyDmgMul": 1,
+    "waves": [
+      {
+        "name": "Разведка",
+        "count": 3,
+        "kinds": [
+          "turret",
+          "mech_scout"
+        ],
+        "delaySec": 5,
+        "radius": 70
+      },
+      {
+        "name": "Тяжёлые",
+        "count": 4,
+        "kinds": [
+          "mech_molot",
+          "mech_scout",
+          "turret"
+        ],
+        "delaySec": 8,
+        "radius": 75
+      },
+      {
+        "name": "Титан",
+        "count": 2,
+        "kinds": [
+          "mech_juggernaut",
+          "mech_molot"
+        ],
+        "delaySec": 10,
+        "radius": 80
+      }
+    ]
+  },
+  "objects": []
+}

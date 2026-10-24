@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: #0c0a08;
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+::selection { background: rgba(255, 154, 60, 0.35); }
+
+/* scrollbars */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: #12100c; }
+::-webkit-scrollbar-thumb { background: #3a2f24; border-radius: 6px; border: 2px solid #12100c; }
+::-webkit-scrollbar-thumb:hover { background: #6a5230; }
+
+/* range slider */
+.wf-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(to right, rgba(255,154,60,0.7) 0%, rgba(255,154,60,0.7) var(--fill, 50%), rgba(255,255,255,0.1) var(--fill, 50%), rgba(255,255,255,0.1) 100%);
+  background: rgba(255, 255, 255, 0.09);
+  outline: none;
+  cursor: pointer;
+}
+.wf-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 13px;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #ffc06a, #e08a2e);
+  border: 1px solid rgba(0,0,0,0.6);
+  box-shadow: 0 0 8px rgba(255,154,60,0.5);
+  cursor: ew-resize;
+}
+.wf-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.wf-slider::-moz-range-thumb {
+  width: 13px; height: 13px; border-radius: 3px;
+  background: linear-gradient(to bottom, #ffc06a, #e08a2e);
+  border: 1px solid rgba(0,0,0,0.6);
+  cursor: ew-resize;
+}
+
+input[type="number"]::-webkit-inner-spin-button { opacity: 0.4; }
+
+/* dock tab strip: horizontal scroll without visible scrollbar */
+.wf-tabs { scrollbar-width: thin; -ms-overflow-style: auto; }
+.wf-tabs::-webkit-scrollbar { display: block; width: 6px; height: 6px; }
+.wf-tabs::-webkit-scrollbar-thumb { background: #6a5230; border-radius: 3px; }
+.wf-tabs > button { flex-shrink: 0; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+canvas { display: block; }

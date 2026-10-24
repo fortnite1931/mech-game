@@ -1,0 +1,3259 @@
+{
+  "meta": {
+    "app": "WASTELAND FORGE",
+    "version": "2.0",
+    "engine": "three.js",
+    "exportedAt": "2026-10-19T09:14:12.290Z"
+  },
+  "types": [
+    {
+      "id": "type_mech",
+      "name": "Мех (базовый)",
+      "category": "mech",
+      "role": "neutral",
+      "desc": "Общие настройки для всех шасси. Наследники переопределяют нужные поля.",
+      "props": {
+        "chassis": "mech_scout",
+        "tonnage": 35
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 34,
+            "accel": 0.6,
+            "turnSpeed": 70,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 300,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_player",
+      "name": "Мех игрока",
+      "category": "mech",
+      "role": "player",
+      "assetId": "mech_scout",
+      "desc": "Машина под управлением пилота в превью.",
+      "props": {
+        "chassis": "mech_scout",
+        "tonnage": 35
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 12,
+            "accel": 0.6,
+            "turnSpeed": 91,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 300,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": true,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_mech_scout",
+      "name": "«Ястреб» — разведчик",
+      "category": "mech",
+      "role": "enemy",
+      "assetId": "mech_scout",
+      "desc": "Лёгкий быстрый враг.",
+      "props": {
+        "chassis": "mech_scout",
+        "tonnage": 35
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 43,
+            "accel": 0.6,
+            "turnSpeed": 91,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 300,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_mech_juggernaut",
+      "name": "«Титан» — тяжёлый",
+      "category": "mech",
+      "role": "enemy",
+      "assetId": "mech_juggernaut",
+      "desc": "Тяжёлый штурмовой враг.",
+      "props": {
+        "chassis": "mech_juggernaut",
+        "tonnage": 95
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 24,
+            "accel": 0.6,
+            "turnSpeed": 49,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 814,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_mech_molot",
+      "name": "«Молот» — штурмовик",
+      "category": "mech",
+      "role": "enemy",
+      "assetId": "mech_molot",
+      "desc": "Средний боевой враг.",
+      "props": {
+        "chassis": "mech_molot",
+        "tonnage": 60
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 34,
+            "accel": 0.6,
+            "turnSpeed": 70,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 514,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_reserve_mech",
+      "name": "Резервный мех",
+      "category": "mech",
+      "role": "reserve",
+      "assetId": "mech_juggernaut",
+      "desc": "Стоит в сцене точкой появления: пилот может пересесть.",
+      "props": {
+        "chassis": "mech_juggernaut",
+        "tonnage": 95
+      },
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 24,
+            "accel": 0.6,
+            "turnSpeed": 49,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": true,
+            "jetThrust": 30,
+            "gravity": 22,
+            "jetRefill": 15
+          }
+        },
+        {
+          "id": "weapons",
+          "enabled": true,
+          "settings": {
+            "slot1": "autocannon",
+            "slot2": "laser",
+            "slot3": "missiles",
+            "slot4": "mg",
+            "rateMul": 1,
+            "salvoMul": 1,
+            "spreadMul": 1,
+            "heatMul": 1,
+            "overheatCooldown": 22,
+            "rangeMul": 1
+          }
+        },
+        {
+          "id": "camera",
+          "enabled": true,
+          "settings": {
+            "defaultView": "third",
+            "sensitivity": 1,
+            "invertY": false,
+            "cameraNeedsMMB": true,
+            "cockpitFov": 78,
+            "cockpitHeight": 0,
+            "cockpitForward": 0,
+            "cockpitSway": 0.6,
+            "pitchLimit": 45,
+            "thirdDistance": 11,
+            "thirdHeight": 3.4,
+            "thirdFov": 55,
+            "thirdSmoothing": 7,
+            "thirdAutoFollow": true,
+            "shoulderDistance": 5.5,
+            "shoulderHeight": 4,
+            "shoulderSide": 1.9,
+            "shoulderFov": 50,
+            "tacticalDistance": 26,
+            "tacticalPitch": 52,
+            "tacticalFov": 42,
+            "tacticalAutoFollow": false
+          }
+        },
+        {
+          "id": "cockpit",
+          "enabled": true,
+          "settings": {
+            "hudColor": "#7cf5b0",
+            "frameOpacity": 0.9,
+            "scanlines": true,
+            "showRadar": true,
+            "showWeapons": true,
+            "showDamage": true
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 814,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": true,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "ai_mech",
+          "enabled": true,
+          "settings": {
+            "aggroRadius": 70,
+            "attackRange": 45,
+            "speed": 5,
+            "patrolSpeed": 0.35,
+            "patrolRadius": 9,
+            "turnSpeed": 3,
+            "strafeAmount": 0.5,
+            "aimError": 0.035,
+            "burstDelay": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_pilot",
+      "name": "Пилот",
+      "category": "pilot",
+      "role": "neutral",
+      "desc": "Персонаж вне меха. Выходит из машины и может сесть в любой резерв.",
+      "props": {},
+      "behaviors": [
+        {
+          "id": "movement",
+          "enabled": true,
+          "settings": {
+            "maxSpeed": 14,
+            "accel": 0.9,
+            "turnSpeed": 180,
+            "torsoTwist": 110,
+            "brakeFactor": 0.6,
+            "jumpJets": false,
+            "jetThrust": 5,
+            "gravity": 5,
+            "jetRefill": 1
+          }
+        },
+        {
+          "id": "survivability",
+          "enabled": true,
+          "settings": {
+            "maxHp": 100,
+            "damageMul": 1,
+            "invulnTime": 0.15,
+            "destroyOnDeath": true
+          }
+        },
+        {
+          "id": "pilot",
+          "enabled": true,
+          "settings": {
+            "pilotable": false,
+            "playerStart": false,
+            "boardRadius": 4,
+            "allowEject": true,
+            "aiEnabled": false,
+            "pilotName": "Пилот"
+          }
+        },
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "light",
+            "stepOver": true,
+            "kick": 0.1,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 60,
+            "contents": "none",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_turret",
+      "name": "Турель «Шершень»",
+      "category": "turret",
+      "role": "enemy",
+      "assetId": "turret",
+      "desc": "Стационарная турель, ведёт огонь по пилоту.",
+      "props": {},
+      "behaviors": [
+        {
+          "id": "ai_turret",
+          "enabled": true,
+          "settings": {
+            "range": 90,
+            "damage": 8,
+            "fireInterval": 1.2,
+            "turnSpeed": 2.5,
+            "aimTolerance": 0.12,
+            "idleScan": 0.3
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 120,
+            "contents": "none",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        },
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "heavy",
+            "stepOver": false,
+            "kick": 0.35,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_barrel_fuel",
+      "name": "Бочка с топливом",
+      "category": "prop",
+      "role": "neutral",
+      "assetId": "barrel",
+      "desc": "Детонирует по цепочке.",
+      "props": {
+        "contents": "fuel"
+      },
+      "behaviors": [
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "medium",
+            "stepOver": true,
+            "kick": 0.35,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 20,
+            "contents": "fuel",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "type_barrel_tox",
+      "name": "Бочка токсичная",
+      "category": "prop",
+      "role": "neutral",
+      "assetId": "barrel_tox",
+      "props": {
+        "contents": "tox"
+      },
+      "behaviors": [
+        {
+          "id": "prop_physics",
+          "enabled": true,
+          "settings": {
+            "mass": "medium",
+            "stepOver": true,
+            "kick": 0.35,
+            "squashable": false,
+            "rollable": true,
+            "tonnage": 1
+          }
+        },
+        {
+          "id": "destroyable",
+          "enabled": true,
+          "settings": {
+            "hp": 20,
+            "contents": "tox",
+            "blastRadius": 6,
+            "blastDamage": 45,
+            "chain": true,
+            "scorch": true
+          }
+        }
+      ]
+    }
+  ],
+  "sheets": [
+    {
+      "id": "sheet_pilot",
+      "name": "Пилот",
+      "comment": "Персонаж, который вышел из меха. Базовая логика: посадка в резерв, урон, движение.",
+      "rows": [
+        {
+          "id": "row_mvew05jes",
+          "event": "on_spawn",
+          "comment": "Старт без машины — пилот оказался на земле",
+          "then": [
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 0
+              }
+            },
+            {
+              "action": "walk_to",
+              "params": {
+                "speed": 4
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Пилот покинул машину"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05jet",
+          "event": "on_key",
+          "comment": "E рядом с резервом — садится в машину",
+          "condition": {
+            "condition": "nearest_type",
+            "params": {
+              "target": "reserve",
+              "maxDistance": 4
+            }
+          },
+          "then": [
+            {
+              "action": "board",
+              "params": {
+                "target": "nearest_reserve"
+              }
+            },
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 1
+              }
+            }
+          ],
+          "else": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Рядом нет доступного меха"
+              }
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "row_mvew05jeu",
+          "event": "on_collision",
+          "comment": "Врезался в резервный мех — можно сесть",
+          "condition": {
+            "condition": "nearest_type",
+            "params": {
+              "target": "reserve",
+              "maxDistance": 6
+            }
+          },
+          "then": [
+            {
+              "action": "board",
+              "params": {
+                "target": "self"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05jev",
+          "event": "on_update",
+          "comment": "Идёт к цели, пока пилот не в машине",
+          "condition": {
+            "condition": "is_pilot",
+            "params": {
+              "value": false
+            }
+          },
+          "then": [
+            {
+              "action": "walk_to",
+              "params": {
+                "speed": 4
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05jew",
+          "event": "on_damaged",
+          "comment": "Ранение: не спамим чаще раза в 2 секунды",
+          "condition": {
+            "condition": "cooldown",
+            "params": {
+              "interval": 2
+            }
+          },
+          "then": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Пилот ранен"
+              }
+            },
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "sparks",
+                "scale": 0.6
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05jex",
+          "event": "on_destroyed",
+          "comment": "Пилот погиб — поражение",
+          "then": [
+            {
+              "action": "end_game",
+              "params": {
+                "result": "lost"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_player_mech",
+      "name": "Мех игрока",
+      "comment": "Машина под управлением игрока: высадка пилота, перегрев, гибель.",
+      "rows": [
+        {
+          "id": "row_mvew05jey",
+          "event": "on_spawn",
+          "comment": "Игра начинается в кабине",
+          "then": [
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 1
+              }
+            },
+            {
+              "action": "set_camera",
+              "params": {
+                "view": "third"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05jez",
+          "event": "on_key",
+          "comment": "F — выйти из машины пешком",
+          "condition": {
+            "condition": "is_pilot",
+            "params": {
+              "value": true
+            }
+          },
+          "then": [
+            {
+              "action": "spawn_pilot",
+              "params": {
+                "offset": 3
+              }
+            },
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "pilot_mech",
+                "value": 0
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je10",
+          "event": "on_overheat",
+          "comment": "Аварийное отключение на 3.5 секунды",
+          "then": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Перегрев реактора"
+              }
+            },
+            {
+              "action": "wait",
+              "params": {
+                "seconds": 3.5
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je11",
+          "event": "on_damaged",
+          "comment": "Попадание: искры и звук",
+          "then": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "sparks",
+                "scale": 1
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "hit"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je12",
+          "event": "on_destroyed",
+          "comment": "Мех уничтожен — поражение",
+          "then": [
+            {
+              "action": "end_game",
+              "params": {
+                "result": "lost"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_reserve",
+      "name": "Резервы",
+      "comment": "Точки появления запасных машин: пилот сел — машина спит, пилот вышел — машина снова охраняет.",
+      "rows": [
+        {
+          "id": "row_mvew05je13",
+          "event": "on_spawn",
+          "comment": "Без пилота резерв охраняет район",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "patrol"
+              }
+            },
+            {
+              "action": "enable_behavior",
+              "params": {
+                "behavior": "ai_mech",
+                "enabled": true
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je14",
+          "event": "on_pilot_enter",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "idle"
+              }
+            },
+            {
+              "action": "enable_behavior",
+              "params": {
+                "behavior": "ai_mech",
+                "enabled": false
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Пилот занял резервный мех"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je15",
+          "event": "on_pilot_exit",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "patrol"
+              }
+            },
+            {
+              "action": "enable_behavior",
+              "params": {
+                "behavior": "ai_mech",
+                "enabled": true
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Резервный мех остался без пилота"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_enemies",
+      "name": "Враги",
+      "comment": "Поведение боевых машин и турелей: патруль → преследование → атака.",
+      "rows": [
+        {
+          "id": "row_mvew05je16",
+          "event": "on_spawn",
+          "comment": "Враг появляется в режиме патруля",
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "patrol"
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "step"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je17",
+          "event": "on_update",
+          "comment": "Пилот ближе радиуса — преследовать",
+          "condition": {
+            "condition": "cooldown",
+            "params": {
+              "interval": 0.2
+            }
+          },
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "chase"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je18",
+          "event": "on_update",
+          "comment": "Вошли в дистанцию боя — атака",
+          "condition": {
+            "condition": "distance",
+            "params": {
+              "target": "player",
+              "op": "<",
+              "value": 45
+            }
+          },
+          "then": [
+            {
+              "action": "set_state",
+              "params": {
+                "state": "attack"
+              }
+            },
+            {
+              "action": "move_towards",
+              "params": {
+                "target": "player",
+                "speed": 4
+              }
+            },
+            {
+              "action": "turn_to",
+              "params": {
+                "target": "player"
+              }
+            },
+            {
+              "action": "fire",
+              "params": {
+                "slot": "1"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je19",
+          "event": "on_damaged",
+          "then": [
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "hit"
+              }
+            },
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "sparks",
+                "scale": 0.8
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je1a",
+          "event": "on_destroyed",
+          "comment": "Учёт убийства и взрыв",
+          "then": [
+            {
+              "action": "add_variable",
+              "params": {
+                "name": "kills",
+                "delta": 1
+              }
+            },
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "explosion",
+                "scale": 2
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "explosion"
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Враг уничтожен"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_waves",
+      "name": "Волны",
+      "comment": "Сценарий боя: волны врагов, победа и поражение.",
+      "rows": [
+        {
+          "id": "row_mvew05je1b",
+          "event": "on_spawn",
+          "comment": "Первая волна через 5 секунд",
+          "then": [
+            {
+              "action": "start_wave",
+              "params": {
+                "index": "0",
+                "delay": 5
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je1c",
+          "event": "on_enemy_killed",
+          "comment": "Врагов не осталось — следующая волна",
+          "condition": {
+            "condition": "has_enemies",
+            "params": {
+              "target": "enemy"
+            }
+          },
+          "then": [
+            {
+              "action": "start_wave",
+              "params": {
+                "index": "next",
+                "delay": 8
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je1d",
+          "event": "on_wave_started",
+          "comment": "Волны кончились — победа",
+          "condition": {
+            "condition": "var_compare",
+            "params": {
+              "name": "wave",
+              "op": ">",
+              "value": 3
+            }
+          },
+          "then": [
+            {
+              "action": "end_game",
+              "params": {
+                "result": "won"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je1e",
+          "event": "on_wave_started",
+          "condition": {
+            "condition": "var_compare",
+            "params": {
+              "name": "wave",
+              "op": "<=",
+              "value": 3
+            }
+          },
+          "then": [
+            {
+              "action": "log",
+              "params": {
+                "text": "Началась волна"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_props",
+      "name": "Пропы и бочки",
+      "comment": "Разрушаемые объекты: смятие, цепные взрывы топлива и токсичных бочек.",
+      "rows": [
+        {
+          "id": "row_mvew05je1f",
+          "event": "on_damaged",
+          "comment": "Проп повреждён — пыль",
+          "then": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "dust",
+                "scale": 0.7
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je1g",
+          "event": "on_destroyed",
+          "comment": "Пустая бочка или мусор просто сминаются",
+          "condition": {
+            "condition": "var_compare",
+            "params": {
+              "name": "contents",
+              "op": "=",
+              "value": 0
+            }
+          },
+          "then": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "dust",
+                "scale": 1.4
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Пустой проп смят"
+              }
+            }
+          ],
+          "else": [
+            {
+              "action": "spawn_fx",
+              "params": {
+                "effect": "explosion",
+                "scale": 1.2
+              }
+            },
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "explosion"
+              }
+            },
+            {
+              "action": "damage",
+              "params": {
+                "target": "nearby",
+                "amount": 45
+              }
+            },
+            {
+              "action": "shake_camera",
+              "params": {
+                "amount": 0.4
+              }
+            },
+            {
+              "action": "log",
+              "params": {
+                "text": "Цепной взрыв!"
+              }
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "sheet_world",
+      "name": "Мир",
+      "comment": "Фоновые вещи мира: подгрузка чанков и атмосфера.",
+      "rows": [
+        {
+          "id": "row_mvew05je1h",
+          "event": "on_timer",
+          "comment": "Мир достраивается порциями по мере движения",
+          "then": [
+            {
+              "action": "set_variable",
+              "params": {
+                "name": "chunk",
+                "value": 0,
+                "delta": 1
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        },
+        {
+          "id": "row_mvew05je1i",
+          "event": "on_spawn",
+          "comment": "Фоновая атмосфера: редкий гул реактора",
+          "then": [
+            {
+              "action": "play_sound",
+              "params": {
+                "event": "overheat"
+              }
+            }
+          ],
+          "else": [],
+          "children": []
+        }
+      ]
+    }
+  ],
+  "globals": [
+    {
+      "id": "var_wave",
+      "name": "Номер волны",
+      "kind": "number",
+      "def": 0
+    },
+    {
+      "id": "var_enemies_left",
+      "name": "Врагов осталось",
+      "kind": "number",
+      "def": 0
+    },
+    {
+      "id": "var_waves_total",
+      "name": "Волн всего",
+      "kind": "number",
+      "def": 3
+    },
+    {
+      "id": "var_pilot_mech",
+      "name": "Мех пилота",
+      "kind": "string",
+      "def": ""
+    }
+  ],
+  "scene": [
+    {
+      "id": "obj_29_66w",
+      "typeId": "type_player",
+      "role": "player",
+      "name": "«Ястреб» — разведчик"
+    },
+    {
+      "id": "obj_30_5n2",
+      "typeId": "type_mech_juggernaut",
+      "role": "enemy",
+      "name": "«Титан» (враг)"
+    },
+    {
+      "id": "obj_31_35q",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Модуль аванпоста"
+    },
+    {
+      "id": "obj_32_548",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Стена бункера"
+    },
+    {
+      "id": "obj_33_6cw",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Стена бункера"
+    },
+    {
+      "id": "obj_34_2du",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Мешки с песком"
+    },
+    {
+      "id": "obj_35_yd",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Группа бочек"
+    },
+    {
+      "id": "obj_36_20k",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Бочка ржавая"
+    },
+    {
+      "id": "obj_37_1g9",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Бочка токсичная"
+    },
+    {
+      "id": "obj_38_4x1",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Контейнер ржавый"
+    },
+    {
+      "id": "obj_39_79b",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Рельсы — сегмент"
+    },
+    {
+      "id": "obj_40_2rq",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Балка гнутая"
+    },
+    {
+      "id": "obj_41_202",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Куча металлолома"
+    },
+    {
+      "id": "obj_42_7oz",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Бетонный блок"
+    },
+    {
+      "id": "obj_43_5qr",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Блок разрушенный"
+    },
+    {
+      "id": "obj_44_40t",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Плита полуразрушенная"
+    },
+    {
+      "id": "obj_45_4l2",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Сторожевая вышка"
+    },
+    {
+      "id": "obj_46_42s",
+      "typeId": "type_turret",
+      "role": "enemy",
+      "name": "Турель «Шершень» (враг)"
+    },
+    {
+      "id": "obj_47_476",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Генератор"
+    },
+    {
+      "id": "obj_48_4sf",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Антенна-мачта"
+    },
+    {
+      "id": "obj_49_3u4",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Фонарь ржавый"
+    },
+    {
+      "id": "obj_50_73b",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Купол теплицы"
+    },
+    {
+      "id": "obj_51_6he",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "КПП со шлагбаумом"
+    },
+    {
+      "id": "obj_52_5tv",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Остов машины"
+    },
+    {
+      "id": "obj_53_56s",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Скалы"
+    },
+    {
+      "id": "obj_54_4vm",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Сухое дерево"
+    },
+    {
+      "id": "obj_55_kk",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Покрышки"
+    },
+    {
+      "id": "obj_56_2z0",
+      "typeId": "type_barrel_fuel",
+      "role": "neutral",
+      "name": "Ящик разбитый"
+    }
+  ],
+  "sounds": [
+    {
+      "id": "_____1792391818333",
+      "name": "ноги.mp3",
+      "mime": "audio/mpeg",
+      "data": "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",
+      "duration": 2.8700680272108845
+    }
+  ],
+  "environment": {
+    "fogDensity": 0.032,
+    "dust": 0.1,
+    "sunIntensity": 2.4,
+    "sunAngle": 35,
+    "exposure": 0.81,
+    "skyColor": "#c97a2e",
+    "groundTint": "#bfae98",
+    "grid": true,
+    "showCollisions": false,
+    "snap": true,
+    "snapSize": 0.5,
+    "timePreset": "dust-storm",
+    "soundBindings": [
+      {
+        "eventId": "step",
+        "soundId": "_____1792391818333",
+        "volume": 1,
+        "spatial": false,
+        "rate": 1.95
+      }
+    ],
+    "fx": {
+      "dust": true,
+      "fog": true,
+      "sky": true,
+      "sun": true,
+      "shadows": true,
+      "postfx": true,
+      "ground": true
+    }
+  },
+  "world": {
+    "seed": 1337,
+    "chunkSize": 24,
+    "propDensity": 1,
+    "oasisChance": 0.2,
+    "worldRadius": 4,
+    "randomSpawn": true,
+    "enabled": true
+  },
+  "player": {
+    "chassis": "mech_scout",
+    "playerObjectId": "auto",
+    "playerStart": "mech",
+    "pilotObjectId": "auto",
+    "spawnMode": "spawn_object",
+    "foot": {
+      "walk": 4.2,
+      "run": 9.5
+    },
+    "vitals": {
+      "health": 100,
+      "stamina": 100,
+      "staminaRegen": 18,
+      "runDrain": 12,
+      "carryKg": 120
+    },
+    "defaultView": "third",
+    "defaultVision": "normal",
+    "cockpit": {
+      "fov": 78,
+      "height": 0,
+      "forward": 0,
+      "frameOpacity": 0.9,
+      "scanlines": true,
+      "sway": 0.6,
+      "pitchLimit": 45
+    },
+    "third": {
+      "distance": 11,
+      "height": 3.4,
+      "fov": 55,
+      "smoothing": 7,
+      "autoFollow": true
+    },
+    "shoulder": {
+      "distance": 5.5,
+      "height": 4,
+      "side": 1.9,
+      "fov": 50
+    },
+    "tactical": {
+      "distance": 26,
+      "pitch": 52,
+      "fov": 42,
+      "autoFollow": false
+    },
+    "hudColor": "#7cf5b0",
+    "sensitivity": 1,
+    "invertY": false,
+    "cameraNeedsMMB": true,
+    "weapons": [
+      "autocannon",
+      "laser",
+      "missiles",
+      "mg"
+    ],
+    "maxSpeed": 10,
+    "turnSpeed": 70,
+    "torsoTwist": 110,
+    "accel": 0.6,
+    "jumpJets": true,
+    "sfx": true,
+    "loot": {
+      "enabled": true,
+      "autoPickup": true,
+      "rarityBoost": 0
+    }
+  },
+  "scenario": {
+    "playerHp": 2000,
+    "enemyHpMul": 1,
+    "enemyDmgMul": 1,
+    "npc": {
+      "enabled": true,
+      "patrolRadius": 14,
+      "patrolSpeed": 0.4,
+      "waypoints": 4,
+      "pauseSec": 2.5,
+      "aggro": 42,
+      "alertSec": 0.8,
+      "leash": 60,
+      "returnHome": true
+    },
+    "loot": [
+      {
+        "id": "junk",
+        "name": "Хлам (ящики, мусор)",
+        "from": [
+          "crate",
+          "tires",
+          "car_wreck",
+          "scrap",
+          "bricks"
+        ],
+        "entries": [
+          {
+            "item": "scrap",
+            "min": 1,
+            "max": 3,
+            "chance": 0.9
+          },
+          {
+            "item": "plate",
+            "min": 1,
+            "max": 1,
+            "chance": 0.25
+          },
+          {
+            "item": "ammo_shells",
+            "min": 1,
+            "max": 2,
+            "chance": 0.2
+          }
+        ]
+      },
+      {
+        "id": "industrial",
+        "name": "Промышленный (бочки, контейнеры)",
+        "from": [
+          "barrel",
+          "barrel_group",
+          "barrel_toxic",
+          "container",
+          "girder",
+          "rails"
+        ],
+        "entries": [
+          {
+            "item": "scrap",
+            "min": 2,
+            "max": 5,
+            "chance": 0.95
+          },
+          {
+            "item": "plate",
+            "min": 1,
+            "max": 2,
+            "chance": 0.45
+          },
+          {
+            "item": "gear",
+            "min": 1,
+            "max": 1,
+            "chance": 0.22
+          },
+          {
+            "item": "medkit",
+            "min": 1,
+            "max": 1,
+            "chance": 0.12
+          }
+        ]
+      },
+      {
+        "id": "military",
+        "name": "Военный (турели, техника)",
+        "from": [
+          "turret",
+          "watchtower",
+          "outpost",
+          "generator"
+        ],
+        "entries": [
+          {
+            "item": "ammo_shells",
+            "min": 2,
+            "max": 6,
+            "chance": 0.8
+          },
+          {
+            "item": "plate",
+            "min": 1,
+            "max": 2,
+            "chance": 0.5
+          },
+          {
+            "item": "hydraulic",
+            "min": 1,
+            "max": 1,
+            "chance": 0.3
+          },
+          {
+            "item": "fuel_cell",
+            "min": 1,
+            "max": 1,
+            "chance": 0.25
+          },
+          {
+            "item": "medkit",
+            "min": 1,
+            "max": 1,
+            "chance": 0.3
+          }
+        ]
+      },
+      {
+        "id": "rare",
+        "name": "Редкий (лаборатории, купол)",
+        "from": [
+          "dome",
+          "antenna",
+          "checkpoint",
+          "bunker_wall"
+        ],
+        "entries": [
+          {
+            "item": "raremetal",
+            "min": 1,
+            "max": 2,
+            "chance": 0.35
+          },
+          {
+            "item": "reactor",
+            "min": 1,
+            "max": 1,
+            "chance": 0.18
+          },
+          {
+            "item": "cockpit_core",
+            "min": 1,
+            "max": 1,
+            "chance": 0.15
+          },
+          {
+            "item": "fuel_cell",
+            "min": 1,
+            "max": 2,
+            "chance": 0.3
+          }
+        ]
+      },
+      {
+        "id": "salvage_scout",
+        "name": "Разбор: «Ястреб»",
+        "salvage": true,
+        "from": [
+          "mech_scout"
+        ],
+        "entries": [
+          {
+            "item": "scrap",
+            "min": 6,
+            "max": 10,
+            "chance": 1
+          },
+          {
+            "item": "plate",
+            "min": 3,
+            "max": 5,
+            "chance": 1
+          },
+          {
+            "item": "gear",
+            "min": 2,
+            "max": 3,
+            "chance": 0.85
+          },
+          {
+            "item": "ammo_shells",
+            "min": 2,
+            "max": 4,
+            "chance": 0.5
+          },
+          {
+            "item": "cockpit_core",
+            "min": 1,
+            "max": 1,
+            "chance": 0.22
+          }
+        ]
+      },
+      {
+        "id": "salvage_molot",
+        "name": "Разбор: «Молот»",
+        "salvage": true,
+        "from": [
+          "mech_molot"
+        ],
+        "entries": [
+          {
+            "item": "scrap",
+            "min": 10,
+            "max": 14,
+            "chance": 1
+          },
+          {
+            "item": "plate",
+            "min": 6,
+            "max": 9,
+            "chance": 1
+          },
+          {
+            "item": "gear",
+            "min": 2,
+            "max": 4,
+            "chance": 0.9
+          },
+          {
+            "item": "hydraulic",
+            "min": 2,
+            "max": 3,
+            "chance": 0.8
+          },
+          {
+            "item": "fuel_cell",
+            "min": 1,
+            "max": 2,
+            "chance": 0.45
+          },
+          {
+            "item": "cockpit_core",
+            "min": 1,
+            "max": 1,
+            "chance": 0.3
+          }
+        ]
+      },
+      {
+        "id": "salvage_titan",
+        "name": "Разбор: «Титан»",
+        "salvage": true,
+        "from": [
+          "mech_juggernaut"
+        ],
+        "entries": [
+          {
+            "item": "scrap",
+            "min": 14,
+            "max": 20,
+            "chance": 1
+          },
+          {
+            "item": "plate",
+            "min": 10,
+            "max": 14,
+            "chance": 1
+          },
+          {
+            "item": "raremetal",
+            "min": 2,
+            "max": 4,
+            "chance": 0.9
+          },
+          {
+            "item": "hydraulic",
+            "min": 3,
+            "max": 5,
+            "chance": 0.85
+          },
+          {
+            "item": "reactor",
+            "min": 1,
+            "max": 1,
+            "chance": 0.55
+          },
+          {
+            "item": "cockpit_core",
+            "min": 1,
+            "max": 1,
+            "chance": 0.4
+          },
+          {
+            "item": "fuel_cell",
+            "min": 2,
+            "max": 3,
+            "chance": 0.6
+          }
+        ]
+      },
+      {
+        "id": "salvage_infantry",
+        "name": "Разбор: пехота",
+        "salvage": true,
+        "from": [
+          "pilot_human",
+          "survivor"
+        ],
+        "entries": [
+          {
+            "item": "scrap",
+            "min": 2,
+            "max": 4,
+            "chance": 0.9
+          },
+          {
+            "item": "plate",
+            "min": 1,
+            "max": 2,
+            "chance": 0.6
+          },
+          {
+            "item": "ammo_shells",
+            "min": 1,
+            "max": 3,
+            "chance": 0.7
+          },
+          {
+            "item": "medkit",
+            "min": 1,
+            "max": 1,
+            "chance": 0.18
+          }
+        ]
+      }
+    ],
+    "craft": [
+      {
+        "id": "craft_scout",
+        "name": "Собрать «Ястреб»",
+        "chassis": "mech_scout",
+        "limit": 0,
+        "desc": "Лёгкий разведчик: лом, броня, редуктор, кабина.",
+        "parts": [
+          {
+            "item": "scrap",
+            "count": 12
+          },
+          {
+            "item": "plate",
+            "count": 6
+          },
+          {
+            "item": "gear",
+            "count": 3
+          },
+          {
+            "item": "cockpit_core",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "id": "craft_molot",
+        "name": "Собрать «Молот»",
+        "chassis": "mech_molot",
+        "limit": 0,
+        "desc": "Штурмовик: больше брони и гидроцилиндров.",
+        "parts": [
+          {
+            "item": "scrap",
+            "count": 20
+          },
+          {
+            "item": "plate",
+            "count": 12
+          },
+          {
+            "item": "gear",
+            "count": 4
+          },
+          {
+            "item": "hydraulic",
+            "count": 3
+          },
+          {
+            "item": "reactor",
+            "count": 1
+          },
+          {
+            "item": "cockpit_core",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "id": "craft_titan",
+        "name": "Собрать «Титан»",
+        "chassis": "mech_juggernaut",
+        "limit": 0,
+        "desc": "Джаггернаут: тяжёлый, нужен редкий металл.",
+        "parts": [
+          {
+            "item": "scrap",
+            "count": 35
+          },
+          {
+            "item": "plate",
+            "count": 20
+          },
+          {
+            "item": "gear",
+            "count": 8
+          },
+          {
+            "item": "hydraulic",
+            "count": 6
+          },
+          {
+            "item": "raremetal",
+            "count": 6
+          },
+          {
+            "item": "reactor",
+            "count": 2
+          },
+          {
+            "item": "cockpit_core",
+            "count": 1
+          },
+          {
+            "item": "fuel_cell",
+            "count": 2
+          }
+        ]
+      }
+    ],
+    "lootSettings": {
+      "enabled": true,
+      "autoPickup": true,
+      "rarityBoost": 0,
+      "salvage": true,
+      "salvageMul": 1
+    },
+    "waves": [
+      {
+        "name": "Разведка",
+        "count": 3,
+        "kinds": [
+          "mech_scout",
+          "turret"
+        ],
+        "delaySec": 5,
+        "radius": 70
+      },
+      {
+        "name": "Тяжёлые",
+        "count": 4,
+        "kinds": [
+          "mech_molot",
+          "mech_scout",
+          "turret"
+        ],
+        "delaySec": 8,
+        "radius": 75
+      },
+      {
+        "name": "Титан",
+        "count": 2,
+        "kinds": [
+          "mech_juggernaut",
+          "mech_molot"
+        ],
+        "delaySec": 10,
+        "radius": 80
+      }
+    ]
+  },
+  "objects": [
+    {
+      "id": "obj_29_66w",
+      "assetId": "mech_scout",
+      "name": "«Ястреб» — разведчик",
+      "position": [
+        2,
+        0.6,
+        -2
+      ],
+      "rotation": [
+        0,
+        200,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "spawn",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_player"
+    },
+    {
+      "id": "obj_30_5n2",
+      "assetId": "mech_juggernaut",
+      "name": "«Титан» (враг)",
+      "position": [
+        -9,
+        -0.03,
+        -7
+      ],
+      "rotation": [
+        0,
+        130,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "enemy",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_mech_juggernaut"
+    },
+    {
+      "id": "obj_31_35q",
+      "assetId": "outpost",
+      "name": "Модуль аванпоста",
+      "position": [
+        9,
+        -0.018,
+        6
+      ],
+      "rotation": [
+        0,
+        -25,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_32_548",
+      "assetId": "bunker_wall",
+      "name": "Стена бункера",
+      "position": [
+        -2,
+        0.075,
+        9
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_33_6cw",
+      "assetId": "bunker_wall",
+      "name": "Стена бункера",
+      "position": [
+        3.2,
+        0.075,
+        9
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_34_2du",
+      "assetId": "sandbags",
+      "name": "Мешки с песком",
+      "position": [
+        0.5,
+        -0.02,
+        5.5
+      ],
+      "rotation": [
+        0,
+        10,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_35_yd",
+      "assetId": "barrel_group",
+      "name": "Группа бочек",
+      "position": [
+        -5,
+        0.027,
+        3
+      ],
+      "rotation": [
+        0,
+        30,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_36_20k",
+      "assetId": "barrel",
+      "name": "Бочка ржавая",
+      "position": [
+        -6.5,
+        0,
+        4.2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_37_1g9",
+      "assetId": "barrel_toxic",
+      "name": "Бочка токсичная",
+      "position": [
+        6.5,
+        0,
+        -4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_38_4x1",
+      "assetId": "container",
+      "name": "Контейнер ржавый",
+      "position": [
+        -12,
+        -0.13,
+        5
+      ],
+      "rotation": [
+        0,
+        75,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_39_79b",
+      "assetId": "rails",
+      "name": "Рельсы — сегмент",
+      "position": [
+        12,
+        0.05,
+        -8
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_40_2rq",
+      "assetId": "girder",
+      "name": "Балка гнутая",
+      "position": [
+        4,
+        0.041,
+        -9
+      ],
+      "rotation": [
+        0,
+        40,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_41_202",
+      "assetId": "scrap",
+      "name": "Куча металлолома",
+      "position": [
+        -4,
+        0.332,
+        -11
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_42_7oz",
+      "assetId": "barrier",
+      "name": "Бетонный блок",
+      "position": [
+        8,
+        0,
+        1
+      ],
+      "rotation": [
+        0,
+        -35,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_43_5qr",
+      "assetId": "barrier_broken",
+      "name": "Блок разрушенный",
+      "position": [
+        -8,
+        0.237,
+        -1
+      ],
+      "rotation": [
+        0,
+        60,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_44_40t",
+      "assetId": "slab",
+      "name": "Плита полуразрушенная",
+      "position": [
+        1,
+        0.099,
+        13
+      ],
+      "rotation": [
+        0,
+        15,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_45_4l2",
+      "assetId": "watchtower",
+      "name": "Сторожевая вышка",
+      "position": [
+        -14,
+        0.225,
+        -13
+      ],
+      "rotation": [
+        0,
+        20,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_46_42s",
+      "assetId": "turret",
+      "name": "Турель «Шершень» (враг)",
+      "position": [
+        5,
+        0,
+        8.5
+      ],
+      "rotation": [
+        0,
+        -140,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "enemy",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_turret"
+    },
+    {
+      "id": "obj_47_476",
+      "assetId": "generator",
+      "name": "Генератор",
+      "position": [
+        11.5,
+        0.007,
+        3.5
+      ],
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_48_4sf",
+      "assetId": "antenna",
+      "name": "Антенна-мачта",
+      "position": [
+        14,
+        0.203,
+        11
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_49_3u4",
+      "assetId": "lamp",
+      "name": "Фонарь ржавый",
+      "position": [
+        -1,
+        0,
+        -5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_50_73b",
+      "assetId": "dome",
+      "name": "Купол теплицы",
+      "position": [
+        -11,
+        0.257,
+        10
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_51_6he",
+      "assetId": "checkpoint",
+      "name": "КПП со шлагбаумом",
+      "position": [
+        16,
+        0.075,
+        -1
+      ],
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_52_5tv",
+      "assetId": "car_wreck",
+      "name": "Остов машины",
+      "position": [
+        -18,
+        -0.264,
+        2
+      ],
+      "rotation": [
+        0,
+        115,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_53_56s",
+      "assetId": "rock",
+      "name": "Скалы",
+      "position": [
+        20,
+        1.01,
+        14
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_54_4vm",
+      "assetId": "dead_tree",
+      "name": "Сухое дерево",
+      "position": [
+        -20,
+        -0.326,
+        -5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_55_kk",
+      "assetId": "tires",
+      "name": "Покрышки",
+      "position": [
+        3,
+        0.288,
+        3
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    },
+    {
+      "id": "obj_56_2z0",
+      "assetId": "crate",
+      "name": "Ящик разбитый",
+      "position": [
+        7.5,
+        0.191,
+        5.5
+      ],
+      "rotation": [
+        0,
+        25,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1,
+      "typeId": "type_barrel_fuel"
+    }
+  ]
+}

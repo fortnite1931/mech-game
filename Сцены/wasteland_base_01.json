@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "app": "WASTELAND FORGE",
+    "version": "1.3",
+    "exportedAt": "2026-10-18T07:01:02.626Z",
+    "engine": "three.js"
+  },
+  "environment": {
+    "fogDensity": 0.016,
+    "dust": 0.08,
+    "sunIntensity": 2.4,
+    "sunAngle": 35,
+    "exposure": 1.05,
+    "skyColor": "#c97a2e",
+    "groundTint": "#bfae98",
+    "grid": true,
+    "showCollisions": false,
+    "snap": true,
+    "snapSize": 0.5,
+    "timePreset": "dust-storm",
+    "soundBindings": [
+      {
+        "eventId": "step",
+        "soundId": "_____1792306218696",
+        "volume": 1,
+        "spatial": false,
+        "rate": 3,
+        "trimStart": 0,
+        "trimEnd": 1.3
+      },
+      {
+        "eventId": "servo",
+        "soundId": "____1_1792306382098",
+        "volume": 0.55,
+        "spatial": false,
+        "rate": 1,
+        "trimEnd": 0,
+        "fadeOut": 0,
+        "cooldown": 0.05,
+        "maxVoices": 1,
+        "fadeIn": 0
+      }
+    ]
+  },
+  "player": {
+    "chassis": "mech_scout",
+    "playerObjectId": "new",
+    "defaultView": "third",
+    "defaultVision": "normal",
+    "cockpit": {
+      "fov": 80,
+      "height": 0.8,
+      "forward": -0.5,
+      "frameOpacity": 1,
+      "scanlines": true,
+      "sway": 1.5,
+      "pitchLimit": 43
+    },
+    "third": {
+      "distance": 11,
+      "height": 3.4,
+      "fov": 55,
+      "smoothing": 7,
+      "autoFollow": true
+    },
+    "shoulder": {
+      "distance": 7.5,
+      "height": 5.1,
+      "side": 1.9,
+      "fov": 50
+    },
+    "tactical": {
+      "distance": 26,
+      "pitch": 52,
+      "fov": 42,
+      "autoFollow": true
+    },
+    "hudColor": "#ffb15c",
+    "sensitivity": 0.95,
+    "invertY": false,
+    "cameraNeedsMMB": true,
+    "weapons": [
+      "autocannon",
+      "laser",
+      "missiles",
+      "mg"
+    ],
+    "maxSpeed": 17,
+    "turnSpeed": 70,
+    "torsoTwist": 110,
+    "accel": 0.3,
+    "jumpJets": true,
+    "sfx": true
+  },
+  "scenario": {
+    "playerHp": 2000,
+    "enemyHpMul": 1,
+    "enemyDmgMul": 1,
+    "waves": [
+      {
+        "name": "Разведка",
+        "count": 3,
+        "kinds": [
+          "turret",
+          "mech_scout"
+        ],
+        "delaySec": 5,
+        "radius": 70
+      },
+      {
+        "name": "Тяжёлые",
+        "count": 4,
+        "kinds": [
+          "mech_molot",
+          "mech_scout",
+          "turret"
+        ],
+        "delaySec": 8,
+        "radius": 75
+      },
+      {
+        "name": "Титан",
+        "count": 2,
+        "kinds": [
+          "mech_juggernaut",
+          "mech_molot"
+        ],
+        "delaySec": 10,
+        "radius": 80
+      }
+    ]
+  },
+  "world": {
+    "seed": 1337,
+    "chunkSize": 24,
+    "propDensity": 1,
+    "oasisChance": 0.02,
+    "worldRadius": 4,
+    "randomSpawn": false,
+    "enabled": true
+  },
+  "objects": []
+}

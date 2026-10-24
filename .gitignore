@@ -1,0 +1,16 @@
+# Зависимости и сборка
+node_modules/
+dist/
+backups/
+
+# Логи и временные файлы
+logs/
+devserver.log
+chrome_err.txt
+testout.txt
+*.ndjson
+
+# Системное
+Thumbs.db
+Desktop.ini
+*.tmp
