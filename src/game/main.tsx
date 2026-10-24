@@ -2,7 +2,9 @@ import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "../index.css";
 import { EditorEngine } from "../three/EditorEngine";
-import type { HudState } from "../three/playTypes";
+import type { SceneObjectState } from "../three/EditorEngine";
+import type { HudState, MechConfig, ViewMode, VisionMode } from "../three/playTypes";
+import { PlayHUD } from "../components/hud.tsx";
 
 /**
  * Игровой клиент (публикуется на платформах: Яндекс Игры, VK Play и т.п.).
@@ -12,15 +14,18 @@ import type { HudState } from "../three/playTypes";
 function Game() {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<EditorEngine | null>(null);
+  const reticleRef = useRef<HTMLDivElement | null>(null);
   const [hud, setHud] = useState<HudState | null>(null);
   const [playing, setPlaying] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [objects, setObjects] = useState<SceneObjectState[]>([]);
+  const [cfg, setCfg] = useState<MechConfig | null>(null);
 
   // движок создаётся один раз на весь сеанс игры
   useEffect(() => {
     if (!hostRef.current || engineRef.current) return;
     const engine = new EditorEngine(hostRef.current, {
-      onObjectsChange: () => {},
+      onObjectsChange: (objs) => setObjects(objs),
       onSelect: () => {},
       onStats: () => {},
     });
@@ -39,12 +44,19 @@ function Game() {
     if (e.isPlaying()) e.stopPlay();
     const ok = e.startPlay(e.mechConfig, e.scenario, {
       onHud: (h) => setHud(h),
-      onPointer: () => {},
+      onPointer: (x, y, visible) => {
+        const el = reticleRef.current;
+        if (!el) return;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.style.opacity = visible ? "1" : "0";
+      },
       onExit: () => setPlaying(false),
     });
     if (ok) {
       setPlaying(true);
       setHud(null);
+      setCfg({ ...e.mechConfig });
     }
   };
 
@@ -53,6 +65,19 @@ function Game() {
     setPlaying(false);
     setHud(null);
   };
+
+  const restartGame = () => {
+    const e = engineRef.current;
+    if (!e) return;
+    e.stopPlay();
+    setTimeout(() => startGame(), 30);
+  };
+
+  const viewOf = (v: ViewMode) => engineRef.current?.play?.setView(v);
+  const visionOf = (v: VisionMode) => engineRef.current?.play?.setVision(v);
+  const mechs = objects
+    .filter((o) => o.visible && o.assetId.startsWith("mech_"))
+    .map((o) => ({ id: o.id, name: o.name, assetId: o.assetId }));
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-black text-stone-200">
@@ -91,7 +116,7 @@ function Game() {
                 <div className="mb-2 font-bold text-stone-200">Управление</div>
                 <p><b className="text-stone-300">WASD</b> — движение · <b className="text-stone-300">Мышь</b> — обзор</p>
                 <p><b className="text-stone-300">Shift</b> — ускорение · <b className="text-stone-300">Пробел</b> — прыжок/струи</p>
-                <p><b className="text-stone-300">ЛКМ</b> — огонь · <b className="text-stone-300">Средняя/ПКМ</b> — целиться</p>
+                <p><b className="text-stone-300">ЛКМ</b> — огонь · <b className="text-stone-300">ПКМ</b> — целиться</p>
                 <p><b className="text-stone-300">F</b> — выйти из меха / вернуться · <b className="text-stone-300">Esc</b> — меню</p>
               </div>
             )}
@@ -99,72 +124,21 @@ function Game() {
         </div>
       )}
 
-      {/* HUD во время игры */}
-      {playing && hud && (
-        <div className="pointer-events-none absolute inset-0 z-10 select-none">
-          {/* прицел */}
-          <div className="absolute left-1/2 top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-300/80 shadow-[0_0_6px_rgba(245,166,35,0.9)]" />
-
-          {/* верхняя панель: состояние машины */}
-          <div className="absolute left-4 top-4 rounded-lg border border-white/10 bg-black/55 px-3 py-2 text-[12px] backdrop-blur-sm">
-            <div className="mb-1 flex items-center gap-2">
-              <span className="font-bold text-stone-100">{hud.chassisName}</span>
-              <span className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-stone-300">
-                {Math.round(hud.speedKmh)} км/ч
-              </span>
-            </div>
-            {hud.mechMaxHp ? (
-              <div className="mb-1">
-                <div className="mb-0.5 text-[10px] uppercase tracking-wider text-stone-500">Корпус</div>
-                <div className="h-1.5 w-44 overflow-hidden rounded bg-white/10">
-                  <div
-                    className="h-full rounded bg-emerald-500 transition-all"
-                    style={{ width: `${((hud.mechHp ?? 0) / hud.mechMaxHp) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ) : null}
-            <div>
-              <div className="mb-0.5 text-[10px] uppercase tracking-wider text-stone-500">Пилот</div>
-              <div className="h-1.5 w-44 overflow-hidden rounded bg-white/10">
-                <div
-                  className={`h-full rounded transition-all ${hud.php / hud.pmax > 0.3 ? "bg-amber-400" : "bg-red-500"}`}
-                  style={{ width: `${(hud.php / Math.max(1, hud.pmax)) * 100}%` }}
-                />
-              </div>
-            </div>
-            {hud.heat > 0 && (
-              <div className="mt-1 text-[10px] text-stone-500">Тепло: {Math.round(hud.heat * 100)}%</div>
-            )}
-          </div>
-
-          {/* цель */}
-          {hud.target && (
-            <div className="absolute left-1/2 top-[18%] -translate-x-1/2 rounded border border-red-500/40 bg-red-950/60 px-3 py-1.5 text-center backdrop-blur-sm">
-              <div className="text-[11px] font-bold text-red-300">{hud.target.name}</div>
-              <div className="h-1 w-32 overflow-hidden rounded bg-white/10">
-                <div className="h-full bg-red-500" style={{ width: `${hud.target.hp * 100}%` }} />
-              </div>
-            </div>
-          )}
-
-          {/* лог */}
-          <div className="absolute bottom-4 left-4 max-w-md space-y-0.5 rounded-lg border border-white/10 bg-black/50 px-3 py-2 text-[11px] backdrop-blur-sm">
-            {hud.log.slice(0, 4).map((line, i) => (
-              <div key={i} className="text-stone-300">{line}</div>
-            ))}
-          </div>
-
-          {/* кнопки паузы/меню */}
-          <div className="pointer-events-auto absolute right-4 top-4 flex gap-2">
-            <button
-              onClick={toMenu}
-              className="rounded border border-white/10 bg-black/55 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-300 transition-all hover:border-red-500/40 hover:text-red-300"
-            >
-              Esc · В меню
-            </button>
-          </div>
-        </div>
+      {/* HUD во время игры — тот же, что и в превью редактора */}
+      {playing && cfg && (
+        <PlayHUD
+          hud={hud}
+          config={cfg}
+          objects={objects}
+          reticleRef={reticleRef}
+          onExit={toMenu}
+          onRestart={restartGame}
+          onView={viewOf}
+          onVision={visionOf}
+          onEject={() => engineRef.current?.play?.eject()}
+          onEnterMech={(id) => engineRef.current?.play?.enterMech(id)}
+          mechs={mechs}
+        />
       )}
     </div>
   );
