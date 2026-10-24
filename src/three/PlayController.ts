@@ -400,6 +400,14 @@ export class PlayController {
 
   setConfig(cfg: MechConfig) { this.cfg = cfg; sfx.enabled = cfg.sfx; }
 
+  /** Временная админка: ручная балансировка (скорости, урон, множители). */
+  balance = { mechSpeed: 1, pilotWalk: 1, pilotRun: 1, dmgFromPlayer: 1, dmgToPlayer: 1 };
+  setBalance(patch: Partial<typeof this.balance>) { Object.assign(this.balance, patch); }
+  setEnemyMults(hpMul: number, dmgMul: number) {
+    this.scenario.enemyHpMul = hpMul;
+    this.scenario.enemyDmgMul = dmgMul;
+  }
+
   /** Настройки поведений типа объекта — перекрывают MechConfig в превью. */
   setRuntime(rt: { movement: MovementSettings; weapons: WeaponsSettings }) {
     this.moveCfg = rt.movement;
@@ -844,6 +852,7 @@ export class PlayController {
     const canRun = this.stamina > 1;
     const sprint = sprintKey && canRun;
     let maxSpeed = sprint ? this.cfg.foot.run : this.cfg.foot.walk;
+    maxSpeed *= sprint ? this.balance.pilotRun : this.balance.pilotWalk;
     this.runningNow = sprint;
     // автоподход к меху: играем бегом/шагом до кабины — отменяется любым шагом
     if (this.seatApproach && (k.has('KeyW') || k.has('KeyS') || k.has('KeyA') || k.has('KeyD'))) {
@@ -1340,7 +1349,7 @@ export class PlayController {
     const id = this.ownId;
     if (!id) { this.damagePlayer(amount); return; }
     const full = this.mechMaxHp();
-    const hp = Math.max(0, (this.mechHpMap.get(id) ?? full) - amount);
+    const hp = Math.max(0, (this.mechHpMap.get(id) ?? full) - amount * this.balance.dmgToPlayer);
     this.mechHpMap.set(id, hp);
     this.hurt = 1;
     this.shake += 0.12;
@@ -1665,7 +1674,7 @@ export class PlayController {
       { ...this.moveState, yaw: this.legYaw, y: this.airborne ? this.pos.y : gy },
       dt,
       { forward, turn, boost: boosting, jet: k.has('Space') },
-      { groundY: gy, speedMul: ch.speedMul, turnMul: ch.turnMul, overheated: this.overheated, locked },
+      { groundY: gy, speedMul: ch.speedMul * this.balance.mechSpeed, turnMul: ch.turnMul, overheated: this.overheated, locked },
       this.moveCfg,
     );
     this.moveState = st;
@@ -2182,7 +2191,7 @@ export class PlayController {
   }
   private damage(t: Target, amount: number) {
     if (t.hp <= 0 || !isFinite(t.maxHp)) return;
-    t.hp -= amount;
+    t.hp -= amount * this.balance.dmgFromPlayer;
     if (t.enemy) { t.enemy.hp = t.hp; if (t.hp <= 0) t.enemy.alive = false; }
     if (t.hp <= 0) this.destroyQueue.push(t);
   }
@@ -2371,7 +2380,7 @@ export class PlayController {
 
   private damagePlayer(amount: number): void {
     if (this.over) return;
-    this.php -= amount;
+    this.php -= amount * this.balance.dmgToPlayer;
     this.hurt = 1;
     this.shake += 0.25;
     sfx.playerHurt(this.pos);

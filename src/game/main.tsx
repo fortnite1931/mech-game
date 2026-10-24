@@ -11,6 +11,22 @@ import { PlayHUD } from "../components/hud.tsx";
  * В отличие от редактора — без панелей: полноэкранный рендер + меню + HUD.
  * Здесь будут расти: стартовое меню, уровни, катсцены, сохранения, SDK.
  */
+
+/** Временная админка (баланс). Убрать перед релизом на платформы. */
+type AdminVals = {
+  mechSpeed: number;
+  pilotWalk: number;
+  pilotRun: number;
+  dmgFromPlayer: number;
+  dmgToPlayer: number;
+  enemyHpMul: number;
+  enemyDmgMul: number;
+};
+const ADMIN_DEFAULTS: AdminVals = {
+  mechSpeed: 1, pilotWalk: 1, pilotRun: 1,
+  dmgFromPlayer: 1, dmgToPlayer: 1,
+  enemyHpMul: 1, enemyDmgMul: 1,
+};
 function Game() {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<EditorEngine | null>(null);
@@ -20,6 +36,24 @@ function Game() {
   const [showHelp, setShowHelp] = useState(false);
   const [objects, setObjects] = useState<SceneObjectState[]>([]);
   const [cfg, setCfg] = useState<MechConfig | null>(null);
+  const [admin, setAdmin] = useState<AdminVals>(ADMIN_DEFAULTS);
+  const [adminOpen, setAdminOpen] = useState(false);
+
+  /** Применить настройку админки сразу в игру. */
+  const applyAdmin = (patch: Partial<AdminVals>) => {
+    const next = { ...admin, ...patch };
+    setAdmin(next);
+    const play = engineRef.current?.play;
+    if (!play) return;
+    play.setBalance({
+      mechSpeed: next.mechSpeed,
+      pilotWalk: next.pilotWalk,
+      pilotRun: next.pilotRun,
+      dmgFromPlayer: next.dmgFromPlayer,
+      dmgToPlayer: next.dmgToPlayer,
+    });
+    play.setEnemyMults(next.enemyHpMul, next.enemyDmgMul);
+  };
 
   // движок создаётся один раз на весь сеанс игры
   useEffect(() => {
@@ -111,6 +145,12 @@ function Game() {
             >
               Как играть
             </button>
+            <button
+              onClick={() => setAdminOpen(true)}
+              className="mt-2 block w-full rounded border border-stone-500/30 bg-stone-500/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-stone-400 transition-all hover:border-amber-500/40 hover:text-amber-300"
+            >
+              ⚙ Админка (баланс)
+            </button>
             {showHelp && (
               <div className="mt-4 rounded border border-white/10 bg-black/50 p-4 text-left text-[12px] leading-relaxed text-stone-400">
                 <div className="mb-2 font-bold text-stone-200">Управление</div>
@@ -139,6 +179,56 @@ function Game() {
           onEnterMech={(id) => engineRef.current?.play?.enterMech(id)}
           mechs={mechs}
         />
+      )}
+
+      {/* Админка (временная): ручная балансировка — убрать перед релизом */}
+      {adminOpen && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70">
+          <div className="w-full max-w-sm rounded-xl border border-white/10 bg-stone-950/95 p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="text-[12px] font-black uppercase tracking-wider text-amber-300">
+                ⚙ Админка
+              </div>
+              <button
+                onClick={() => setAdminOpen(false)}
+                className="rounded border border-white/10 px-2 py-1 text-[10px] font-bold text-stone-400 hover:border-red-500/40 hover:text-red-300"
+              >
+                Закрыть
+              </button>
+            </div>
+            <div className="mb-2 text-[10px] leading-relaxed text-stone-500">
+              Настройки применяются к игре сразу. Убрать перед публикацией.
+            </div>
+            {([
+              ["mechSpeed", "Скорость меха ×"],
+              ["pilotWalk", "Пилот: ходьба ×"],
+              ["pilotRun", "Пилот: бег ×"],
+              ["dmgFromPlayer", "Урон от игрока ×"],
+              ["dmgToPlayer", "Урон по игроку ×"],
+              ["enemyHpMul", "Здоровье врагов ×"],
+              ["enemyDmgMul", "Урон врагов ×"],
+            ] as [keyof AdminVals, string][]).map(([key, label]) => (
+              <div key={key} className="mb-2">
+                <div className="mb-0.5 flex items-center justify-between">
+                  <span className="text-[11px] text-stone-300">{label}</span>
+                  <span className="font-mono text-[11px] text-amber-300">{admin[key].toFixed(2)}</span>
+                </div>
+                <input
+                  type="range" min={0.1} max={5} step={0.05}
+                  value={admin[key]}
+                  onChange={(e) => applyAdmin({ [key]: parseFloat(e.target.value) } as Partial<AdminVals>)}
+                  className="wf-slider w-full"
+                />
+                <button
+                  onClick={() => applyAdmin({ [key]: 1 } as Partial<AdminVals>)}
+                  className="mt-0.5 text-[9px] text-stone-600 hover:text-stone-400"
+                >
+                  сброс
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
