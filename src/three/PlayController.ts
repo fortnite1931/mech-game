@@ -989,12 +989,24 @@ export class PlayController {
             this.pilotMixer.stopAllAction();
             const clip = clips.find((c) => c.name === clipName);
             if (clip) {
-              this.pilotAction = this.pilotMixer.clipAction(clip);
-              this.pilotClipName = clipName;
-              this.pilotAction.reset();
-              this.pilotAction.setLoop(THREE.LoopRepeat, Infinity);
-              this.pilotAction.setEffectiveTimeScale(timeScale);
-              this.pilotAction.play();
+              // фильтруем треки: оставляем только те, чьи кости есть в модели —
+              // иначе THREE.PropertyBinding спамит «No target node found» и ломает рендер
+              const mesh = this.pilot;
+              const safe = clip.clone();
+              safe.tracks = clip.tracks.filter((tr) => {
+                const prop = tr.name.split('.')[0];
+                return !!mesh.getObjectByName(prop);
+              });
+              if (safe.tracks.length) {
+                this.pilotAction = this.pilotMixer.clipAction(safe);
+                this.pilotClipName = clipName;
+                this.pilotAction.reset();
+                this.pilotAction.setLoop(THREE.LoopRepeat, Infinity);
+                this.pilotAction.setEffectiveTimeScale(timeScale);
+                this.pilotAction.play();
+              } else {
+                this.pilotClipName = null;
+              }
             }
           } else {
             this.pilotAction?.setEffectiveTimeScale(timeScale);
@@ -1482,7 +1494,14 @@ export class PlayController {
     if (clip && this.pilot) {
       if (!this.pilotMixer) this.pilotMixer = new THREE.AnimationMixer(this.pilot);
       this.pilotMixer.stopAllAction();
-      this.pilotAction = this.pilotMixer.clipAction(clip);
+      // фильтруем треки по наличию костей в модели (иначе PropertyBinding-спам)
+      const safe = clip.clone();
+      safe.tracks = clip.tracks.filter((tr) => {
+        const prop = tr.name.split('.')[0];
+        return !!this.pilot!.getObjectByName(prop);
+      });
+      if (!safe.tracks.length) { this.climbHasClip = false; this.climbMax = 0.5; return; }
+      this.pilotAction = this.pilotMixer.clipAction(safe);
       this.pilotClipName = clip.name;
       const jumpMul = Math.max(0.2, this.pilotSpeeds.jump * (this.pilotSpeeds.global || 1));
       this.climbMax = Math.min(2.2, clip.duration / jumpMul);
