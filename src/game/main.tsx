@@ -129,16 +129,21 @@ function Game() {
     });
     engineRef.current = engine;
     engine.init();
-    // проект из редактора приходит в адресе (game.html?project=...) — грузим его,
-    // иначе демо-сцена
+    // проект из редактора приходит через localStorage (та же вкладка-источник),
+    // открывается по флагу ?from=preview; после загрузки ключ удаляется
     (async () => {
       const params = new URLSearchParams(window.location.search);
-      const raw = params.get("project");
-      if (raw) {
-        try {
-          const res = await engine.importProjectJSON(decodeURIComponent(raw));
-          if (res.ok) return;
-        } catch { /* ignore */ }
+      if (params.get("from") === "preview") {
+        const raw = localStorage.getItem("wf_yandex_preview_project");
+        if (raw) {
+          try {
+            const res = await engine.importProjectJSON(raw);
+            if (res.ok) {
+              localStorage.removeItem("wf_yandex_preview_project");
+              return;
+            }
+          } catch { /* ignore */ }
+        }
       }
       engine.loadDemoScene();
     })();
