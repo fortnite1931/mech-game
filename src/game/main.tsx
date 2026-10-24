@@ -254,13 +254,20 @@ function Game() {
               ⚙ Админка (баланс)
             </button>
             {showHelp && (
-              <div className="mt-4 rounded border border-white/10 bg-black/50 p-4 text-left text-[12px] leading-relaxed text-stone-400">
+              <div className="mt-4 max-h-[55vh] overflow-y-auto rounded border border-white/10 bg-black/50 p-4 text-left text-[12px] leading-relaxed text-stone-400">
                 <div className="mb-2 font-bold text-stone-200">Управление</div>
                 <p><b className="text-stone-300">WASD</b> — движение · <b className="text-stone-300">Мышь</b> — обзор</p>
                 <p><b className="text-stone-300">Shift</b> — ускорение · <b className="text-stone-300">Пробел</b> — прыжок/струи</p>
                 <p><b className="text-stone-300">ЛКМ</b> — огонь · <b className="text-stone-300">ПКМ</b> — целиться</p>
                 <p><b className="text-stone-300">F</b> — выйти из меха / вернуться · <b className="text-stone-300">Esc</b> — меню</p>
-                <p className="mt-1 text-stone-500"><b className="text-stone-400">M</b> — админка баланса (кнопка ⚙ внизу справа)</p>
+                <div className="mb-2 mt-3 font-bold text-stone-200">Цель уровня</div>
+                <p>Зачисти зону базы: наверху экрана горит баннер зоны и счётчик врагов. Убей всех — зона считается очищенной.</p>
+                <div className="mb-2 mt-3 font-bold text-stone-200">Лут (ресурсы)</div>
+                <p>Разрушай ящики, бочки, контейнеры и врагов — на месте обломков появляется <b className="text-amber-300">светящийся ящик-трофей</b>. Подойди вплотную — он подберётся автоматически.</p>
+                <p>Всё собранное хранится в <b className="text-stone-300">рюкзаке</b> (справа, клавиша <b className="text-stone-300">I</b> — полный список). Вес ограничен.</p>
+                <div className="mb-2 mt-3 font-bold text-stone-200">Стройка и крафт</div>
+                <p><b className="text-stone-300">T</b> — стройка: сначала зачисти территорию (рядом не должно быть врагов), затем залей бетонную площадку и строй здания.</p>
+                <p><b className="text-stone-300">B</b> — крафт: мехи собираются только после постройки завода.</p>
               </div>
             )}
           </div>

@@ -3,7 +3,7 @@
     "app": "WASTELAND FORGE",
     "version": "2.0",
     "engine": "three.js",
-    "exportedAt": "2026-10-24T14:43:40.341Z"
+    "exportedAt": "2026-10-24T14:58:41.061Z"
   },
   "types": [
     {
@@ -1906,8 +1906,8 @@
     "chunkSize": 24,
     "propDensity": 1,
     "oasisChance": 0.02,
-    "worldRadius": 5,
-    "edgeType": "mountains",
+    "worldRadius": 2,
+    "edgeType": "forest",
     "zones": [
       {
         "id": "zone_1",

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wasteland Forge — референс интерфейса (макет)</title>
+<style>
+  :root {
+    --bg: #0c0a08;
+    --panel: rgba(0,0,0,.72);
+    --line: rgba(255,255,255,.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,.25);
+    --red: #ff6a4a;
+    --green: #7ee0a0;
+    --text: #d8d0c2;
+    --muted: #8a8275;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    padding: 24px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  h1 { color: var(--amber); font-size: 22px; letter-spacing: .12em; text-transform: uppercase; }
+  h2 { color: var(--amber); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; margin: 28px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  .note { color: var(--muted); font-size: 12px; margin: 4px 0 14px; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px; min-width: 300px; flex: 1 1 300px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 12px; letter-spacing: .08em; color: #fff; text-transform: uppercase; }
+  .tag { display: inline-block; font-size: 10px; background: var(--amber-dim); color: var(--amber); border-radius: 4px; padding: 1px 6px; margin-bottom: 8px; }
+  .btn {
+    display: block; width: 100%; padding: 10px 12px; border-radius: 6px;
+    border: 1px solid var(--amber); background: var(--amber-dim); color: var(--amber);
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    text-align: center; margin-bottom: 8px;
+  }
+  .btn.primary { border-color: #2e8b57; background: rgba(46,139,87,.25); color: #9fe8b8; }
+  .btn.ghost { border-color: var(--line); background: rgba(255,255,255,.04); color: #b7ae9e; }
+  .cellgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .cell {
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px 4px;
+    text-align: center; background: rgba(255,255,255,.02);
+  }
+  .cell .ico { font-size: 18px; display: block; margin-bottom: 4px; }
+  .cell .name { font-size: 9px; color: var(--muted); }
+  .cell .cnt { font-size: 12px; font-weight: 700; color: var(--amber); }
+  .hud {
+    position: relative; background: linear-gradient(180deg, #14100c, #0a0806);
+    border: 1px solid var(--line); border-radius: 12px; height: 280px; overflow: hidden; margin-bottom: 8px;
+  }
+  .hud .center { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); }
+  .reticle { width: 52px; height: 52px; border: 2px solid var(--amber); border-radius: 50%; position: relative; opacity: .85; }
+  .reticle::before, .reticle::after { content: ''; position: absolute; background: var(--amber); }
+  .reticle::before { left: -14px; right: -14px; top: 50%; height: 2px; margin-top: -1px; }
+  .reticle::after { top: -14px; bottom: -14px; left: 50%; width: 2px; margin-left: -1px; }
+  .hud .zone { position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+    border: 1px solid var(--amber); background: rgba(0,0,0,.75); border-radius: 8px;
+    padding: 6px 14px; text-align: center; }
+  .hud .zone b { color: var(--amber); font-size: 12px; }
+  .hud .zone span { display: block; font-size: 10px; color: var(--muted); }
+  .hud .bag { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 150px;
+    border: 1px solid var(--line); background: rgba(0,0,0,.7); border-radius: 8px; padding: 8px; }
+  .hud .bag .title { font-size: 9px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .hud .status { position: absolute; left: 10px; top: 10px; border: 1px solid var(--line);
+    background: rgba(0,0,0,.7); border-radius: 8px; padding: 8px 12px; font-size: 11px; }
+  .bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,.12); margin: 4px 0; overflow: hidden; }
+  .bar > div { height: 100%; border-radius: 3px; }
+  .bar.hp > div { width: 70%; background: var(--green); }
+  .bar.armor > div { width: 40%; background: #8fb8ff; }
+  .bar.heat > div { width: 22%; background: var(--amber); }
+  .loot { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+    border: 1px solid var(--amber-dim); background: rgba(0,0,0,.7); border-radius: 8px; padding: 4px 10px;
+    font-size: 10px; color: var(--amber); }
+  .modal {
+    border: 1px solid var(--amber); background: rgba(0,0,0,.9); border-radius: 12px;
+    padding: 16px; max-width: 420px;
+  }
+  .modal h3 { margin-top: 0; color: var(--amber); }
+  .list { display: flex; flex-direction: column; gap: 6px; }
+  .rowitem { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--line);
+    background: rgba(255,255,255,.02); border-radius: 8px; padding: 8px 10px; }
+  .rowitem .info { font-size: 12px; }
+  .rowitem .info small { display: block; color: var(--muted); font-size: 10px; }
+  .btn.small { padding: 4px 10px; font-size: 10px; width: auto; margin: 0; }
+  .foot { margin-top: 24px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Wasteland Forge — референс интерфейса</h1>
+  <div class="note">Макет всех ключевых меню и ячеек: HUD в бою, лут, инвентарь, стройка, крафт. Это не код — только визуальная схема.</div>
+
+  <h2>1. HUD в бою</h2>
+  <div class="hud">
+    <div class="zone"><b>Зона «Шершень»</b><span>Врагов в зоне: 7</span></div>
+    <div class="status">
+      <div>«Ястреб» · вид снаружи</div>
+      <div class="bar hp"><div></div></div>
+      <div class="bar armor"><div></div></div>
+      <div class="bar heat"><div></div></div>
+      <div style="font-size:9px;color:var(--muted)">Пилот 85/100 · броня 40/100</div>
+    </div>
+    <div class="bag">
+      <div class="title"><span>Рюкзак</span><span>14/120 кг</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
+        <div class="cell"><span class="ico">🧱</span><span class="cnt">×6</span><span class="name">лом</span></div>
+        <div class="cell"><span class="ico">🔩</span><span class="cnt">×2</span><span class="name">шестерни</span></div>
+        <div class="cell"><span class="ico">🛢️</span><span class="cnt">×1</span><span class="name">топливо</span></div>
+      </div>
+    </div>
+    <div class="center"><div class="reticle"></div></div>
+    <div class="loot">Рядом: лом ×2 — подойди, чтобы подобрать</div>
+  </div>
+
+  <h2>2. Лут (трофеи на земле)</h2>
+  <div class="row">
+    <div class="card">
+      <h3>Контейнер-трофей</h3>
+      <span class="tag">≈ 3D-модель на земле</span>
+      <div class="cellgrid">
+        <div class="cell"><span class="ico">📦</span><span class="cnt">—</span><span class="name">светится янтарным</span></div>
+        <div class="cell"><span class="ico">⭕</span><span class="cnt">—</span><span class="name">кольцо-маркер</span></div>
+        <div class="cell"><span class="ico">🔄</span><span class="cnt">—</span><span class="name">медленно вращается</span></div>
+        <div class="cell"><span class="ico">⏱️</span><span class="cnt">45с</span><span class="name">живёт потом исчезает</span></div>
+      </div>
+      <div class="note" style="margin-top:8px">Подошёл ближе 2 м — автосбор: вспышка частиц, звук, «Подобрано: …» в логе.</div>
+    </div>
+    <div class="card">
+      <h3>Откуда падает</h3>
+      <div class="list">
+        <div class="rowitem"><span class="info">Ящики, бочки, контейнеры<small>обычный мусор: лом, плиты, патроны</small></span></div>
+        <div class="rowitem"><span class="info">Вражеские мехи и турели<small>разбор машины: детали, топливо, аптечки</small></span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>3. Инвентарь (клавиша I)</h2>
+  <div class="modal">
+    <h3>Рюкзак — 14/120 кг</h3>
+    <div class="cellgrid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="cell"><span class="ico">🧱</span><span class="cnt">×6</span><span class="name">Лом</span></div>
+      <div class="cell"><span class="ico">🪙</span><span class="cnt">×3</span><span class="name">Плиты</span></div>
+      <div class="cell"><span class="ico">🔩</span><span class="cnt">×2</span><span class="name">Шестерни</span></div>
+      <div class="cell"><span class="ico">🛢️</span><span class="cnt">×1</span><span class="name">Топливо</span></div>
+      <div class="cell"><span class="ico">💉</span><span class="cnt">×2</span><span class="name">Аптечки</span></div>
+      <div class="cell"><span class="ico">🔫</span><span class="cnt">×14</span><span class="name">Патроны</span></div>
+    </div>
+  </div>
+
+  <h2>4. Стройка (клавиша T)</h2>
+  <div class="modal">
+    <h3>Стройка базы</h3>
+    <div class="list">
+      <div class="rowitem"><span class="info">Бетонная площадка<small>цена: лом ×5, плиты ×2 · зачисти территорию</small></span><span class="btn small primary">Построить</span></div>
+      <div class="rowitem"><span class="info">Завод<small>цена: плиты ×6, шестерни ×2, гидравлика ×1 · нужна площадка</small></span><span class="btn small">Не хватает</span></div>
+      <div class="rowitem"><span class="info">Электростанция<small>цена: плиты ×4, шестерни ×2, топливо ×2</small></span><span class="btn small">Не хватает</span></div>
+      <div class="rowitem"><span class="info">Нефтебашня<small>цена: плиты ×4, шестерни ×1</small></span><span class="btn small">Не хватает</span></div>
+      <div class="rowitem"><span class="info">Добытчик ресурсов<small>цена: плиты ×3, шестерни ×1</small></span><span class="btn small">Не хватает</span></div>
+      <div class="rowitem"><span class="info" style="color:#ffb040">⛔ Территория не зачищена — рядом враги</span></div>
+    </div>
+  </div>
+
+  <h2>5. Крафт мехов (клавиша B)</h2>
+  <div class="modal">
+    <h3>Сборка меха (Завод)</h3>
+    <div class="list">
+      <div class="rowitem"><span class="info">«Ястреб» — разведчик<small>детали: корпус ×1, гидравлика ×2, реактор ×1</small></span><span class="btn small primary">Собрать</span></div>
+      <div class="rowitem"><span class="info">«Молот» — штурмовик<small>детали: корпус ×1, гидравлика ×3, реактор ×2</small></span><span class="btn small">Не хватает</span></div>
+      <div class="rowitem"><span class="info">«Титан» — джаггернаут<small>детали: корпус ×2, гидравлика ×4, реактор ×3, кабина ×1</small></span><span class="btn small">Не хватает</span></div>
+    </div>
+  </div>
+
+  <h2>6. Главное меню (черновик)</h2>
+  <div class="row">
+    <div class="card">
+      <h3>Игра</h3>
+      <div class="btn primary">Продолжить</div>
+      <div class="btn">Новая игра</div>
+      <div class="btn ghost">Как играть</div>
+      <div class="btn ghost">Настройки</div>
+    </div>
+    <div class="card">
+      <h3>Ресурсы / прогресс</h3>
+      <div class="note">Уровень 1 · зоны: 1/3 · построено: бетон, завод, электростанция</div>
+      <div class="bar hp"><div style="width:33%"></div></div>
+      <div class="note" style="margin-top:6px">33% территории очищено</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Примечания:<br>
+    • Агент-«зрение» разбирает готовые картинки, но не генерирует их. Этот макет — точная векторная схема, которую можно открыть в браузере и снять в PNG (скриншот).<br>
+    • Иконки предметов — временные (эмодзи), заменятся на кристонные текстуры/модели позже.
+  </div>
+</div>
+</body>
+</html>

@@ -94,15 +94,17 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   const hpFrac = Math.max(0, Math.min(1, php / pmax));
   const [showCraft, setShowCraft] = React.useState(false);
   const [showBuild, setShowBuild] = React.useState(false);
-  // клавиши работают в превью: B — крафт, T — стройка, H — аптечка
+  const [showInv, setShowInv] = React.useState(false);
+  // клавиши работают в превью: B — крафт, T — стройка, I — инвентарь, H — аптечка
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       if (e.code === 'KeyB') { e.preventDefault(); setShowCraft((v) => !v); onRefreshCraft?.(); }
       if (e.code === 'KeyT') { e.preventDefault(); setShowBuild((v) => !v); }
+      if (e.code === 'KeyI') { e.preventDefault(); setShowInv((v) => !v); }
       if (e.code === 'KeyH') { e.preventDefault(); onUseMedkit?.(); }
-      if (e.code === 'Escape') { setShowCraft(false); setShowBuild(false); }
+      if (e.code === 'Escape') { setShowCraft(false); setShowBuild(false); setShowInv(false); }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
@@ -178,20 +180,32 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
             </div>
           </div>
 
-          {/* инвентарь */}
-          {hud && hud.bag && hud.bag.length > 0 && (
-            <div className="absolute right-3 top-1/2 w-[172px] -translate-y-1/2 rounded border border-white/15 bg-black/70 p-1.5 backdrop-blur">
-              <div className="mb-1 flex justify-between font-mono text-[9px] uppercase tracking-wider text-stone-400">
+          {/* инвентарь (всегда виден) */}
+          {hud && hud.bag && (
+            <div className="absolute right-3 top-1/2 w-[180px] -translate-y-1/2 rounded border border-white/15 bg-black/70 p-1.5 backdrop-blur">
+              <div className="mb-1 flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-stone-400">
                 <span>Рюкзак</span>
                 <span>{hud.bagWeight}/{hud.bagCapacity} кг</span>
               </div>
-              {hud.bag.slice(0, 8).map((b) => (
-                <div key={b.item} className="flex items-center justify-between font-mono text-[10px] text-stone-300" title={b.name}>
-                  <span className="truncate">{b.short}</span>
-                  <span className="text-amber-300">×{b.n}</span>
+              {hud.bag.length === 0 ? (
+                <div className="text-[9px] leading-relaxed text-stone-500">
+                  Пусто. Разнеси ящики/бочки/врагов — выпадут трофеи, подойди и подбери.
                 </div>
-              ))}
-              <div className="mt-1 font-mono text-[9px] text-stone-500">B — крафт · T — стройка · H — аптечка</div>
+              ) : (
+                <div className="grid grid-cols-3 gap-1">
+                  {hud.bag.slice(0, 12).map((b) => (
+                    <div
+                      key={b.item}
+                      title={`${b.name} (×${b.n})`}
+                      className="flex flex-col items-center justify-center rounded border border-amber-500/25 bg-black/40 px-1 py-1 text-center"
+                    >
+                      <span className="max-w-full truncate text-[8px] text-stone-300">{b.short}</span>
+                      <span className="text-[10px] font-bold text-amber-300">×{b.n}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="mt-1 font-mono text-[9px] text-stone-500">I — инвентарь · B — крафт · T — стройка</div>
               {hud?.nearLoot && (
                 <div className="mt-1 rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-[9px] text-amber-200">
                   Рядом: {hud.nearLoot} — подойди, чтобы подобрать
@@ -267,6 +281,36 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
           <div className="mt-1 text-[10px] text-stone-600">
             Постройка появляется перед мехом. Ресурсы — из рюкзака (собираются из лома и техники).
           </div>
+        </div>
+      )}
+
+      {/* инвентарь (I) */}
+      {showInv && (
+        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-white/20 bg-black/90 p-3 backdrop-blur">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-stone-200">Рюкзак</span>
+            <button onClick={() => setShowInv(false)} className="text-stone-400 hover:text-white">✕</button>
+          </div>
+          <div className="mb-2 flex items-center justify-between font-mono text-[10px] text-stone-400">
+            <span>Вес: {hud?.bagWeight ?? 0}/{hud?.bagCapacity ?? 0} кг</span>
+            <span>{hud?.bag?.reduce((s, b) => s + b.n, 0) ?? 0} предметов</span>
+          </div>
+          {(hud?.bag?.length ?? 0) === 0 ? (
+            <div className="rounded border border-dashed border-white/15 p-3 text-center text-[11px] text-stone-500">
+              Рюкзак пуст. Разрушай ящики, бочки и врагов — из них выпадают трофеи.
+              Подойди к контейнеру, чтобы подобрать.
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-1.5">
+              {hud?.bag?.map((b) => (
+                <div key={b.item} className="rounded border border-white/10 bg-white/[0.02] p-2 text-center" title={b.name}>
+                  <div className="text-[11px] font-bold text-stone-200">{b.short}</div>
+                  <div className="text-[13px] font-black text-amber-300">×{b.n}</div>
+                  <div className="truncate text-[8px] text-stone-500">{b.name}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
