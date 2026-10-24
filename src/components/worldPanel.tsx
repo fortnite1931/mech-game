@@ -1,11 +1,17 @@
 import type { WorldConfig } from '../three/worldGen.ts';
 import { Section, Slider, Btn, Toggle } from './ui.tsx';
-import { Dice5 } from 'lucide-react';
+import { Dice5, Save, FolderOpen } from 'lucide-react';
+import { useRef } from 'react';
 
-export function WorldPanel({ world, onWorld }: {
+export function WorldPanel({ world, onWorld, onSaveLevel, onLoadLevel }: {
   world: WorldConfig; onWorld: (patch: Partial<WorldConfig>) => void;
+  /** Сохранить текущий проект как файл уровня (JSON). */
+  onSaveLevel?: () => void;
+  /** Загрузить уровень из файла (JSON). */
+  onLoadLevel?: (file: File) => void;
 }) {
   const onChange = onWorld;
+  const levelFileRef = useRef<HTMLInputElement | null>(null);
   return (
     <div className="overflow-y-auto">
       <Section title="Мир (бесконечный)">
@@ -123,6 +129,28 @@ export function WorldPanel({ world, onWorld }: {
         >
           + Добавить зону
         </Btn>
+      </Section>
+
+      <Section title="Уровень (экспорт/импорт)">
+        <div className="mb-1.5 text-[9px] leading-relaxed text-stone-600">
+          Текущую сцену можно сохранить как файл уровня (JSON) и потом загрузить
+          обратно — так удобно переносить уровень между сессиями/компьютерами
+          и встраивать в готовую игру.
+        </div>
+        <div className="flex gap-1.5">
+          <Btn onClick={() => onSaveLevel?.()} className="flex-1">
+            <Save size={13} /> Сохранить уровень
+          </Btn>
+          <Btn onClick={() => levelFileRef.current?.click()} className="flex-1">
+            <FolderOpen size={13} /> Загрузить уровень
+          </Btn>
+          <input
+            ref={levelFileRef}
+            type="file" accept=".json,application/json"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f && onLoadLevel) onLoadLevel(f); e.target.value = ""; }}
+          />
+        </div>
       </Section>
 
       <div className="mt-2 text-[10px] leading-relaxed text-stone-600">

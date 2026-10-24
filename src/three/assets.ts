@@ -1051,6 +1051,7 @@ export function buildMechIndustrial(): THREE.Group { return buildGlbMech('mech_i
 
 import { clonePilot, getPilotAnimationClips } from './pilotModel.ts';
 import { ASSET_BASE } from '../utils/baseUrl.ts';
+import { base64ToBytes } from '../utils/dynamicAssetsStore.ts';
 
 /** Пока GLB не догрузился — пустая группа (иначе редактор рисует сломанного пилота). */
 export function buildPilotGlb(): THREE.Group {
@@ -1156,6 +1157,39 @@ export function registerDynamicAsset(def: AssetDef): void {
 }
 export function unregisterDynamicAsset(id: string): void {
   dynamicAssets.delete(id);
+}
+
+/**
+ * Восстановить импортированный GLB-ассет из base64 (для новых вкладок/перезагрузок).
+ * Регистрируем синхронно (build возвращает группу), геометрия грузится асинхронно.
+ */
+export function restoreDynamicAsset(id: string, name: string, base64: string): void {
+  const group = new THREE.Group();
+  registerDynamicAsset({
+    id,
+    name: name || "Мех (импорт)",
+    category: "Мехи",
+    desc: "Восстановлено из сохранённого GLB (base64).",
+    build: () => group,
+    gltf: true,
+  });
+  const bytes = base64ToBytes(base64);
+  const blob = new Blob([bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer], { type: "model/gltf-binary" });
+  const url = URL.createObjectURL(blob);
+  const loader = new GLTFLoader();
+  loader.load(url, (glb) => {
+    if (glb.scene) {
+      const scene = glb.scene.clone(true);
+      const box = new THREE.Box3().setFromObject(scene);
+      const size = box.getSize(new THREE.Vector3());
+      const s = Math.max(0.001, 4.8 / Math.max(0.001, size.y));
+      scene.scale.setScalar(s);
+      scene.updateMatrixWorld(true);
+      const box2 = new THREE.Box3().setFromObject(scene);
+      scene.position.y -= box2.min.y;
+      group.add(scene);
+    }
+  }, undefined, (err) => console.warn("Restore GLB error", err));
 }
 
 export function getAsset(id: string): AssetDef | undefined {

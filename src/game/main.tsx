@@ -5,6 +5,8 @@ import { EditorEngine } from "../three/EditorEngine";
 import type { SceneObjectState } from "../three/EditorEngine";
 import type { HudState, MechConfig, ViewMode, VisionMode } from "../three/playTypes";
 import { PlayHUD } from "../components/hud.tsx";
+import { loadDynamicAssets } from "../utils/dynamicAssetsStore";
+import { restoreDynamicAsset } from "../three/assets";
 
 /**
  * Игровой клиент (публикуется на платформах: Яндекс Игры, VK Play и т.п.).
@@ -129,21 +131,17 @@ function Game() {
     });
     engineRef.current = engine;
     engine.init();
-    // проект из редактора приходит через localStorage (та же вкладка-источник),
-    // открывается по флагу ?from=preview; после загрузки ключ удаляется
+    // восстанавливаем импортированные GLB-ассеты (мехи пользователя)
+    for (const a of loadDynamicAssets()) restoreDynamicAsset(a.id, a.name, a.base64);
+    // уровень по умолчанию: если в редакторе сохранён уровень (wf_level_1_project) — берём его,
+    // иначе первый уровень из демо-сцены
     (async () => {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("from") === "preview") {
-        const raw = localStorage.getItem("wf_yandex_preview_project");
-        if (raw) {
-          try {
-            const res = await engine.importProjectJSON(raw);
-            if (res.ok) {
-              localStorage.removeItem("wf_yandex_preview_project");
-              return;
-            }
-          } catch { /* ignore */ }
-        }
+      const raw = localStorage.getItem("wf_level_1_project");
+      if (raw) {
+        try {
+          const res = await engine.importProjectJSON(raw);
+          if (res.ok) return;
+        } catch { /* ignore */ }
       }
       engine.loadDemoScene();
     })();

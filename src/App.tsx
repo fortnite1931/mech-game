@@ -39,6 +39,7 @@ import {
   deleteProject, listProjects, loadAutosave, loadProject, saveAutosave, saveProject,
   type StoredProject,
 } from './game/projectStore.ts';
+import { loadDynamicAssets, saveDynamicAssets, bytesToBase64 } from './utils/dynamicAssetsStore.ts';
 import { normalizeScenario } from './game/project.ts';
 import {
   loadLayout, saveLayout, setActive, movePanel, resetLayout, setCollapsed,
@@ -456,27 +457,6 @@ export default function App() {
     setTimeout(() => startPlay(), 30);
   };
 
-  /** Превью для Яндекс: сохраняет проект в localStorage и открывает игру с флагом. */
-  const yandexPreview = async () => {
-    const e = engineRef.current;
-    if (!e) return;
-    try {
-      const json = e.exportJSON();
-      localStorage.setItem('wf_yandex_preview_project', json);
-      // В GitHub Pages игра лежит в index.html (главная), локально — в game.html.
-      // Определяем по хосту, чтобы не гадать и не делать HEAD-запросы.
-      const host = window.location.hostname;
-      const isLocal = host === 'localhost' || host === '127.0.0.1';
-      const page = isLocal ? 'game.html' : 'index.html';
-      window.open(`${page}?from=preview`, '_blank');
-      log(`Проект сохранён для превью Яндекс, открыта ${page}.`, 'ok');
-      toast('Превью Яндекс открыто с текущим проектом', 'ok');
-    } catch (err) {
-      toast('Не удалось подготовить превью Яндекс', 'err');
-      log(`Ошибка превью Яндекс: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
-    }
-  };
-
   const handleScenario = (s: Scenario) => {
     setScenario(s);
     try { localStorage.setItem('wf_scenario', JSON.stringify(s)); } catch { /* ignore */ }
@@ -556,12 +536,59 @@ export default function App() {
       const url = URL.createObjectURL(file);
       const id = eng().importGlbAsMech(name, url);
       if (id) {
-        toast(`Мех «${name}» импортирован (временный, до перезагрузки)`, 'ok');
-        log(`Импортирован GLB-мех «${name}» в сцену.`, 'ok');
+        // сохраняем байты в localStorage — чтобы GLB переживал перезагрузку и новые вкладки
+        const buf = await file.arrayBuffer();
+        const stored = loadDynamicAssets().filter((a) => a.id !== id);
+        stored.push({ id, name, base64: bytesToBase64(new Uint8Array(buf)) });
+        saveDynamicAssets(stored);
+        toast(`Мех «${name}» импортирован (сохранён в браузере)`, 'ok');
+        log(`Импортирован GLB-мех «${name}» (сохранён для превью).`, 'ok');
       } else toast('Не удалось импортировать GLB', 'err');
     } catch (err) {
-      toast('Ушибка импорта GLB', 'err');
+      toast('Ошибка импорта GLB', 'err');
       log(`Ошибка импорта GLB: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
+    }
+  };
+
+  /** Сохранить текущую сцену как уровень (JSON-файл для игры). */
+  const saveLevelAsJson = async () => {
+    const e = engineRef.current;
+    if (!e) return;
+    try {
+      const json = await e.exportProjectJSON();
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      download(url, `level1.wasteland.json`);
+      setTimeout(() => URL.revokeObjectURL(url), 6000);
+      // также запоминаем в браузере — игра (game.html) подхватит этот уровень
+      try { localStorage.setItem('wf_level_1_project', json); } catch { /* ignore */ }
+      toast('Уровень сохранён как JSON и запомнен для игры', 'ok');
+      log(`Уровень экспортирован (${(json.length / 1024 / 1024).toFixed(1)} МБ) и запомнен для игры.`, 'ok');
+    } catch (err) {
+      toast('Не удалось сохранить уровень', 'err');
+      log(`Ошибка сохранения уровня: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
+    }
+  };
+
+  /** Загрузить уровень из JSON-файла в редактор. */
+  const loadLevelFromJson = async (file: File) => {
+    const e = engineRef.current;
+    if (!e) return;
+    try {
+      const text = await file.text();
+      const res = await e.importProjectJSON(text);
+      if (res.ok) {
+        setEnv({ ...e.env });
+        setMechConfig({ ...e.mechConfig });
+        setScenario(JSON.parse(JSON.stringify(e.scenario)) as Scenario);
+        toast(`Уровень «${file.name}» загружен`, 'ok');
+        log(`Уровень загружен: ${file.name}.`, 'ok');
+      } else {
+        toast(res.message ?? 'Не удалось загрузить уровень', 'err');
+      }
+    } catch (err) {
+      toast('Ошибка загрузки уровня', 'err');
+      log(`Ошибка загрузки уровня: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
     }
   };
 
@@ -737,7 +764,10 @@ export default function App() {
       case 'world': {
         const engine = engineRef.current;
         if (!engine) return <div className="p-3 text-[11px] text-stone-500">Движок запускается…</div>;
-        return <WorldPanel key={worldVersion} world={engine.world} onWorld={handleWorld} />;
+        return <WorldPanel key={worldVersion} world={engine.world} onWorld={handleWorld}
+          onSaveLevel={() => saveLevelAsJson()}
+          onLoadLevel={(file) => loadLevelFromJson(file)}
+        />;
       }
       case 'sound':
         return <SoundPanel env={env} onChange={handleEnv} />;
@@ -1016,15 +1046,6 @@ export default function App() {
           >
             {playing ? <><Square size={13} fill="currentColor" /> Стоп</> : <><Play size={13} fill="currentColor" /> Превью</>}
           </button>
-          {!playing && (
-            <button
-              onClick={yandexPreview}
-              title="Сохранить текущий проект и открыть игру в отдельной вкладке — превью именно для Яндекс Игр"
-              className="flex h-9 items-center gap-2 rounded-md border border-sky-500/40 bg-sky-600/15 px-3 text-[11px] font-black uppercase tracking-wider text-sky-200 transition-all hover:bg-sky-600/30"
-            >
-              Превью · Яндекс
-            </button>
-          )}
           {!playing && (
             <IconBtn title="Настройки кабины и управления" onClick={() => showPanel('mech', 'right')}>
               <Gamepad2 size={15} />
