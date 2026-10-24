@@ -296,7 +296,6 @@ function Game() {
           onRefreshCraft={() => setCraftOptions(engineRef.current?.play?.craftOptions() ?? [])}
           craftOptions={craftOptions}
           onBuild={(kind) => engineRef.current?.play?.buildStructure(kind)}
-          buildOptions={hud?.buildOptions ?? []}
         />
       )}
 

@@ -3,6 +3,7 @@ import { Square, Eye, Crosshair, Flame, Gauge, Rocket, Keyboard, Shield, RotateC
 import type { HudState, MechConfig, ViewMode, VisionMode } from '../three/playTypes.ts';
 import { VIEW_ORDER, VIEW_INFO, VISION_ORDER, VISION_INFO } from '../three/playTypes.ts';
 import { Minimap } from './overlays.tsx';
+import { BuildDock, type BuildTab } from './buildDock.tsx';
 import type { SceneObjectState } from '../three/EditorEngine.ts';
 import { cn } from '../utils/cn.ts';
 
@@ -69,7 +70,7 @@ export function CockpitFrame({ opacity, scanlines, color }: { opacity: number; s
   );
 }
 
-export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, onView, onVision, onEject, onEnterMech, mechs, onCraft, onUseMedkit, onRefreshCraft, craftOptions, onBuild, buildOptions }: {
+export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, onView, onVision, onEject, onEnterMech, mechs, onCraft, onUseMedkit, onRefreshCraft, craftOptions, onBuild }: {
   hud: HudState | null; config: MechConfig; objects: SceneObjectState[];
   reticleRef: React.RefObject<HTMLDivElement | null>;
   onExit: () => void; onRestart: () => void; onView: (v: ViewMode) => void; onVision: (v: VisionMode) => void;
@@ -81,7 +82,6 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   craftOptions?: { id: string; name: string; desc: string; ok: boolean; missing: string }[];
   /** Стройка базы: построить объект по kind (данные из PlayController). */
   onBuild?: (kind: string) => void;
-  buildOptions?: { kind: string; name: string; cost: string; ok: boolean; reason?: string | null; dims?: string }[];
 }) {
   const color = config.hudColor;
   const view = hud?.view ?? config.defaultView;
@@ -92,23 +92,20 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   const php = hud?.php ?? 0;
   const pmax = Math.max(1, hud?.pmax ?? 1);
   const hpFrac = Math.max(0, Math.min(1, php / pmax));
-  const [showCraft, setShowCraft] = React.useState(false);
-  const [showBuild, setShowBuild] = React.useState(false);
-  const [showInv, setShowInv] = React.useState(false);
-  // клавиши работают в превью: B — крафт, T — стройка, I — инвентарь, H — аптечка
+  const [tab, setTab] = React.useState<BuildTab>('build');
+  // клавиши — только быстрые переключатели вкладок нижнего дока
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-      if (e.code === 'KeyB') { e.preventDefault(); setShowCraft((v) => !v); onRefreshCraft?.(); }
-      if (e.code === 'KeyT') { e.preventDefault(); setShowBuild((v) => !v); }
-      if (e.code === 'KeyI') { e.preventDefault(); setShowInv((v) => !v); }
+      if (e.code === 'KeyB') { e.preventDefault(); setTab('craft'); onRefreshCraft?.(); }
+      if (e.code === 'KeyT') { e.preventDefault(); setTab('build'); }
+      if (e.code === 'KeyI') { e.preventDefault(); setTab('inv'); }
       if (e.code === 'KeyH') { e.preventDefault(); onUseMedkit?.(); }
-      if (e.code === 'Escape') { setShowCraft(false); setShowBuild(false); setShowInv(false); }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [showCraft, onRefreshCraft, onUseMedkit]);
+  }, [onRefreshCraft, onUseMedkit]);
   const timeStr = hud ? `${Math.floor(hud.time / 60).toString().padStart(2, '0')}:${Math.floor(hud.time % 60).toString().padStart(2, '0')}` : '00:00';
   const recipes = craftOptions ?? [];
 
@@ -180,140 +177,26 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
             </div>
           </div>
 
-          {/* инвентарь (всегда виден) */}
-          {hud && hud.bag && (
-            <div className="absolute right-3 top-1/2 w-[180px] -translate-y-1/2 rounded border border-white/15 bg-black/70 p-1.5 backdrop-blur">
-              <div className="mb-1 flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-stone-400">
-                <span>Рюкзак</span>
-                <span>{hud.bagWeight}/{hud.bagCapacity} кг</span>
-              </div>
-              {hud.bag.length === 0 ? (
-                <div className="text-[9px] leading-relaxed text-stone-500">
-                  Пусто. Разнеси ящики/бочки/врагов — выпадут трофеи, подойди и подбери.
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 gap-1">
-                  {hud.bag.slice(0, 12).map((b) => (
-                    <div
-                      key={b.item}
-                      title={`${b.name} (×${b.n})`}
-                      className="flex flex-col items-center justify-center rounded border border-amber-500/25 bg-black/40 px-1 py-1 text-center"
-                    >
-                      <span className="max-w-full truncate text-[8px] text-stone-300">{b.short}</span>
-                      <span className="text-[10px] font-bold text-amber-300">×{b.n}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="mt-1 font-mono text-[9px] text-stone-500">I — инвентарь · B — крафт · T — стройка</div>
-              {hud?.nearLoot && (
-                <div className="mt-1 rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-[9px] text-amber-200">
-                  Рядом: {hud.nearLoot} — подойди, чтобы подобрать
-                </div>
-              )}
-            </div>
-          )}
         </>
       )}
 
-      {/* крафт-панель */}
-      {showCraft && (
-        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-amber-500/40 bg-black/90 p-3 backdrop-blur">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-amber-400">Сборка меха</span>
-            <button onClick={() => setShowCraft(false)} className="text-stone-400 hover:text-white">✕</button>
-          </div>
-          {recipes.length === 0 && <div className="text-[11px] text-stone-500">Нет доступных рецептов.</div>}
-          {recipes.map((r) => (
-            <div key={r.id} className="mb-2 rounded border border-white/10 bg-white/[0.02] p-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-stone-100">{r.name}</span>
-                <button
-                  disabled={!r.ok}
-                  onClick={() => { onCraft?.(r.id); onRefreshCraft?.(); }}
-                  className={cn(
-                    'rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition-all',
-                    r.ok ? 'border border-emerald-500/60 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/35' : 'border border-white/10 text-stone-600',
-                  )}
-                >
-                  {r.ok ? 'Собрать' : 'Не хватает'}
-                </button>
-              </div>
-              <div className="mt-0.5 text-[10px] text-stone-500">{r.desc}</div>
-              {!r.ok && r.missing && <div className="mt-0.5 font-mono text-[9px] text-amber-400/80">не хватает: {r.missing}</div>}
-            </div>
-          ))}
-          <div className="mt-1 text-[10px] text-stone-600">
-            Собранный мех появится рядом — подойди и кликни, чтобы сесть. Loot собирается из разрушенных ящиков, бочек и техники.
-          </div>
+      {/* подсказка о ближайшем луте (над доком) */}
+      {hud?.nearLoot && (
+        <div className="absolute bottom-[118px] left-3 rounded border border-amber-500/40 bg-black/75 px-2.5 py-1 text-[10px] text-amber-200 backdrop-blur">
+          🎒 Рядом: {hud.nearLoot} — подойди, чтобы подобрать
         </div>
       )}
 
-      {/* стройка базы */}
-      {showBuild && (
-        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-emerald-500/40 bg-black/90 p-3 backdrop-blur">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-emerald-400">Стройка базы</span>
-            <button onClick={() => setShowBuild(false)} className="text-stone-400 hover:text-white">✕</button>
-          </div>
-          {(buildOptions ?? []).length === 0 && <div className="text-[11px] text-stone-500">Нет доступных построек.</div>}
-          {(buildOptions ?? []).map((b) => (
-            <div key={b.kind} className="mb-2 rounded border border-white/10 bg-white/[0.02] p-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-stone-100">{b.name}</span>
-                <button
-                  disabled={!b.ok}
-                  onClick={() => { onBuild?.(b.kind); }}
-                  className={cn(
-                    'rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition-all',
-                    b.ok ? 'border border-emerald-500/60 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/35' : 'border border-white/10 text-stone-600',
-                  )}
-                >
-                  {b.ok ? 'Построить' : 'Не хватает'}
-                </button>
-              </div>
-              <div className="mt-0.5 font-mono text-[9px] text-stone-500">цена: {b.cost}</div>
-              {b.dims && <div className="text-[9px] text-stone-600">размер: {b.dims}{b.kind !== 'foundation' && ' · нужен бетон + обводка'}</div>}
-              {!b.ok && b.reason && (
-                <div className="mt-0.5 text-[9px] text-amber-400/90">⛔ {b.reason}</div>
-              )}
-            </div>
-          ))}
-          <div className="mt-1 text-[10px] text-stone-600">
-            Постройка появляется перед мехом. Ресурсы — из рюкзака (собираются из лома и техники).
-          </div>
-        </div>
-      )}
-
-      {/* инвентарь (I) */}
-      {showInv && (
-        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-white/20 bg-black/90 p-3 backdrop-blur">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-stone-200">Рюкзак</span>
-            <button onClick={() => setShowInv(false)} className="text-stone-400 hover:text-white">✕</button>
-          </div>
-          <div className="mb-2 flex items-center justify-between font-mono text-[10px] text-stone-400">
-            <span>Вес: {hud?.bagWeight ?? 0}/{hud?.bagCapacity ?? 0} кг</span>
-            <span>{hud?.bag?.reduce((s, b) => s + b.n, 0) ?? 0} предметов</span>
-          </div>
-          {(hud?.bag?.length ?? 0) === 0 ? (
-            <div className="rounded border border-dashed border-white/15 p-3 text-center text-[11px] text-stone-500">
-              Рюкзак пуст. Разрушай ящики, бочки и врагов — из них выпадают трофеи.
-              Подойди к контейнеру, чтобы подобрать.
-            </div>
-          ) : (
-            <div className="grid grid-cols-3 gap-1.5">
-              {hud?.bag?.map((b) => (
-                <div key={b.item} className="rounded border border-white/10 bg-white/[0.02] p-2 text-center" title={b.name}>
-                  <div className="text-[11px] font-bold text-stone-200">{b.short}</div>
-                  <div className="text-[13px] font-black text-amber-300">×{b.n}</div>
-                  <div className="truncate text-[8px] text-stone-500">{b.name}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {/* постоянный нижний док: стройка/техника/инвентарь */}
+      <BuildDock
+        bag={hud?.bag}
+        buildOptions={hud?.buildOptions ?? []}
+        craftOptions={recipes}
+        activeTab={tab}
+        onTab={setTab}
+        onBuild={onBuild}
+        onCraft={(id) => { onCraft?.(id); onRefreshCraft?.(); }}
+      />
 
       {/* top-left: status */}
       <div className="absolute left-3 top-3 flex flex-col gap-1.5">
