@@ -148,7 +148,7 @@ export interface HudState {
   bagWeight?: number;
   bagCapacity?: number;
   /** Доступные постройки базы (для панели «Стройка», T). */
-  buildOptions?: { kind: string; name: string; cost: string; ok: boolean; reason?: string | null }[];
+  buildOptions?: { kind: string; name: string; cost: string; ok: boolean; reason?: string | null; dims?: string }[];
   /** Подсказка: ближайший контейнер с лутпом (что можно подобрать). */
   nearLoot?: string | null;
 }

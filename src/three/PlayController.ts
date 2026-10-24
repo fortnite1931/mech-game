@@ -259,7 +259,7 @@ export class PlayController {
     const d = 230;
     const p = new THREE.Vector3(this.pos.x + Math.cos(ang) * d, 0, this.pos.z + Math.sin(ang) * d);
     this.boundXZ(p);
-    this.enemyBase = { x: p.x, z: p.z, stage: 0, t: 10 };
+    this.enemyBase = { x: p.x, z: p.z, stage: 0, t: 25 };
   }
 
   /** Построить объект вражеской базы (без ресурсов). */
@@ -322,7 +322,7 @@ export class PlayController {
       placed++;
     }
     b.stage++;
-    b.t = 14;
+    b.t = 30;
     const dir = Math.atan2(b.z - this.pos.z, b.x - this.pos.x);
     const compass = ['к северу', 'к северо-востоку', 'к востоку', 'к юго-востоку', 'к югу', 'к юго-западу', 'к западу', 'к северо-западу'][Math.round(((dir / Math.PI + 1) * 4)) % 8];
     this.pushLog(`База врага развивается ${compass} (этап ${b.stage}/${stages.length}).`);
@@ -1333,13 +1333,15 @@ export class PlayController {
   }
 
   // ======================= стройка базы =======================
+  /** Модуль сетки стройки, м (1 плитка бетона). */
+  private static PLOT_CELL = 2;
   /** Рецепты построек: название → цена в ресурсах инвентаря. */
   private static BUILD_RECIPES: Record<string, Partial<Record<ItemId, number>>> = {
-    foundation: { scrap: 5, plate: 2 },
-    factory: { plate: 6, gear: 2, hydraulic: 1 },
-    power_plant: { plate: 4, gear: 2, fuel_cell: 2 },
-    oil_tower: { plate: 4, gear: 1 },
-    extractor: { plate: 3, gear: 1 },
+    foundation: { scrap: 2 },
+    factory: { plate: 8, gear: 3, hydraulic: 2 },
+    power_plant: { plate: 6, gear: 3, fuel_cell: 3 },
+    oil_tower: { plate: 5, gear: 2 },
+    extractor: { plate: 4, gear: 2 },
     barrier: { scrap: 4 },
     bunker_wall: { plate: 3, scrap: 2 },
     sandbags: { scrap: 2 },
@@ -1347,17 +1349,89 @@ export class PlayController {
     barrel: { scrap: 1 },
   };
 
-  /** Здания, требующие бетонную площадку рядом. */
-  private static BUILD_NEED_FOUNDATION = new Set(['factory', 'power_plant', 'oil_tower', 'extractor']);
+  /** Размеры построек в метрах (кратно 2). */
+  private static BUILD_SIZES: Record<string, [number, number]> = {
+    foundation: [2, 2],
+    factory: [6, 8],
+    power_plant: [4, 6],
+    oil_tower: [4, 6],
+    extractor: [4, 6],
+    barrier: [3, 1],
+    bunker_wall: [3, 1],
+    sandbags: [2, 1],
+    generator: [2, 2],
+    barrel: [1, 1],
+  };
+
+  /** Здания, требующие бетонную площадку (плитки) + обводку по краям. */
+  private static BUILD_NEED_PLOT = new Set(['factory', 'power_plant', 'oil_tower', 'extractor']);
+
+  /** Занятые клетки стройки (ключ «cx,cz»). */
+  private plotCells = new Map<string, boolean>();
 
   /** Что уже построено игроком (для прогрессии). */
   private builtKinds = new Set<string>();
 
   private hasFactory(): boolean { return this.builtKinds.has('factory'); }
 
-  /** Список доступных построек с ценами и причинами блокировки (для панели «Стройка»). */
-  buildOptions(): { kind: string; name: string; cost: string; ok: boolean; reason: string | null }[] {
-    const out: { kind: string; name: string; cost: string; ok: boolean; reason: string | null }[] = [];
+  private plotKey(cx: number, cz: number): string { return cx + ',' + cz; }
+
+  private plotCellAt(x: number, z: number): [number, number] {
+    const cs = PlayController.PLOT_CELL;
+    return [Math.round(x / cs), Math.round(z / cs)];
+  }
+
+  /** Все ли клетки прямоугольника (м) покрыты бетоном. */
+  private plotCovered(x: number, z: number, w: number, h: number): boolean {
+    const [cx0, cz0] = this.plotCellAt(x - w / 2, z - h / 2);
+    const [cx1, cz1] = this.plotCellAt(x + w / 2, z + h / 2);
+    for (let i = cx0; i <= cx1; i++) {
+      for (let j = cz0; j <= cz1; j++) {
+        if (!this.plotCells.has(this.plotKey(i, j))) return false;
+      }
+    }
+    return true;
+  }
+
+  /** Пометить клетки прямоугольника занятыми. */
+  private plotClaim(x: number, z: number, w: number, h: number): void {
+    const [cx0, cz0] = this.plotCellAt(x - w / 2, z - h / 2);
+    const [cx1, cz1] = this.plotCellAt(x + w / 2, z + h / 2);
+    for (let i = cx0; i <= cx1; i++) {
+      for (let j = cz0; j <= cz1; j++) {
+        this.plotCells.set(this.plotKey(i, j), true);
+      }
+    }
+  }
+
+  /** Точка перед мехом, где ставится стройка. */
+  private buildSpot(): THREE.Vector3 {
+    const a = this.camYaw + Math.PI;
+    const at = new THREE.Vector3(this.pos.x + Math.sin(a) * 5, 0, this.pos.z + Math.cos(a) * 5);
+    this.boundXZ(at);
+    return at;
+  }
+
+  /** Причина, почему постройка невозможна в точке (null — можно строить). */
+  private buildBlockReasonAt(kind: string, at: THREE.Vector3): string | null {
+    // небольшая чистая территория вокруг точки установки
+    const enemiesNear = this.enemies.some((e) => e.alive &&
+      Math.hypot(e.group.position.x - at.x, e.group.position.z - at.z) < 18);
+    if (enemiesNear) return 'Здесь не чисто — поблизости враги';
+    if (PlayController.BUILD_NEED_PLOT.has(kind)) {
+      const [w, h] = PlayController.BUILD_SIZES[kind];
+      // здание + обводка бетона по 1 плитке вокруг
+      if (!this.plotCovered(at.x, at.z, w + PlayController.PLOT_CELL * 2, h + PlayController.PLOT_CELL * 2)) {
+        return `Нужен бетон ${w + PlayController.PLOT_CELL * 2}×${h + PlayController.PLOT_CELL * 2} м + обводка (плитки 2×2 м)`;
+      }
+    }
+    return null;
+  }
+
+  /** Список доступных построек с ценами, размерами и причинами блокировки. */
+  buildOptions(): { kind: string; name: string; cost: string; ok: boolean; reason: string | null; dims: string }[] {
+    const at = this.buildSpot();
+    const out: { kind: string; name: string; cost: string; ok: boolean; reason: string | null; dims: string }[] = [];
     for (const [kind, cost] of Object.entries(PlayController.BUILD_RECIPES)) {
       const def = getAsset(kind);
       if (!def) continue;
@@ -1365,31 +1439,71 @@ export class PlayController {
         .map(([id, n]) => `${ITEMS[id as ItemId].short}×${n}`)
         .join(', ');
       const okRes = Object.entries(cost).every(([id, n]) => this.inventory.count(id as ItemId) >= (n ?? 0));
-      const reason = this.buildBlockReason(kind);
-      out.push({ kind, name: def.name, cost: costStr, ok: okRes && !reason, reason });
+      const reason = this.buildBlockReasonAt(kind, at);
+      const [w, h] = PlayController.BUILD_SIZES[kind];
+      const dims = `${w}×${h} м`;
+      out.push({ kind, name: def.name, cost: costStr, ok: okRes && !reason, reason, dims });
     }
     return out;
   }
 
-  /** Причина, почему постройка сейчас невозможна (null — можно строить). */
-  private buildBlockReason(kind: string): string | null {
-    const needFoundation = PlayController.BUILD_NEED_FOUNDATION.has(kind);
-    // подготовка территории: рядом не должно быть живых врагов
-    const enemiesNear = this.enemies.some((e) => e.alive && Math.hypot(e.group.position.x - this.pos.x, e.group.position.z - this.pos.z) < 30);
-    if (enemiesNear) return 'Территория не зачищена — рядом враги';
-    if (needFoundation) {
-      const hasF = this.targets.some((t) => t.assetId === 'foundation' && !t.transient &&
-        Math.hypot(t.center.x - this.pos.x, t.center.z - this.pos.z) < 14);
-      if (!hasF) return 'Требуется бетонная площадка рядом (построй сначала фундамент)';
+  /** Залить одну бетонную плитку 2×2 в точке перед мехом. */
+  placeFoundation(): boolean {
+    const at = this.buildSpot();
+    const [cx, cz] = this.plotCellAt(at.x, at.z);
+    const key = this.plotKey(cx, cz);
+    if (this.plotCells.has(key)) {
+      this.pushLog('Здесь уже залит бетон. Подвинься, чтобы залить дальше.');
+      return false;
     }
-    return null;
+    const cost = PlayController.BUILD_RECIPES.foundation;
+    for (const [id, n] of Object.entries(cost)) {
+      if (this.inventory.count(id as ItemId) < (n ?? 0)) {
+        this.pushLog(`Не хватает ресурсов: ${ITEMS[id as ItemId].short}×${n}.`);
+        return false;
+      }
+    }
+    const reason = this.buildBlockReasonAt('foundation', at);
+    if (reason) { this.pushLog(reason + '.'); return false; }
+    const def = getAsset('foundation')!;
+    const group = def.build();
+    this.host.scene.add(group);
+    const gy = this.host.groundHeight(at.x, at.z);
+    const box = new THREE.Box3().setFromObject(group);
+    group.position.set(at.x, gy - box.min.y, at.z);
+    group.updateMatrixWorld(true);
+    const box2 = new THREE.Box3().setFromObject(group);
+    const center = box2.getCenter(new THREE.Vector3());
+    const meshes: THREE.Mesh[] = [];
+    const id = 'built_' + Date.now() + '_foundation';
+    group.traverse((o) => {
+      o.userData.objectId = id;
+      if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
+    });
+    const hp = 60;
+    this.targets.push({
+      id, group, assetId: 'foundation', name: def.name, category: def.category, role: 'prop',
+      box: box2, center, meshes, hp, maxHp: hp,
+      radius: 1.2, solid: true, transient: false,
+    });
+    this.targetMeshes.push(...meshes);
+    for (const [id2, n] of Object.entries(cost)) {
+      this.inventory.take(id2 as ItemId, n ?? 0);
+    }
+    this.plotCells.set(key, true);
+    this.pushLog('Бетонная плитка залита (2×2 м).');
+    sfx.select(this.pos);
+    this.cb.onHud(this.buildHud());
+    return true;
   }
 
-  /** Построить объект перед мехом, списав ресурсы. */
+  /** Построить объект в точке перед мехом, списав ресурсы. */
   buildStructure(kind: string): boolean {
     const cost = PlayController.BUILD_RECIPES[kind];
     if (!cost) return false;
-    const reason = this.buildBlockReason(kind);
+    if (kind === 'foundation') return this.placeFoundation();
+    const at = this.buildSpot();
+    const reason = this.buildBlockReasonAt(kind, at);
     if (reason) { this.pushLog(reason + '.'); return false; }
     for (const [id, n] of Object.entries(cost)) {
       if (this.inventory.count(id as ItemId) < (n ?? 0)) {
@@ -1401,11 +1515,6 @@ export class PlayController {
     if (!def) return false;
     const group = def.build();
     this.host.scene.add(group);
-    // ставим перед мехом
-    const a = this.camYaw + Math.PI;
-    const d = 6;
-    const at = new THREE.Vector3(this.pos.x + Math.sin(a) * d, 0, this.pos.z + Math.cos(a) * d);
-    this.boundXZ(at);
     const gy = this.host.groundHeight(at.x, at.z);
     const box = new THREE.Box3().setFromObject(group);
     group.position.set(at.x, gy - box.min.y, at.z);
@@ -1427,9 +1536,12 @@ export class PlayController {
     };
     this.targets.push(target);
     this.targetMeshes.push(...meshes);
-    // списываем ресурсы
     for (const [id2, n] of Object.entries(cost)) {
       this.inventory.take(id2 as ItemId, n ?? 0);
+    }
+    if (PlayController.BUILD_NEED_PLOT.has(kind)) {
+      const [w, h] = PlayController.BUILD_SIZES[kind];
+      this.plotClaim(at.x, at.z, w + PlayController.PLOT_CELL * 2, h + PlayController.PLOT_CELL * 2);
     }
     this.builtKinds.add(kind);
     this.pushLog(`Построено: ${def.name}.`);
