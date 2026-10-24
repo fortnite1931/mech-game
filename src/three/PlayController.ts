@@ -241,6 +241,93 @@ export class PlayController {
   /** Принадлежность врага зоне. */
   private enemyZone = new WeakMap<Enemy, string>();
 
+  // ======================= база врага (ИИ-строительство) =======================
+  private enemyBase: { x: number; z: number; stage: number; t: number } | null = null;
+  /** Этапы стройки базы врага (каждая строка — что появляется на этапе). */
+  private static ENEMY_BASE_STAGES: string[][] = [
+    ['foundation'],
+    ['factory'],
+    ['power_plant', 'oil_tower'],
+    ['extractor'],
+    ['turret', 'turret'],
+  ];
+
+  /** Выбрать точку базы врага подальше от игрока. */
+  private initEnemyBase(): void {
+    if (this.enemyBase) return;
+    const ang = Math.random() * Math.PI * 2;
+    const d = 230;
+    const p = new THREE.Vector3(this.pos.x + Math.cos(ang) * d, 0, this.pos.z + Math.sin(ang) * d);
+    this.boundXZ(p);
+    this.enemyBase = { x: p.x, z: p.z, stage: 0, t: 10 };
+  }
+
+  /** Построить объект вражеской базы (без ресурсов). */
+  private spawnEnemyStructure(kind: string, x: number, z: number): void {
+    const def = getAsset(kind);
+    if (!def) return;
+    const group = def.build();
+    this.host.scene.add(group);
+    const gy = this.host.groundHeight(x, z);
+    const box = new THREE.Box3().setFromObject(group);
+    group.position.set(x, gy - box.min.y, z);
+    group.updateMatrixWorld(true);
+    const box2 = new THREE.Box3().setFromObject(group);
+    const center = box2.getCenter(new THREE.Vector3());
+    const size = box2.getSize(new THREE.Vector3());
+    const meshes: THREE.Mesh[] = [];
+    const id = 'ebase_' + Date.now() + '_' + kind + '_' + Math.floor(Math.random() * 1e6);
+    group.traverse((o) => {
+      o.userData.objectId = id;
+      o.userData.enemyBase = true;
+      if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
+    });
+    const role: 'prop' | 'enemy' = kind === 'turret' ? 'enemy' : 'prop';
+    const hp = kind === 'turret' ? 120 : Math.max(40, Math.round(size.x * size.y * size.z * 4));
+    const target: Target = {
+      id, group, assetId: kind, name: def.name, category: def.category, role,
+      box: box2, center, meshes, hp, maxHp: hp,
+      radius: Math.max(size.x, size.z) * 0.5, solid: true, transient: false,
+    };
+    this.targets.push(target);
+    this.targetMeshes.push(...meshes);
+    // турель врага оживляем: как обычный противник
+    if (kind === 'turret') {
+      const e = new Enemy(group, 'turret', id, {
+        hpMul: this.scenario.enemyHpMul, dmgMul: this.scenario.enemyDmgMul,
+        groundHeight: (xx, zz) => this.host.groundHeight(xx, zz),
+        blocked: (xx, zz, r) => this.solidAt(xx, zz, r),
+        fx: this.fx,
+      });
+      e.setPatrol({ enabled: false, radius: 0, speedMul: 0, waypoints: 0, pauseSec: 0, aggro: 140, alertSec: 1, leash: 200, returnHome: true });
+      target.enemy = e;
+      this.enemies.push(e);
+    }
+  }
+
+  /** Развитие базы врага: этапы стройки на расстоянии. */
+  private updateEnemyBase(dt: number): void {
+    if (this.over) return;
+    this.initEnemyBase();
+    const b = this.enemyBase!;
+    b.t -= dt;
+    if (b.t > 0) return;
+    const stages = PlayController.ENEMY_BASE_STAGES;
+    if (b.stage >= stages.length) { b.t = 9999; return; }
+    const kinds = stages[b.stage];
+    let placed = 0;
+    for (const k of kinds) {
+      const jitter = (Math.random() - 0.5) * 10;
+      this.spawnEnemyStructure(k, b.x + jitter, b.z + (Math.random() - 0.5) * 10);
+      placed++;
+    }
+    b.stage++;
+    b.t = 14;
+    const dir = Math.atan2(b.z - this.pos.z, b.x - this.pos.x);
+    const compass = ['к северу', 'к северо-востоку', 'к востоку', 'к юго-востоку', 'к югу', 'к юго-западу', 'к западу', 'к северо-западу'][Math.round(((dir / Math.PI + 1) * 4)) % 8];
+    this.pushLog(`База врага развивается ${compass} (этап ${b.stage}/${stages.length}).`);
+  }
+
   /** Модель пилота ещё не догрузилась — стоит процедурный запасной силуэт. */
   private pilotIsFallback = false;
 
@@ -1864,7 +1951,7 @@ export class PlayController {
       this.updateStamina(dt);
       this.updateFreeCamera(dt);
       this.updateProjectiles(dt);
-      if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); this.updateZones(); }
+      if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); this.updateZones(); this.updateEnemyBase(dt); }
       this.hurt = Math.max(0, this.hurt - dt * 1.5);
       this.fx.update(dt);
       // тряска камеры затухает и пешком — иначе после выхода из меха «трясёт» вечно
@@ -1884,7 +1971,7 @@ export class PlayController {
     this.mech.updateMatrixWorld(true);
     this.updateWeapons(dt);
     this.updateProjectiles(dt);
-    if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); }
+    if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); this.updateEnemyBase(dt); }
     this.hurt = Math.max(0, this.hurt - dt * 1.5);
     this.fx.update(dt);
     this.updateLootPickups(dt);

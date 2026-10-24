@@ -2403,11 +2403,11 @@ export class EditorEngine {
     this.historyLock = true;
     try {
       Array.from(this.objects.keys()).forEach((id) => this.removeObjectInternal(id));
-      // уровень 1: мех игрока, вражеская база, зона зачистки
+      // уровень 1: мех игрока, вражеская база вдалеке, зона зачистки на расстоянии
       this.world = this.clampWorld({
         ...this.world,
         zones: [
-          { id: 'zone_1', name: 'База «Шершень»', x: 12, z: 10, r: 110 },
+          { id: 'zone_1', name: 'База «Шершень»', x: 95, z: 25, r: 110 },
         ],
       }, this.world);
       const place = (assetId: string, x: number, z: number, ry = 0, extra: Partial<SceneObjectState> = {}) => {
@@ -2421,15 +2421,15 @@ export class EditorEngine {
         this.spawnFromState(s);
         this.dropGroupToGround(id);
       };
-      // игрок
+      // игрок — в центре, рядом врагов нет
       place('mech_scout', 0, 0, 0, { role: 'player', name: '«Ястреб» (игрок)' });
-      // вражеская база
-      place('mech_molot', 12, 10, -40, { role: 'enemy', name: '«Молот» (враг)' });
-      place('mech_scout', 15, 14, 20, { role: 'enemy', name: '«Ястреб» (враг)' });
-      place('mech_juggernaut', -9, -7, 130, { role: 'enemy', name: '«Титан» (враг)' });
-      place('turret', 5, 8.5, -140, { role: 'enemy', name: 'Турель «Шершень» (враг)' });
-      place('turret', 18, 12, -20, { role: 'enemy', name: 'Турель «Шершень-2» (враг)' });
-      // укрепления и пропы
+      // вражеская база — далеко (95..115 м)
+      place('mech_molot', 95, 25, -40, { role: 'enemy', name: '«Молот» (враг)' });
+      place('mech_scout', 105, 35, 20, { role: 'enemy', name: '«Ястреб» (враг)' });
+      place('mech_juggernaut', 82, 18, 130, { role: 'enemy', name: '«Титан» (враг)' });
+      place('turret', 110, 30, -140, { role: 'enemy', name: 'Турель «Шершень» (враг)' });
+      place('turret', 80, 10, -20, { role: 'enemy', name: 'Турель «Шершень-2» (враг)' });
+      // укрепления и пропы вокруг старта (полигон для лута)
       place('outpost', 9, 6, -25);
       place('bunker_wall', -2, 9, 0);
       place('bunker_wall', 3.2, 9, 0);
