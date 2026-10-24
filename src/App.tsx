@@ -463,29 +463,14 @@ export default function App() {
     try {
       const json = e.exportJSON();
       localStorage.setItem('wf_yandex_preview_project', json);
-      // на Pages игра лежит в index.html (главная), локально — в game.html:
-      // пробуем оба, открываем тот, что существует
-      const candidates = ['game.html?from=preview', 'index.html?from=preview'];
-      let opened = false;
-      for (const url of candidates) {
-        try {
-          const r = await fetch(url.split('?')[0], { method: 'HEAD' });
-          if (r.ok || r.status === 405) {
-            window.open(url, '_blank');
-            opened = true;
-            break;
-          }
-        } catch { /* следующая попытка */ }
-      }
-      if (opened) {
-        log('Проект сохранён для превью Яндекс, игра открыта в новой вкладке.', 'ok');
-        toast('Превью Яндекс открыто с текущим проектом', 'ok');
-      } else {
-        // запасной вариант — открываем game.html вслепую (локально он точно есть)
-        window.open('game.html?from=preview', '_blank');
-        log('Проект сохранён; открываю game.html (превью Яндекс).', 'ok');
-        toast('Превью Яндекс открыто', 'ok');
-      }
+      // В GitHub Pages игра лежит в index.html (главная), локально — в game.html.
+      // Определяем по хосту, чтобы не гадать и не делать HEAD-запросы.
+      const host = window.location.hostname;
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+      const page = isLocal ? 'game.html' : 'index.html';
+      window.open(`${page}?from=preview`, '_blank');
+      log(`Проект сохранён для превью Яндекс, открыта ${page}.`, 'ok');
+      toast('Превью Яндекс открыто с текущим проектом', 'ok');
     } catch (err) {
       toast('Не удалось подготовить превью Яндекс', 'err');
       log(`Ошибка превью Яндекс: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
