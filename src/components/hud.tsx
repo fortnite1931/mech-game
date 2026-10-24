@@ -69,7 +69,7 @@ export function CockpitFrame({ opacity, scanlines, color }: { opacity: number; s
   );
 }
 
-export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, onView, onVision, onEject, onEnterMech, mechs, onCraft, onUseMedkit, onRefreshCraft, craftOptions }: {
+export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, onView, onVision, onEject, onEnterMech, mechs, onCraft, onUseMedkit, onRefreshCraft, craftOptions, onBuild, buildOptions }: {
   hud: HudState | null; config: MechConfig; objects: SceneObjectState[];
   reticleRef: React.RefObject<HTMLDivElement | null>;
   onExit: () => void; onRestart: () => void; onView: (v: ViewMode) => void; onVision: (v: VisionMode) => void;
@@ -79,6 +79,9 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   onUseMedkit?: () => void;
   onRefreshCraft?: () => void;
   craftOptions?: { id: string; name: string; desc: string; ok: boolean; missing: string }[];
+  /** Стройка базы: построить объект по kind (данные из PlayController). */
+  onBuild?: (kind: string) => void;
+  buildOptions?: { kind: string; name: string; cost: string; ok: boolean }[];
 }) {
   const color = config.hudColor;
   const view = hud?.view ?? config.defaultView;
@@ -90,14 +93,16 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   const pmax = Math.max(1, hud?.pmax ?? 1);
   const hpFrac = Math.max(0, Math.min(1, php / pmax));
   const [showCraft, setShowCraft] = React.useState(false);
-  // клавиши работают в превью: B — крафт, H — аптечка (иначе H переключает подсказку)
+  const [showBuild, setShowBuild] = React.useState(false);
+  // клавиши работают в превью: B — крафт, T — стройка, H — аптечка
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
       if (e.code === 'KeyB') { e.preventDefault(); setShowCraft((v) => !v); onRefreshCraft?.(); }
+      if (e.code === 'KeyT') { e.preventDefault(); setShowBuild((v) => !v); }
       if (e.code === 'KeyH') { e.preventDefault(); onUseMedkit?.(); }
-      if (e.code === 'Escape' && showCraft) setShowCraft(false);
+      if (e.code === 'Escape') { setShowCraft(false); setShowBuild(false); }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
@@ -186,7 +191,7 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
                   <span className="text-amber-300">×{b.n}</span>
                 </div>
               ))}
-              <div className="mt-1 font-mono text-[9px] text-stone-500">B — крафт · H — аптечка</div>
+              <div className="mt-1 font-mono text-[9px] text-stone-500">B — крафт · T — стройка · H — аптечка</div>
             </div>
           )}
         </>
@@ -221,6 +226,38 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
           ))}
           <div className="mt-1 text-[10px] text-stone-600">
             Собранный мех появится рядом — подойди и кликни, чтобы сесть. Loot собирается из разрушенных ящиков, бочек и техники.
+          </div>
+        </div>
+      )}
+
+      {/* стройка базы */}
+      {showBuild && (
+        <div className="pointer-events-auto absolute left-1/2 top-1/2 w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-emerald-500/40 bg-black/90 p-3 backdrop-blur">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-emerald-400">Стройка базы</span>
+            <button onClick={() => setShowBuild(false)} className="text-stone-400 hover:text-white">✕</button>
+          </div>
+          {(buildOptions ?? []).length === 0 && <div className="text-[11px] text-stone-500">Нет доступных построек.</div>}
+          {(buildOptions ?? []).map((b) => (
+            <div key={b.kind} className="mb-2 rounded border border-white/10 bg-white/[0.02] p-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-stone-100">{b.name}</span>
+                <button
+                  disabled={!b.ok}
+                  onClick={() => { onBuild?.(b.kind); }}
+                  className={cn(
+                    'rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition-all',
+                    b.ok ? 'border border-emerald-500/60 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/35' : 'border border-white/10 text-stone-600',
+                  )}
+                >
+                  {b.ok ? 'Построить' : 'Не хватает'}
+                </button>
+              </div>
+              <div className="mt-0.5 font-mono text-[9px] text-stone-500">цена: {b.cost}</div>
+            </div>
+          ))}
+          <div className="mt-1 text-[10px] text-stone-600">
+            Постройка появляется перед мехом. Ресурсы — из рюкзака (собираются из лома и техники).
           </div>
         </div>
       )}

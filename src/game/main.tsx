@@ -210,6 +210,7 @@ function Game() {
 
   const viewOf = (v: ViewMode) => engineRef.current?.play?.setView(v);
   const visionOf = (v: VisionMode) => engineRef.current?.play?.setVision(v);
+  const [craftOptions, setCraftOptions] = useState<{ id: string; name: string; desc: string; ok: boolean; missing: string }[]>([]);
   const mechs = objects
     .filter((o) => o.visible && o.assetId.startsWith("mech_"))
     .map((o) => ({ id: o.id, name: o.name, assetId: o.assetId }));
@@ -280,6 +281,15 @@ function Game() {
           onEject={() => engineRef.current?.play?.eject()}
           onEnterMech={(id) => engineRef.current?.play?.enterMech(id)}
           mechs={mechs}
+          onCraft={(recipeId) => {
+            engineRef.current?.play?.craftMech(recipeId);
+            setCraftOptions(engineRef.current?.play?.craftOptions() ?? []);
+          }}
+          onUseMedkit={() => engineRef.current?.play?.useMedkit()}
+          onRefreshCraft={() => setCraftOptions(engineRef.current?.play?.craftOptions() ?? [])}
+          craftOptions={craftOptions}
+          onBuild={(kind) => engineRef.current?.play?.buildStructure(kind)}
+          buildOptions={hud?.buildOptions ?? []}
         />
       )}
 

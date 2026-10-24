@@ -147,6 +147,8 @@ export interface HudState {
   bag?: { item: string; short: string; name: string; n: number }[];
   bagWeight?: number;
   bagCapacity?: number;
+  /** Доступные постройки базы (для панели «Стройка», T). */
+  buildOptions?: { kind: string; name: string; cost: string; ok: boolean }[];
 }
 
 export type EnemyKindId = 'turret' | 'mech_scout' | 'mech_juggernaut' | 'mech_molot' | 'infantry';

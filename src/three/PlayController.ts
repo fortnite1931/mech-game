@@ -1163,6 +1163,81 @@ export class PlayController {
     return true;
   }
 
+  // ======================= стройка базы =======================
+  /** Рецепты построек: название → цена в ресурсах инвентаря. */
+  private static BUILD_RECIPES: Record<string, Partial<Record<ItemId, number>>> = {
+    barrier: { scrap: 4 },
+    bunker_wall: { plate: 3, scrap: 2 },
+    sandbags: { scrap: 2 },
+    generator: { plate: 2, gear: 1, fuel_cell: 1 },
+    barrel: { scrap: 1 },
+  };
+
+  /** Список доступных построек с ценами (для панели «Стройка»). */
+  buildOptions(): { kind: string; name: string; cost: string; ok: boolean }[] {
+    const out: { kind: string; name: string; cost: string; ok: boolean }[] = [];
+    for (const [kind, cost] of Object.entries(PlayController.BUILD_RECIPES)) {
+      const def = getAsset(kind);
+      if (!def) continue;
+      const costStr = Object.entries(cost)
+        .map(([id, n]) => `${ITEMS[id as ItemId].short}×${n}`)
+        .join(', ');
+      const ok = Object.entries(cost).every(([id, n]) => this.inventory.count(id as ItemId) >= (n ?? 0));
+      out.push({ kind, name: def.name, cost: costStr, ok });
+    }
+    return out;
+  }
+
+  /** Построить объект перед мехом, списав ресурсы. */
+  buildStructure(kind: string): boolean {
+    const cost = PlayController.BUILD_RECIPES[kind];
+    if (!cost) return false;
+    for (const [id, n] of Object.entries(cost)) {
+      if (this.inventory.count(id as ItemId) < (n ?? 0)) {
+        this.pushLog('Не хватает ресурсов на стройку.');
+        return false;
+      }
+    }
+    const def = getAsset(kind);
+    if (!def) return false;
+    const group = def.build();
+    this.host.scene.add(group);
+    // ставим перед мехом
+    const a = this.camYaw + Math.PI;
+    const d = 6;
+    const at = new THREE.Vector3(this.pos.x + Math.sin(a) * d, 0, this.pos.z + Math.cos(a) * d);
+    this.boundXZ(at);
+    const gy = this.host.groundHeight(at.x, at.z);
+    const box = new THREE.Box3().setFromObject(group);
+    group.position.set(at.x, gy - box.min.y, at.z);
+    group.updateMatrixWorld(true);
+    const box2 = new THREE.Box3().setFromObject(group);
+    const center = box2.getCenter(new THREE.Vector3());
+    const size = box2.getSize(new THREE.Vector3());
+    const meshes: THREE.Mesh[] = [];
+    const id = 'built_' + Date.now() + '_' + kind;
+    group.traverse((o) => {
+      o.userData.objectId = id;
+      if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
+    });
+    const hp = Math.max(30, Math.round(size.x * size.y * size.z * 4));
+    const target: Target = {
+      id, group, assetId: kind, name: def.name, category: def.category, role: 'prop',
+      box: box2, center, meshes, hp, maxHp: hp,
+      radius: Math.max(size.x, size.z) * 0.5, solid: true, transient: false,
+    };
+    this.targets.push(target);
+    this.targetMeshes.push(...meshes);
+    // списываем ресурсы
+    for (const [id2, n] of Object.entries(cost)) {
+      this.inventory.take(id2 as ItemId, n ?? 0);
+    }
+    this.pushLog(`Построено: ${def.name}.`);
+    sfx.select(this.pos);
+    this.cb.onHud(this.buildHud());
+    return true;
+  }
+
   /** Выносливость: тратится на бег, восстанавливается. */
   private updateStamina(dt: number): void {
     const v = this.cfg.vitals;
@@ -2707,6 +2782,7 @@ export class PlayController {
       })),
       bagWeight: Math.round(this.inventory.weight() * 10) / 10,
       bagCapacity: this.cfg.vitals.carryKg,
+      buildOptions: this.buildOptions(),
     };
   }
 }
