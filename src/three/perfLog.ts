@@ -56,6 +56,8 @@ export interface PerfSpike {
 }
 
 const SERVER = 'http://127.0.0.1:8788';
+/** true только когда страница открыта локально (localhost/127.0.0.1). */
+const IS_LOCAL = typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1');
 /** Кадр дольше 28 мс — заметное проседание (ниже ~35 FPS). */
 const SPIKE_MS = 28;
 /** Кадр дольше 55 мс — сильное падение (ниже ~18 FPS). */
@@ -83,6 +85,13 @@ export class PerfProfiler {
   private session = 0;
 
   async start(): Promise<boolean> {
+    if (!IS_LOCAL) {
+      // на GitHub/внешнем хостинге сервер журнала недоступен: профайлер не включаем
+      this.serverUp = false;
+      this.enabled = false;
+      this.logFile = null;
+      return false;
+    }
     this.startTime = performance.now();
     this.lastFlush = performance.now();
     this.session = Date.now();
@@ -136,6 +145,7 @@ export class PerfProfiler {
 
   /** Отправить накопленное на сервер. Буфер чистим только после успешной отправки. */
   flush(force = false) {
+    if (!IS_LOCAL) return; // на внешнем хостинге не шлём и не спамим в консоль
     if (this.sending) return;
     if (this.buffer.length === 0 && this.spikes.length === 0 && !force) return;
     if (!this.serverUp) {
