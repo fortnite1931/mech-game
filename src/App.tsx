@@ -456,6 +456,22 @@ export default function App() {
     setTimeout(() => startPlay(), 30);
   };
 
+  /** Превью для Яндекс: сохраняет проект и открывает игру в отдельной вкладке. */
+  const yandexPreview = async () => {
+    const e = engineRef.current;
+    if (!e) return;
+    try {
+      const json = e.exportJSON();
+      localStorage.setItem('wf_yandex_preview_project', json);
+      window.open('game.html', '_blank');
+      log('Проект сохранён для превью Яндекс, игра открыта в новой вкладке.', 'ok');
+      toast('Превью Яндекс открыто в новой вкладке', 'ok');
+    } catch (err) {
+      toast('Не удалось подготовить превью Яндекс', 'err');
+      log(`Ошибка превью Яндекс: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
+    }
+  };
+
   const handleScenario = (s: Scenario) => {
     setScenario(s);
     try { localStorage.setItem('wf_scenario', JSON.stringify(s)); } catch { /* ignore */ }
@@ -995,6 +1011,15 @@ export default function App() {
           >
             {playing ? <><Square size={13} fill="currentColor" /> Стоп</> : <><Play size={13} fill="currentColor" /> Превью</>}
           </button>
+          {!playing && (
+            <button
+              onClick={yandexPreview}
+              title="Сохранить текущий проект и открыть игру в отдельной вкладке — превью именно для Яндекс Игр"
+              className="flex h-9 items-center gap-2 rounded-md border border-sky-500/40 bg-sky-600/15 px-3 text-[11px] font-black uppercase tracking-wider text-sky-200 transition-all hover:bg-sky-600/30"
+            >
+              Превью · Яндекс
+            </button>
+          )}
           {!playing && (
             <IconBtn title="Настройки кабины и управления" onClick={() => showPanel('mech', 'right')}>
               <Gamepad2 size={15} />

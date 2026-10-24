@@ -129,7 +129,17 @@ function Game() {
     });
     engineRef.current = engine;
     engine.init();
-    engine.loadDemoScene();
+    // если редактор сохранил проект для превью Яндекс — грузим именно его,
+    // иначе демо-сцена
+    (async () => {
+      const raw = localStorage.getItem("wf_yandex_preview_project");
+      if (raw) {
+        const res = await engine.importProjectJSON(raw);
+        if (!res.ok) engine.loadDemoScene();
+      } else {
+        engine.loadDemoScene();
+      }
+    })();
     // M — открыть/закрыть админку прямо поверх игры (без рестарта)
     const onKey = (e: KeyboardEvent) => {
       if (e.code === "KeyM") {
