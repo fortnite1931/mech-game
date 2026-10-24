@@ -529,6 +529,21 @@ export default function App() {
     setExporting(false);
   };
 
+  const doImportGlb = async (file: File) => {
+    try {
+      const name = file.name.replace(/\.glb$/i, "");
+      const url = URL.createObjectURL(file);
+      const id = eng().importGlbAsMech(name, url);
+      if (id) {
+        toast(`Мех «${name}» импортирован (временный, до перезагрузки)`, 'ok');
+        log(`Импортирован GLB-мех «${name}» в сцену.`, 'ok');
+      } else toast('Не удалось импортировать GLB', 'err');
+    } catch (err) {
+      toast('Ушибка импорта GLB', 'err');
+      log(`Ошибка импорта GLB: ${err instanceof Error ? err.message : 'неизвестно'}`, 'err');
+    }
+  };
+
   const doImport = async (text: string) => {
     const res = await eng().importProjectJSON(text);
     if (res.ok) {
@@ -654,6 +669,7 @@ export default function App() {
             onFocus={() => eng().focusSelected()}
             onDrop={() => eng().dropToGround()}
             onExportObject={(id, anim) => void doExportObject(id, anim)}
+            onImportGlb={(file) => void doImportGlb(file)}
             types={engineRef.current?.getTypes().map((t) => ({ id: t.id, name: t.name, role: t.role, category: t.category }))}
             onAssignType={(objectId, typeId) => {
               if (engineRef.current?.assignType(objectId, typeId)) log('Тип объекта изменён.', 'info');

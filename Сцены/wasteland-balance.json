@@ -1,0 +1,9 @@
+{
+  "mechSpeed": 0.45,
+  "pilotWalk": 1,
+  "pilotRun": 1,
+  "dmgFromPlayer": 1,
+  "dmgToPlayer": 1,
+  "enemyHpMul": 1,
+  "enemyDmgMul": 1
+}

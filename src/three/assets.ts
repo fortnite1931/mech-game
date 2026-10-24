@@ -1149,6 +1149,15 @@ export const ASSETS: AssetDef[] = [
   { id: 'grass', name: 'Пучок травы', category: 'Ландшафт', desc: 'Кривые пучки зелёно-сухой травы.', build: buildGrass },
 ];
 
+/** Динамические ассеты (например, импортированные из GLB во время сессии). */
+const dynamicAssets = new Map<string, AssetDef>();
+export function registerDynamicAsset(def: AssetDef): void {
+  dynamicAssets.set(def.id, def);
+}
+export function unregisterDynamicAsset(id: string): void {
+  dynamicAssets.delete(id);
+}
+
 export function getAsset(id: string): AssetDef | undefined {
-  return ASSETS.find((a) => a.id === id);
+  return dynamicAssets.get(id) ?? ASSETS.find((a) => a.id === id);
 }

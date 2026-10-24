@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
-import { getAsset, getMechClips, getMechAnimationClips, clipForState, type MechAnimState } from './assets.ts';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { getAsset, getMechClips, getMechAnimationClips, clipForState, registerDynamicAsset, type MechAnimState } from './assets.ts';
 import { getSharedMaterials, cloneMaterials, applyOverride } from './materials.ts';
 import { getTextures } from './textures.ts';
 import { PlayController } from './PlayController.ts';
@@ -973,8 +974,7 @@ export class EditorEngine {
     this.emitObjects();
   }
 
-  setWorld(cfg: Partial<WorldConfig>) {
-    const merged = this.clampWorld({ ...this.world, ...cfg }, this.world);
+  setWorld(cfg: Partial<WorldConfig>) {    const merged = this.clampWorld({ ...this.world, ...cfg }, this.world);
     let changed = false;
     (Object.keys(merged) as (keyof WorldConfig)[]).forEach((k) => {
       if (merged[k] !== this.world[k]) changed = true;
@@ -996,6 +996,41 @@ export class EditorEngine {
       randomSpawn: c.randomSpawn === true,
       enabled: c.enabled !== false,
     };
+  }
+
+  /**
+   * Импорт меха из GLB (отредактированного в Blender) в текущую сессию.
+   * Модель приводится к росту ~4.8 м, ставится на землю и появляется в сцене.
+   * ВАЖНО: ассет временный — живёт до перезагрузки страницы.
+   * Для постоянного использования положи файл в public/library/ и добавь в реестр.
+   */
+  importGlbAsMech(name: string, url: string): string {
+    const id = "mech_custom_" + Date.now();
+    const group = new THREE.Group();
+    const build = () => group;
+    registerDynamicAsset({
+      id, name: name || "Мех (импорт)", category: "Мехи",
+      desc: "Импортировано из GLB (Blender), временный ассет сессии.",
+      build, gltf: true,
+    });
+    const loader = new GLTFLoader();
+    loader.load(url, (glb) => {
+      if (!glb.scene) return;
+      const scene = glb.scene.clone(true);
+      const box = new THREE.Box3().setFromObject(scene);
+      const size = box.getSize(new THREE.Vector3());
+      const s = Math.max(0.001, 4.8 / Math.max(0.001, size.y));
+      scene.scale.setScalar(s);
+      scene.updateMatrixWorld(true);
+      const box2 = new THREE.Box3().setFromObject(scene);
+      scene.position.y -= box2.min.y; // ноги на y=0
+      group.add(scene);
+      this.updateObject?.(id, {}, false);
+      this.emitObjects();
+    }, undefined, (err) => console.warn("GLB import error", err));
+    const at = this.camera.position.clone().add(this.camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(9));
+    at.y = 0;
+    return this.addAsset(id, at) ? id : "";
   }
 
   startPlay(config: MechConfig, scenario: Scenario, cbs: PlayCallbacks, tuning = false): boolean {

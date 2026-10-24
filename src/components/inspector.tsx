@@ -1,7 +1,8 @@
 import {
-  Copy, Trash2, Focus, ArrowDownToLine, Eye, EyeOff, Lock, Unlock, Download, Film,
+  Copy, Trash2, Focus, ArrowDownToLine, Eye, EyeOff, Lock, Unlock, Download, Film, Upload,
   RotateCcw, Sun, CloudFog, Wind, Sparkles, LayoutGrid, Magnet, BoxSelect,
 } from 'lucide-react';
+import { useRef } from 'react';
 import type { SceneObjectState, EnvState } from '../three/EditorEngine.ts';
 import { TIME_PRESETS } from '../three/EditorEngine.ts';
 import { getAsset } from '../three/assets.ts';
@@ -9,7 +10,7 @@ import { Section, Slider, Vec3, ColorRow, Btn, Toggle } from './ui.tsx';
 import { cn } from '../utils/cn.ts';
 
 // ---------------- Inspector ----------------
-export function Inspector({ obj, onUpdate, onRole, onDuplicate, onDelete, onFocus, onDrop, types, onAssignType, onExportObject, selectedCount }: {
+export function Inspector({ obj, onUpdate, onRole, onDuplicate, onDelete, onFocus, onDrop, types, onAssignType, onExportObject, onImportGlb, selectedCount }: {
   obj: SceneObjectState | null;
   onUpdate: (id: string, patch: Partial<SceneObjectState>, commit?: boolean) => void;
   /** Назначить роль объекту (Мех игрока / Резерв / Враг / Декорация / Спавн). */
@@ -21,7 +22,10 @@ export function Inspector({ obj, onUpdate, onRole, onDuplicate, onDelete, onFocu
   selectedCount?: number;
   /** Скачать один объект в .glb (с анимацией походного цикла). */
   onExportObject?: (objectId: string, withAnimation: boolean) => void;
+  /** Импортировать .glb как нового меха (временный ассет сессии). */
+  onImportGlb?: (file: File) => void;
 }) {
+  const importGlbRef = useRef<HTMLInputElement | null>(null);
   if (!obj) {
     return (
       <div className="flex h-full flex-col items-center justify-center p-6 text-center">
@@ -74,6 +78,19 @@ export function Inspector({ obj, onUpdate, onRole, onDuplicate, onDelete, onFocu
             </Btn>
             <Btn title="Скачать .glb с запечённой анимацией походного цикла" onClick={() => onExportObject(obj.id, true)}>
               <Film size={13} /> GLB + анимация
+            </Btn>
+          </div>
+        )}
+        {onImportGlb && (
+          <div className="mt-1.5">
+            <input
+              ref={importGlbRef}
+              type="file" accept=".glb,application/octet-stream"
+              className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) onImportGlb(f); e.target.value = ""; }}
+            />
+            <Btn title="Импортировать .glb (из Blender) как временного меха в сцену" onClick={() => importGlbRef.current?.click()}>
+              <Upload size={13} /> Импорт GLB (мех)
             </Btn>
           </div>
         )}
