@@ -1111,22 +1111,99 @@ export class PlayController {
       salvageOnly: isEnemy,
     });
     if (!drops.length) return;
-    const dist = t.center.distanceTo(this.pos);
-    const near = L.autoPickup && dist < 6;
-    const taken: ItemId[] = [];
-    const left: ItemId[] = [];
-    for (const id of drops) {
-      if (near) {
-        const got = this.inventory.add(id, 1);
-        if (got) taken.push(id); else left.push(id);
-      } else left.push(id);
+    // выпадает видимый контейнер с трофеями — подойди, чтобы подобрать
+    const at = t.center.clone();
+    at.y = this.host.groundHeight(at.x, at.z);
+    this.createLootDrop(at, drops);
+  }
+
+  // ======================= видимый лут (пикапы) =======================
+  private pickups: { group: THREE.Group; items: ItemId[]; life: number; maxLife: number }[] = [];
+
+  /** Создать контейнер с трофеями на земле. */
+  private createLootDrop(at: THREE.Vector3, drops: ItemId[]): void {
+    if (!drops.length) return;
+    const group = new THREE.Group();
+    const core = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.42, 0.42),
+      new THREE.MeshStandardMaterial({ color: 0x7a5c34, metalness: 0.4, roughness: 0.6, emissive: 0xffaa00, emissiveIntensity: 0.3 }),
+    );
+    core.position.y = 0.26;
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.85, 1.05, 32),
+      new THREE.MeshBasicMaterial({ color: 0xffbb33, transparent: true, opacity: 0.6, side: THREE.DoubleSide }),
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.04;
+    group.add(core, ring);
+    group.position.set(at.x, at.y, at.z);
+    this.host.scene.add(group);
+    this.pickups.push({ group, items: drops, life: 45, maxLife: 45 });
+  }
+
+  private disposePickup(p: { group: THREE.Group }): void {
+    this.host.scene.remove(p.group);
+    p.group.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh) {
+        m.geometry.dispose();
+        (m.material as THREE.Material).dispose();
+      }
+    });
+  }
+
+  /** Обновление пикапов: вращение, срок жизни, автосбор рядом. */
+  private updateLootPickups(dt: number): void {
+    for (let i = this.pickups.length - 1; i >= 0; i--) {
+      const p = this.pickups[i];
+      p.life -= dt;
+      const core = p.group.children[0] as THREE.Mesh;
+      const ring = p.group.children[1] as THREE.Mesh;
+      p.group.rotation.y += dt * 1.4;
+      core.position.y = 0.28 + Math.sin(this.time * 3 + i) * 0.04;
+      const fade = p.life < 10 ? p.life / 10 : 1;
+      (core.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.25 + fade * 0.3;
+      (ring.material as THREE.MeshBasicMaterial).opacity = 0.6 * fade;
+      if (p.life <= 0) {
+        this.disposePickup(p);
+        this.pickups.splice(i, 1);
+        continue;
+      }
+      // автосбор при подходе
+      const d = Math.hypot(p.group.position.x - this.pos.x, p.group.position.z - this.pos.z);
+      if (d < 2.2) {
+        const got: ItemId[] = [];
+        const left: ItemId[] = [];
+        for (const it of p.items) {
+          if (this.inventory.add(it, 1)) got.push(it);
+          else left.push(it);
+        }
+        if (got.length) {
+          const names = uniqCount(got).map(([id, n]) => `${ITEMS[id].short}×${n}`).join(', ');
+          this.pushLog(`Подобрано: ${names}`);
+          this.fx.dust(p.group.position.clone().setY(p.group.position.y + 0.3), 0.6, 0xffcc55, 0.6);
+          sfx.select(this.pos);
+        }
+        if (left.length) {
+          this.pushLog(`Рюкзак полон — осталось: ${uniqCount(left).map(([id, n]) => `${ITEMS[id].short}×${n}`).join(', ')}`);
+        }
+        this.disposePickup(p);
+        this.pickups.splice(i, 1);
+      }
     }
-    if (taken.length) {
-      const names = uniqCount(taken).map(([id, n]) => `${ITEMS[id].short}×${n}`).join(', ');
-      this.pushLog(`${isEnemy ? 'Разобрано: ' : 'Подобрано: '}${names}`);
-      if (L.autoPickup) sfx.select(this.pos);
+  }
+
+  /** Подсказка HUD: ближайший контейнер с лупом. */
+  private nearLootHint(): string | null {
+    let best: { d: number; label: string } | null = null;
+    for (const p of this.pickups) {
+      const d = Math.hypot(p.group.position.x - this.pos.x, p.group.position.z - this.pos.z);
+      if (d < 8) {
+        const label = uniqCount(p.items).map(([id, n]) => `${ITEMS[id].short}×${n}`).join(', ');
+        if (!best || d < best.d) best = { d, label };
+      }
     }
-    if (left.length) this.pushLog(`Осталось на земле: ${uniqCount(left).map(([id, n]) => `${ITEMS[id].short}×${n}`).join(', ')}`);
+    return best ? best.label : null;
   }
 
   /** Список рецептов из сценария с состоянием «хватает деталей». */
@@ -1752,11 +1829,12 @@ export class PlayController {
       this.updateFreeCamera(dt);
       this.updateProjectiles(dt);
       if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); this.updateZones(); }
-    this.hurt = Math.max(0, this.hurt - dt * 1.5);
-    this.fx.update(dt);
-    // тряска камеры затухает и пешком — иначе после выхода из меха «трясёт» вечно
-    this.shake = Math.max(0, this.shake * Math.exp(-9 * dt));
-    return;
+      this.hurt = Math.max(0, this.hurt - dt * 1.5);
+      this.fx.update(dt);
+      // тряска камеры затухает и пешком — иначе после выхода из меха «трясёт» вечно
+      this.shake = Math.max(0, this.shake * Math.exp(-9 * dt));
+      this.updateLootPickups(dt);
+      return;
   }
     this.time += dt;
     this.updateWorldStream(dt);
@@ -1773,6 +1851,7 @@ export class PlayController {
     if (!this.over) { this.updateEnemies(dt); this.updateEproj(dt); this.updateWaves(dt); }
     this.hurt = Math.max(0, this.hurt - dt * 1.5);
     this.fx.update(dt);
+    this.updateLootPickups(dt);
     this.updateCamera(dt);
     this.debugT += dt;
     if (this.collisionDebug && this.debugT > 0.12) {
@@ -2783,6 +2862,7 @@ export class PlayController {
       bagWeight: Math.round(this.inventory.weight() * 10) / 10,
       bagCapacity: this.cfg.vitals.carryKg,
       buildOptions: this.buildOptions(),
+      nearLoot: this.nearLootHint(),
     };
   }
 }

@@ -192,6 +192,11 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
                 </div>
               ))}
               <div className="mt-1 font-mono text-[9px] text-stone-500">B — крафт · T — стройка · H — аптечка</div>
+              {hud?.nearLoot && (
+                <div className="mt-1 rounded border border-amber-500/40 bg-amber-500/10 px-1.5 py-0.5 text-[9px] text-amber-200">
+                  Рядом: {hud.nearLoot} — подойди, чтобы подобрать
+                </div>
+              )}
             </div>
           )}
         </>
