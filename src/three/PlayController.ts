@@ -1567,6 +1567,8 @@ export class PlayController {
 
   /** Войти/выйти из режима размещения постройки (призрак). */
   setPlaceBuild(kind: string | null): void {
+    // клик по той же кнопке — снять режим
+    if (this.buildGhost && this.buildGhost.kind === kind) kind = null;
     if (this.buildGhost) {
       this.host.scene.remove(this.buildGhost.group);
       this.buildGhost.group.traverse((o) => {

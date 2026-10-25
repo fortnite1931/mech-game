@@ -295,7 +295,7 @@ function Game() {
           onUseMedkit={() => engineRef.current?.play?.useMedkit()}
           onRefreshCraft={() => setCraftOptions(engineRef.current?.play?.craftOptions() ?? [])}
           craftOptions={craftOptions}
-          onBuild={(kind) => engineRef.current?.play?.buildStructure(kind)}
+          onBuild={(kind) => engineRef.current?.play?.setPlaceBuild(kind)}
         />
       )}
 
