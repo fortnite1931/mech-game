@@ -16,7 +16,7 @@ const ITEM_GLYPH: Record<string, string> = {
 
 export type BuildTab = 'build' | 'craft' | 'inv';
 
-export function BuildDock({ bag, buildOptions, craftOptions, activeTab, onTab, onBuild, onCraft }: {
+export function BuildDock({ bag, buildOptions, craftOptions, activeTab, onTab, onBuild, onCraft, activeKind }: {
   bag?: { item: string; short: string; name: string; n: number }[];
   buildOptions?: { kind: string; name: string; cost: string; ok: boolean; reason?: string | null; dims?: string }[];
   craftOptions?: { id: string; name: string; desc: string; ok: boolean; missing: string }[];
@@ -24,6 +24,8 @@ export function BuildDock({ bag, buildOptions, craftOptions, activeTab, onTab, o
   onTab: (t: BuildTab) => void;
   onBuild?: (kind: string) => void;
   onCraft?: (recipeId: string) => void;
+  /** Идёт размещение этой постройки (подсветка). */
+  activeKind?: string | null;
 }) {
   const bagMap = new Map((bag ?? []).map((b) => [b.item, b]));
   const resOrder = ['scrap', 'plate', 'gear', 'hydraulic', 'fuel_cell', 'reactor', 'cockpit_core', 'medkit', 'ammo_shells', 'raremetal'];
@@ -58,12 +60,14 @@ export function BuildDock({ bag, buildOptions, craftOptions, activeTab, onTab, o
         b.ok
           ? 'border-amber-500/40 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20'
           : 'border-white/10 bg-white/[0.02] text-stone-500',
+        activeKind === b.kind && 'ring-2 ring-amber-300/80',
       )}
     >
       <span className="text-[11px] font-bold">{b.name}</span>
       <span className="font-mono text-[9px] text-amber-300/80">{b.cost}</span>
       {b.dims && <span className="text-[8px] text-stone-500">{b.dims}</span>}
       {!b.ok && b.reason && <span className="text-[8px] leading-tight text-red-400/90">{b.reason}</span>}
+      {activeKind === b.kind && <span className="text-[8px] font-bold text-amber-200">▶ размещение… ЛКМ</span>}
     </button>
   );
 

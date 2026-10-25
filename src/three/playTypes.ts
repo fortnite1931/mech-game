@@ -151,6 +151,8 @@ export interface HudState {
   buildOptions?: { kind: string; name: string; cost: string; ok: boolean; reason?: string | null; dims?: string }[];
   /** Подсказка: ближайший контейнер с лутпом (что можно подобрать). */
   nearLoot?: string | null;
+  /** Режим размещения постройки (kind) — для подсказки/подсветки дока. */
+  buildMode?: string | null;
 }
 
 export type EnemyKindId = 'turret' | 'mech_scout' | 'mech_juggernaut' | 'mech_molot' | 'infantry';

@@ -181,9 +181,16 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
       )}
 
       {/* подсказка о ближайшем луте (над доком) */}
-      {hud?.nearLoot && (
+      {hud?.nearLoot && !hud.buildMode && (
         <div className="absolute bottom-[118px] left-3 rounded border border-amber-500/40 bg-black/75 px-2.5 py-1 text-[10px] text-amber-200 backdrop-blur">
           🎒 Рядом: {hud.nearLoot} — подойди, чтобы подобрать
+        </div>
+      )}
+
+      {/* подсказка режима размещения */}
+      {hud?.buildMode && (
+        <div className="absolute bottom-[118px] left-1/2 -translate-x-1/2 rounded border border-amber-400/60 bg-black/85 px-3 py-1.5 text-[11px] text-amber-200 backdrop-blur">
+          Размещение: клик <b className="text-white">ЛКМ</b> — построить · <b className="text-white">ПКМ/Esc</b> — отмена
         </div>
       )}
 
@@ -196,6 +203,7 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
         onTab={setTab}
         onBuild={onBuild}
         onCraft={(id) => { onCraft?.(id); onRefreshCraft?.(); }}
+        activeKind={hud?.buildMode}
       />
 
       {/* top-left: status */}

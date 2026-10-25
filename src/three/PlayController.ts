@@ -810,7 +810,7 @@ export class PlayController {
     if (e.repeat) return;
     this.keys.add(e.code);
     switch (e.code) {
-      case 'Escape': this.cb.onExit(); break;
+      case 'Escape': if (this.buildGhost) this.setPlaceBuild(null); else this.cb.onExit(); break;
       // V/N/C — механика меха: пешком не нужны (кабина на пилоте ломает камеру)
       case 'KeyV': if (!this.ejected) this.setView(VIEW_ORDER[(VIEW_ORDER.indexOf(this.view) + 1) % VIEW_ORDER.length]); break;
       case 'KeyN': if (!this.ejected) this.setVision(VISION_ORDER[(VISION_ORDER.indexOf(this.vision) + 1) % VISION_ORDER.length]); break;
@@ -829,6 +829,17 @@ export class PlayController {
   private onKeyUp = (e: KeyboardEvent) => this.keys.delete(e.code);
   private onPointerDown = (e: PointerEvent) => {
     if (this.tuning) return;
+    // режим размещения постройки: ЛКМ по земле — построить в точке призрака
+    if (this.buildGhost && e.button === 0) {
+      const at = this.buildGhost.group.position.clone();
+      this.buildStructure(this.buildGhost.kind, at);
+      e.preventDefault();
+      return;
+    }
+    if (this.buildGhost && e.button === 2) {
+      this.setPlaceBuild(null); // ПКМ — отмена
+      return;
+    }
     if (this.ejected && e.button === 0) {
       // Клик вне кабины: ищем ближайший мех по объёму (бросок луча в боксы).
       // Так попасть легко — не нужно целиться точно в геометрию.
@@ -898,6 +909,7 @@ export class PlayController {
   };
   private onPointerMove = (e: PointerEvent) => {
     if (this.tuning) return;
+    this.updateBuildGhostFromPointer(e.clientX, e.clientY);
     const r = this.host.dom.getBoundingClientRect();
     // во время автоподхода к меху камера сама доворачивается — мышь не дёргает её
     if (this.seatApproach) { this.cb.onPointer(e.clientX - r.left, e.clientY - r.top, true); return; }
@@ -1369,6 +1381,10 @@ export class PlayController {
   /** Занятые клетки стройки (ключ «cx,cz»). */
   private plotCells = new Map<string, boolean>();
 
+  /** Режим размещения постройки (призрак под курсором). */
+  private buildGhost: { kind: string; group: THREE.Group; lastOk: boolean } | null = null;
+  private groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
   /** Что уже построено игроком (для прогрессии). */
   private builtKinds = new Set<string>();
 
@@ -1447,13 +1463,12 @@ export class PlayController {
     return out;
   }
 
-  /** Залить одну бетонную плитку 2×2 в точке перед мехом. */
-  placeFoundation(): boolean {
-    const at = this.buildSpot();
+  /** Залить одну бетонную плитку 2×2 в точке. */
+  private placeFoundationAt(at: THREE.Vector3): boolean {
     const [cx, cz] = this.plotCellAt(at.x, at.z);
     const key = this.plotKey(cx, cz);
     if (this.plotCells.has(key)) {
-      this.pushLog('Здесь уже залит бетон. Подвинься, чтобы залить дальше.');
+      this.pushLog('Здесь уже залит бетон.');
       return false;
     }
     const cost = PlayController.BUILD_RECIPES.foundation;
@@ -1497,13 +1512,13 @@ export class PlayController {
     return true;
   }
 
-  /** Построить объект в точке перед мехом, списав ресурсы. */
-  buildStructure(kind: string): boolean {
+  /** Построить объект в точке, списав ресурсы. */
+  buildStructure(kind: string, at?: THREE.Vector3): boolean {
     const cost = PlayController.BUILD_RECIPES[kind];
     if (!cost) return false;
-    if (kind === 'foundation') return this.placeFoundation();
-    const at = this.buildSpot();
-    const reason = this.buildBlockReasonAt(kind, at);
+    if (kind === 'foundation') return this.placeFoundationAt(at ?? this.buildSpot());
+    const pos = at ?? this.buildSpot();
+    const reason = this.buildBlockReasonAt(kind, pos);
     if (reason) { this.pushLog(reason + '.'); return false; }
     for (const [id, n] of Object.entries(cost)) {
       if (this.inventory.count(id as ItemId) < (n ?? 0)) {
@@ -1515,9 +1530,9 @@ export class PlayController {
     if (!def) return false;
     const group = def.build();
     this.host.scene.add(group);
-    const gy = this.host.groundHeight(at.x, at.z);
+    const gy = this.host.groundHeight(pos.x, pos.z);
     const box = new THREE.Box3().setFromObject(group);
-    group.position.set(at.x, gy - box.min.y, at.z);
+    group.position.set(pos.x, gy - box.min.y, pos.z);
     group.updateMatrixWorld(true);
     const box2 = new THREE.Box3().setFromObject(group);
     const center = box2.getCenter(new THREE.Vector3());
@@ -1541,13 +1556,68 @@ export class PlayController {
     }
     if (PlayController.BUILD_NEED_PLOT.has(kind)) {
       const [w, h] = PlayController.BUILD_SIZES[kind];
-      this.plotClaim(at.x, at.z, w + PlayController.PLOT_CELL * 2, h + PlayController.PLOT_CELL * 2);
+      this.plotClaim(pos.x, pos.z, w + PlayController.PLOT_CELL * 2, h + PlayController.PLOT_CELL * 2);
     }
     this.builtKinds.add(kind);
     this.pushLog(`Построено: ${def.name}.`);
     sfx.select(this.pos);
     this.cb.onHud(this.buildHud());
     return true;
+  }
+
+  /** Войти/выйти из режима размещения постройки (призрак). */
+  setPlaceBuild(kind: string | null): void {
+    if (this.buildGhost) {
+      this.host.scene.remove(this.buildGhost.group);
+      this.buildGhost.group.traverse((o) => {
+        const m = o as THREE.Mesh;
+        if (m.isMesh) { m.geometry.dispose(); (m.material as THREE.Material).dispose(); }
+      });
+      this.buildGhost = null;
+    }
+    if (!kind) { this.cb.onHud(this.buildHud()); return; }
+    const def = getAsset(kind);
+    if (!def) return;
+    const group = def.build();
+    this.host.scene.add(group);
+    this.buildGhost = { kind, group, lastOk: false };
+    const spot = this.buildSpot();
+    const gy = this.host.groundHeight(spot.x, spot.z);
+    const box = new THREE.Box3().setFromObject(group);
+    group.position.set(spot.x, gy - box.min.y, spot.z);
+    this.tintBuildGhost(false);
+    this.cb.onHud(this.buildHud());
+  }
+
+  /** Окрасить призрак: зелёный — можно, красный — нельзя. */
+  private tintBuildGhost(ok: boolean): void {
+    if (!this.buildGhost || this.buildGhost.lastOk === ok) return;
+    this.buildGhost.lastOk = ok;
+    const color = ok ? 0x35d07a : 0xd84b4b;
+    this.buildGhost.group.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh && m.material) {
+        (m.material as THREE.Material).dispose();
+        m.material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.55, depthWrite: false });
+      }
+    });
+  }
+
+  /** Обновить позицию призрака по указателю мыши. */
+  private updateBuildGhostFromPointer(clientX: number, clientY: number): void {
+    const ghost = this.buildGhost;
+    if (!ghost) return;
+    const rect = this.host.dom.getBoundingClientRect();
+    this.ndc.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(this.ndc, this.host.camera);
+    const pt = new THREE.Vector3();
+    if (this.raycaster.ray.intersectPlane(this.groundPlane, pt)) {
+      const gy = this.host.groundHeight(pt.x, pt.z);
+      const box = new THREE.Box3().setFromObject(ghost.group);
+      ghost.group.position.set(pt.x, gy - box.min.y, pt.z);
+      const ok = this.buildBlockReasonAt(ghost.kind, new THREE.Vector3(pt.x, 0, pt.z)) === null;
+      this.tintBuildGhost(ok);
+    }
   }
 
   /** Выносливость: тратится на бег, восстанавливается. */
@@ -3098,6 +3168,7 @@ export class PlayController {
       bagCapacity: this.cfg.vitals.carryKg,
       buildOptions: this.buildOptions(),
       nearLoot: this.nearLootHint(),
+      buildMode: this.buildGhost?.kind ?? null,
     };
   }
 }
