@@ -3,7 +3,7 @@
     "app": "WASTELAND FORGE",
     "version": "2.0",
     "engine": "three.js",
-    "exportedAt": "2026-10-24T14:58:41.061Z"
+    "exportedAt": "2026-10-25T02:06:13.007Z"
   },
   "types": [
     {
@@ -143,10 +143,10 @@
           "id": "movement",
           "enabled": true,
           "settings": {
-            "maxSpeed": 43,
-            "accel": 0.6,
-            "turnSpeed": 91,
-            "torsoTwist": 110,
+            "maxSpeed": 10,
+            "accel": 0.15,
+            "turnSpeed": 77,
+            "torsoTwist": 85,
             "brakeFactor": 0.6,
             "jumpJets": true,
             "jetThrust": 30,
@@ -936,7 +936,7 @@
       "comment": "Персонаж, который вышел из меха. Базовая логика: посадка в резерв, урон, движение.",
       "rows": [
         {
-          "id": "row_mvmh8rxrs",
+          "id": "row_mvn6pyecs",
           "event": "on_spawn",
           "comment": "Старт без машины — пилот оказался на земле",
           "then": [
@@ -964,7 +964,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxrt",
+          "id": "row_mvn6pyect",
           "event": "on_key",
           "comment": "E рядом с резервом — садится в машину",
           "condition": {
@@ -1000,7 +1000,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxru",
+          "id": "row_mvn6pyecu",
           "event": "on_collision",
           "comment": "Врезался в резервный мех — можно сесть",
           "condition": {
@@ -1022,7 +1022,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxrv",
+          "id": "row_mvn6pyecv",
           "event": "on_update",
           "comment": "Идёт к цели, пока пилот не в машине",
           "condition": {
@@ -1043,7 +1043,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxrw",
+          "id": "row_mvn6pyecw",
           "event": "on_damaged",
           "comment": "Ранение: не спамим чаще раза в 2 секунды",
           "condition": {
@@ -1071,7 +1071,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxrx",
+          "id": "row_mvn6pyecx",
           "event": "on_destroyed",
           "comment": "Пилот погиб — поражение",
           "then": [
@@ -1093,7 +1093,7 @@
       "comment": "Машина под управлением игрока: высадка пилота, перегрев, гибель.",
       "rows": [
         {
-          "id": "row_mvmh8rxry",
+          "id": "row_mvn6pyecy",
           "event": "on_spawn",
           "comment": "Игра начинается в кабине",
           "then": [
@@ -1115,7 +1115,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxrz",
+          "id": "row_mvn6pyecz",
           "event": "on_key",
           "comment": "F — выйти из машины пешком",
           "condition": {
@@ -1143,7 +1143,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr10",
+          "id": "row_mvn6pyec10",
           "event": "on_overheat",
           "comment": "Аварийное отключение на 3.5 секунды",
           "then": [
@@ -1164,7 +1164,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr11",
+          "id": "row_mvn6pyec11",
           "event": "on_damaged",
           "comment": "Попадание: искры и звук",
           "then": [
@@ -1186,7 +1186,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr12",
+          "id": "row_mvn6pyec12",
           "event": "on_destroyed",
           "comment": "Мех уничтожен — поражение",
           "then": [
@@ -1208,7 +1208,7 @@
       "comment": "Точки появления запасных машин: пилот сел — машина спит, пилот вышел — машина снова охраняет.",
       "rows": [
         {
-          "id": "row_mvmh8rxr13",
+          "id": "row_mvn6pyec13",
           "event": "on_spawn",
           "comment": "Без пилота резерв охраняет район",
           "then": [
@@ -1230,7 +1230,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr14",
+          "id": "row_mvn6pyec14",
           "event": "on_pilot_enter",
           "then": [
             {
@@ -1257,7 +1257,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr15",
+          "id": "row_mvn6pyec15",
           "event": "on_pilot_exit",
           "then": [
             {
@@ -1291,7 +1291,7 @@
       "comment": "Поведение боевых машин и турелей: патруль → преследование → атака.",
       "rows": [
         {
-          "id": "row_mvmh8rxr16",
+          "id": "row_mvn6pyec16",
           "event": "on_spawn",
           "comment": "Враг появляется в режиме патруля",
           "then": [
@@ -1312,7 +1312,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr17",
+          "id": "row_mvn6pyec17",
           "event": "on_update",
           "comment": "Пилот ближе радиуса — преследовать",
           "condition": {
@@ -1333,7 +1333,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr18",
+          "id": "row_mvn6pyec18",
           "event": "on_update",
           "comment": "Вошли в дистанцию боя — атака",
           "condition": {
@@ -1375,7 +1375,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr19",
+          "id": "row_mvn6pyec19",
           "event": "on_damaged",
           "then": [
             {
@@ -1396,7 +1396,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr1a",
+          "id": "row_mvn6pyec1a",
           "event": "on_destroyed",
           "comment": "Учёт убийства и взрыв",
           "then": [
@@ -1438,7 +1438,7 @@
       "comment": "Сценарий боя: волны врагов, победа и поражение.",
       "rows": [
         {
-          "id": "row_mvmh8rxr1b",
+          "id": "row_mvn6pyec1b",
           "event": "on_spawn",
           "comment": "Первая волна через 5 секунд",
           "then": [
@@ -1454,7 +1454,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr1c",
+          "id": "row_mvn6pyec1c",
           "event": "on_enemy_killed",
           "comment": "Врагов не осталось — следующая волна",
           "condition": {
@@ -1476,7 +1476,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr1d",
+          "id": "row_mvn6pyec1d",
           "event": "on_wave_started",
           "comment": "Волны кончились — победа",
           "condition": {
@@ -1499,7 +1499,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr1e",
+          "id": "row_mvn6pyec1e",
           "event": "on_wave_started",
           "condition": {
             "condition": "var_compare",
@@ -1528,7 +1528,7 @@
       "comment": "Разрушаемые объекты: смятие, цепные взрывы топлива и токсичных бочек.",
       "rows": [
         {
-          "id": "row_mvmh8rxr1f",
+          "id": "row_mvn6pyec1f",
           "event": "on_damaged",
           "comment": "Проп повреждён — пыль",
           "then": [
@@ -1544,7 +1544,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr1g",
+          "id": "row_mvn6pyec1g",
           "event": "on_destroyed",
           "comment": "Пустая бочка или мусор просто сминаются",
           "condition": {
@@ -1614,7 +1614,7 @@
       "comment": "Фоновые вещи мира: подгрузка чанков и атмосфера.",
       "rows": [
         {
-          "id": "row_mvmh8rxr1h",
+          "id": "row_mvn6pyec1h",
           "event": "on_timer",
           "comment": "Мир достраивается порциями по мере движения",
           "then": [
@@ -1631,7 +1631,7 @@
           "children": []
         },
         {
-          "id": "row_mvmh8rxr1i",
+          "id": "row_mvn6pyec1i",
           "event": "on_spawn",
           "comment": "Фоновая атмосфера: редкий гул реактора",
           "then": [
@@ -1676,196 +1676,159 @@
   ],
   "scene": [
     {
-      "id": "obj_39_2jv",
-      "typeId": "type_barrel_fuel",
+      "id": "obj_32_6lp",
       "role": "neutral",
-      "name": "Стена бункера"
-    },
-    {
-      "id": "obj_41_7lk",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Мешки с песком"
-    },
-    {
-      "id": "obj_45_4ip",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Контейнер ржавый"
-    },
-    {
-      "id": "obj_46_1wq",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Рельсы — сегмент"
-    },
-    {
-      "id": "obj_50_7ji",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Блок разрушенный"
-    },
-    {
-      "id": "obj_51_7em",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Плита полуразрушенная"
-    },
-    {
-      "id": "obj_52_203",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Сторожевая вышка"
-    },
-    {
-      "id": "obj_53_4jw",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Генератор"
-    },
-    {
-      "id": "obj_55_51h",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Фонарь ржавый"
-    },
-    {
-      "id": "obj_56_783",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Купол теплицы"
-    },
-    {
-      "id": "obj_58_57j",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Остов машины"
-    },
-    {
-      "id": "obj_59_3ba",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Скалы"
-    },
-    {
-      "id": "obj_60_2pa",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Сухое дерево"
-    },
-    {
-      "id": "obj_63_65k",
-      "typeId": "type_player",
-      "role": "player",
-      "name": "Мех «Робот» (GLB + анимации)"
-    },
-    {
-      "id": "obj_32_7aq",
-      "typeId": "type_mech_scout",
-      "role": "enemy",
       "name": "«Ястреб» (игрок)"
     },
     {
-      "id": "obj_57_sv",
-      "typeId": "type_barrel_fuel",
+      "id": "obj_33_22j",
       "role": "neutral",
-      "name": "КПП со шлагбаумом"
-    },
-    {
-      "id": "obj_35_51f",
-      "typeId": "type_mech_juggernaut",
-      "role": "enemy",
-      "name": "«Титан» (враг)"
-    },
-    {
-      "id": "obj_43_4eq",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Бочка ржавая"
-    },
-    {
-      "id": "obj_44_1i4",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Бочка токсичная"
-    },
-    {
-      "id": "obj_47_5bw",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Балка гнутая"
-    },
-    {
-      "id": "obj_48_r8",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Куча металлолома"
-    },
-    {
-      "id": "obj_49_gw",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Бетонный блок"
-    },
-    {
-      "id": "obj_61_4fh",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Покрышки"
-    },
-    {
-      "id": "obj_42_6jp",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Группа бочек"
-    },
-    {
-      "id": "obj_54_628",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Антенна-мачта"
-    },
-    {
-      "id": "obj_62_2e6",
-      "typeId": "type_barrel_fuel",
-      "role": "neutral",
-      "name": "Ящик разбитый"
-    },
-    {
-      "id": "obj_33_5iq",
-      "typeId": "type_mech_molot",
-      "role": "enemy",
       "name": "«Молот» (враг)"
     },
     {
-      "id": "obj_34_538",
-      "typeId": "type_mech_scout",
-      "role": "enemy",
+      "id": "obj_34_53y",
+      "role": "neutral",
       "name": "«Ястреб» (враг)"
     },
     {
-      "id": "obj_36_w4",
-      "typeId": "type_turret",
-      "role": "enemy",
+      "id": "obj_35_65",
+      "role": "neutral",
+      "name": "«Титан» (враг)"
+    },
+    {
+      "id": "obj_36_14e",
+      "role": "neutral",
       "name": "Турель «Шершень» (враг)"
     },
     {
-      "id": "obj_37_xt",
-      "typeId": "type_turret",
-      "role": "enemy",
+      "id": "obj_37_47o",
+      "role": "neutral",
       "name": "Турель «Шершень-2» (враг)"
     },
     {
-      "id": "obj_38_57t",
-      "typeId": "type_barrel_fuel",
+      "id": "obj_38_143",
       "role": "neutral",
       "name": "Модуль аванпоста"
     },
     {
-      "id": "obj_40_6tg",
-      "typeId": "type_barrel_fuel",
+      "id": "obj_39_189",
       "role": "neutral",
       "name": "Стена бункера"
+    },
+    {
+      "id": "obj_40_5g0",
+      "role": "neutral",
+      "name": "Стена бункера"
+    },
+    {
+      "id": "obj_41_2qx",
+      "role": "neutral",
+      "name": "Мешки с песком"
+    },
+    {
+      "id": "obj_44_11r",
+      "role": "neutral",
+      "name": "Бочка токсичная"
+    },
+    {
+      "id": "obj_46_5sk",
+      "role": "neutral",
+      "name": "Рельсы — сегмент"
+    },
+    {
+      "id": "obj_47_4qa",
+      "role": "neutral",
+      "name": "Балка гнутая"
+    },
+    {
+      "id": "obj_48_65v",
+      "role": "neutral",
+      "name": "Куча металлолома"
+    },
+    {
+      "id": "obj_49_3b9",
+      "role": "neutral",
+      "name": "Бетонный блок"
+    },
+    {
+      "id": "obj_51_4kc",
+      "role": "neutral",
+      "name": "Плита полуразрушенная"
+    },
+    {
+      "id": "obj_52_3z9",
+      "role": "neutral",
+      "name": "Сторожевая вышка"
+    },
+    {
+      "id": "obj_53_3w5",
+      "role": "neutral",
+      "name": "Генератор"
+    },
+    {
+      "id": "obj_54_4rs",
+      "role": "neutral",
+      "name": "Антенна-мачта"
+    },
+    {
+      "id": "obj_55_3wu",
+      "role": "neutral",
+      "name": "Фонарь ржавый"
+    },
+    {
+      "id": "obj_57_131",
+      "role": "neutral",
+      "name": "КПП со шлагбаумом"
+    },
+    {
+      "id": "obj_58_3f3",
+      "role": "neutral",
+      "name": "Остов машины"
+    },
+    {
+      "id": "obj_59_6p2",
+      "role": "neutral",
+      "name": "Скалы"
+    },
+    {
+      "id": "obj_60_3jg",
+      "role": "neutral",
+      "name": "Сухое дерево"
+    },
+    {
+      "id": "obj_61_1dt",
+      "role": "neutral",
+      "name": "Покрышки"
+    },
+    {
+      "id": "obj_62_5v3",
+      "role": "neutral",
+      "name": "Ящик разбитый"
+    },
+    {
+      "id": "obj_42_47v",
+      "role": "neutral",
+      "name": "Группа бочек"
+    },
+    {
+      "id": "obj_43_49y",
+      "role": "neutral",
+      "name": "Бочка ржавая"
+    },
+    {
+      "id": "obj_45_5ms",
+      "role": "neutral",
+      "name": "Контейнер ржавый"
+    },
+    {
+      "id": "obj_50_44g",
+      "role": "neutral",
+      "name": "Блок разрушенный"
+    },
+    {
+      "id": "obj_56_4tq",
+      "role": "neutral",
+      "name": "Купол теплицы"
     }
   ],
   "sounds": [
@@ -1906,28 +1869,28 @@
     "chunkSize": 24,
     "propDensity": 1,
     "oasisChance": 0.02,
-    "worldRadius": 2,
-    "edgeType": "forest",
+    "worldRadius": 0,
+    "edgeType": "none",
     "zones": [
       {
         "id": "zone_1",
         "name": "База «Шершень»",
-        "x": 12,
-        "z": 10,
+        "x": 95,
+        "z": 25,
         "r": 110
       }
     ],
     "randomSpawn": false,
-    "enabled": false
+    "enabled": true
   },
   "player": {
     "chassis": "mech_scout",
-    "playerObjectId": "obj_63_65k",
+    "playerObjectId": "auto",
     "playerStart": "mech",
     "pilotObjectId": "auto",
     "spawnMode": "spawn_object",
     "foot": {
-      "walk": 4.2,
+      "walk": 3.1,
       "run": 9.5
     },
     "enterRange": 10,
@@ -1978,10 +1941,10 @@
       "missiles",
       "mg"
     ],
-    "maxSpeed": 43,
-    "turnSpeed": 91,
-    "torsoTwist": 110,
-    "accel": 0.6,
+    "maxSpeed": 10,
+    "turnSpeed": 77,
+    "torsoTwist": 85,
+    "accel": 0.15,
     "jumpJets": true,
     "sfx": true,
     "animSpeed": {},
@@ -2490,394 +2453,17 @@
   },
   "objects": [
     {
-      "id": "obj_39_2jv",
-      "assetId": "bunker_wall",
-      "name": "Стена бункера",
+      "id": "obj_32_6lp",
+      "assetId": "mech_scout",
+      "name": "«Ястреб» (игрок)",
       "position": [
-        -2,
-        0.075,
-        -58.178
-      ],
-      "rotation": [
         0,
-        0,
+        0.6,
         0
       ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_41_7lk",
-      "assetId": "sandbags",
-      "name": "Мешки с песком",
-      "position": [
-        0.5,
-        -0.02,
-        -61.678
-      ],
-      "rotation": [
-        0,
-        10,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_45_4ip",
-      "assetId": "container",
-      "name": "Контейнер ржавый",
-      "position": [
-        -12,
-        -0.13,
-        -62.178
-      ],
-      "rotation": [
-        0,
-        75,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_46_1wq",
-      "assetId": "rails",
-      "name": "Рельсы — сегмент",
-      "position": [
-        12,
-        0.05,
-        -75.178
-      ],
-      "rotation": [
-        0,
-        90,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_50_7ji",
-      "assetId": "barrier_broken",
-      "name": "Блок разрушенный",
-      "position": [
-        -8,
-        0.237,
-        -68.178
-      ],
-      "rotation": [
-        0,
-        60,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_51_7em",
-      "assetId": "slab",
-      "name": "Плита полуразрушенная",
-      "position": [
-        1,
-        0.099,
-        -54.178
-      ],
-      "rotation": [
-        0,
-        15,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_52_203",
-      "assetId": "watchtower",
-      "name": "Сторожевая вышка",
-      "position": [
-        -14,
-        0.225,
-        -80.178
-      ],
-      "rotation": [
-        0,
-        20,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_53_4jw",
-      "assetId": "generator",
-      "name": "Генератор",
-      "position": [
-        11.5,
-        0.007,
-        -63.678
-      ],
-      "rotation": [
-        0,
-        -90,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_55_51h",
-      "assetId": "lamp",
-      "name": "Фонарь ржавый",
-      "position": [
-        -1,
-        0,
-        -72.178
-      ],
       "rotation": [
         0,
         0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_56_783",
-      "assetId": "dome",
-      "name": "Купол теплицы",
-      "position": [
-        -11,
-        0.257,
-        -57.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_58_57j",
-      "assetId": "car_wreck",
-      "name": "Остов машины",
-      "position": [
-        -18,
-        -0.264,
-        -65.178
-      ],
-      "rotation": [
-        -180,
-        65,
-        -180
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_59_3ba",
-      "assetId": "rock",
-      "name": "Скалы",
-      "position": [
-        20,
-        1.01,
-        -53.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_60_2pa",
-      "assetId": "dead_tree",
-      "name": "Сухое дерево",
-      "position": [
-        -20,
-        -0.326,
-        -72.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_63_65k",
-      "assetId": "mech_robot",
-      "name": "Мех «Робот» (GLB + анимации)",
-      "position": [
-        4.5,
-        -0.013,
-        42.5
-      ],
-      "rotation": [
-        0,
-        135,
         0
       ],
       "scale": [
@@ -2892,365 +2478,16 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_player"
+      "emissive": 1
     },
     {
-      "id": "obj_32_7aq",
-      "assetId": "mech_scout",
-      "name": "«Ястреб» (игрок)",
-      "position": [
-        0,
-        0.6,
-        -67.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_mech_scout"
-    },
-    {
-      "id": "obj_57_sv",
-      "assetId": "checkpoint",
-      "name": "КПП со шлагбаумом",
-      "position": [
-        16,
-        0.075,
-        -68.178
-      ],
-      "rotation": [
-        0,
-        -90,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_35_51f",
-      "assetId": "mech_juggernaut",
-      "name": "«Титан» (враг)",
-      "position": [
-        -9,
-        -0.03,
-        -74.178
-      ],
-      "rotation": [
-        -180,
-        50,
-        -180
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "enemy",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_mech_juggernaut"
-    },
-    {
-      "id": "obj_43_4eq",
-      "assetId": "barrel",
-      "name": "Бочка ржавая",
-      "position": [
-        -6.5,
-        0,
-        -62.978
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_44_1i4",
-      "assetId": "barrel_toxic",
-      "name": "Бочка токсичная",
-      "position": [
-        6.5,
-        0,
-        -71.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_47_5bw",
-      "assetId": "girder",
-      "name": "Балка гнутая",
-      "position": [
-        4,
-        0.041,
-        -76.178
-      ],
-      "rotation": [
-        0,
-        40,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_48_r8",
-      "assetId": "scrap",
-      "name": "Куча металлолома",
-      "position": [
-        -4,
-        0.332,
-        -78.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_49_gw",
-      "assetId": "barrier",
-      "name": "Бетонный блок",
-      "position": [
-        8,
-        0,
-        -66.178
-      ],
-      "rotation": [
-        0,
-        -35,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_61_4fh",
-      "assetId": "tires",
-      "name": "Покрышки",
-      "position": [
-        3,
-        0.288,
-        -64.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_42_6jp",
-      "assetId": "barrel_group",
-      "name": "Группа бочек",
-      "position": [
-        -5,
-        0.027,
-        -64.178
-      ],
-      "rotation": [
-        0,
-        30,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_54_628",
-      "assetId": "antenna",
-      "name": "Антенна-мачта",
-      "position": [
-        14,
-        0.203,
-        -56.178
-      ],
-      "rotation": [
-        0,
-        0,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_62_2e6",
-      "assetId": "crate",
-      "name": "Ящик разбитый",
-      "position": [
-        7.5,
-        0.191,
-        -61.678
-      ],
-      "rotation": [
-        0,
-        25,
-        0
-      ],
-      "scale": [
-        1,
-        1,
-        1
-      ],
-      "visible": true,
-      "locked": false,
-      "role": "prop",
-      "tint": "#ffffff",
-      "rust": 0.35,
-      "metalness": 0.5,
-      "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
-    },
-    {
-      "id": "obj_33_5iq",
+      "id": "obj_33_22j",
       "assetId": "mech_molot",
       "name": "«Молот» (враг)",
       "position": [
-        12,
-        0.753,
-        -57.178
+        95,
+        0.394,
+        25
       ],
       "rotation": [
         0,
@@ -3269,17 +2506,16 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_mech_molot"
+      "emissive": 1
     },
     {
-      "id": "obj_34_538",
+      "id": "obj_34_53y",
       "assetId": "mech_scout",
       "name": "«Ястреб» (враг)",
       "position": [
-        15,
-        0.905,
-        -53.178
+        105,
+        0.01,
+        35
       ],
       "rotation": [
         0,
@@ -3298,22 +2534,21 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_mech_scout"
+      "emissive": 1
     },
     {
-      "id": "obj_36_w4",
-      "assetId": "turret",
-      "name": "Турель «Шершень» (враг)",
+      "id": "obj_35_65",
+      "assetId": "mech_juggernaut",
+      "name": "«Титан» (враг)",
       "position": [
-        5,
-        0,
-        -58.678
+        82,
+        -0.387,
+        18
       ],
       "rotation": [
-        180,
-        -40,
-        180
+        0,
+        130,
+        0
       ],
       "scale": [
         1,
@@ -3327,17 +2562,44 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_turret"
+      "emissive": 1
     },
     {
-      "id": "obj_37_xt",
+      "id": "obj_36_14e",
+      "assetId": "turret",
+      "name": "Турель «Шершень» (враг)",
+      "position": [
+        110,
+        0.09,
+        30
+      ],
+      "rotation": [
+        0,
+        -140,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "enemy",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_37_47o",
       "assetId": "turret",
       "name": "Турель «Шершень-2» (враг)",
       "position": [
-        18,
-        0.271,
-        -55.178
+        80,
+        -0.192,
+        10
       ],
       "rotation": [
         0,
@@ -3356,17 +2618,16 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_turret"
+      "emissive": 1
     },
     {
-      "id": "obj_38_57t",
+      "id": "obj_38_143",
       "assetId": "outpost",
       "name": "Модуль аванпоста",
       "position": [
         9,
         -0.018,
-        -61.178
+        6
       ],
       "rotation": [
         0,
@@ -3385,17 +2646,16 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
+      "emissive": 1
     },
     {
-      "id": "obj_40_6tg",
+      "id": "obj_39_189",
       "assetId": "bunker_wall",
       "name": "Стена бункера",
       "position": [
-        3.2,
+        -2,
         0.075,
-        -58.178
+        9
       ],
       "rotation": [
         0,
@@ -3414,8 +2674,651 @@
       "rust": 0.35,
       "metalness": 0.5,
       "roughness": 0.75,
-      "emissive": 1,
-      "typeId": "type_barrel_fuel"
+      "emissive": 1
+    },
+    {
+      "id": "obj_40_5g0",
+      "assetId": "bunker_wall",
+      "name": "Стена бункера",
+      "position": [
+        3.2,
+        0.075,
+        9
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_41_2qx",
+      "assetId": "sandbags",
+      "name": "Мешки с песком",
+      "position": [
+        0.5,
+        -0.02,
+        5.5
+      ],
+      "rotation": [
+        0,
+        10,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_44_11r",
+      "assetId": "barrel_toxic",
+      "name": "Бочка токсичная",
+      "position": [
+        6.5,
+        0,
+        -4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_46_5sk",
+      "assetId": "rails",
+      "name": "Рельсы — сегмент",
+      "position": [
+        12,
+        0.05,
+        -8
+      ],
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_47_4qa",
+      "assetId": "girder",
+      "name": "Балка гнутая",
+      "position": [
+        4,
+        0.041,
+        -9
+      ],
+      "rotation": [
+        0,
+        40,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_48_65v",
+      "assetId": "scrap",
+      "name": "Куча металлолома",
+      "position": [
+        -4,
+        0.332,
+        -11
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_49_3b9",
+      "assetId": "barrier",
+      "name": "Бетонный блок",
+      "position": [
+        8,
+        0,
+        1
+      ],
+      "rotation": [
+        0,
+        -35,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_51_4kc",
+      "assetId": "slab",
+      "name": "Плита полуразрушенная",
+      "position": [
+        1,
+        0.099,
+        13
+      ],
+      "rotation": [
+        0,
+        15,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_52_3z9",
+      "assetId": "watchtower",
+      "name": "Сторожевая вышка",
+      "position": [
+        -14,
+        0.225,
+        -13
+      ],
+      "rotation": [
+        0,
+        20,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_53_3w5",
+      "assetId": "generator",
+      "name": "Генератор",
+      "position": [
+        11.5,
+        0.007,
+        3.5
+      ],
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_54_4rs",
+      "assetId": "antenna",
+      "name": "Антенна-мачта",
+      "position": [
+        14,
+        0.203,
+        11
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_55_3wu",
+      "assetId": "lamp",
+      "name": "Фонарь ржавый",
+      "position": [
+        -1,
+        0,
+        -5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_57_131",
+      "assetId": "checkpoint",
+      "name": "КПП со шлагбаумом",
+      "position": [
+        16,
+        0.075,
+        -1
+      ],
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_58_3f3",
+      "assetId": "car_wreck",
+      "name": "Остов машины",
+      "position": [
+        -18,
+        -0.264,
+        2
+      ],
+      "rotation": [
+        0,
+        115,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_59_6p2",
+      "assetId": "rock",
+      "name": "Скалы",
+      "position": [
+        20,
+        1.01,
+        14
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_60_3jg",
+      "assetId": "dead_tree",
+      "name": "Сухое дерево",
+      "position": [
+        -20,
+        -0.326,
+        -5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_61_1dt",
+      "assetId": "tires",
+      "name": "Покрышки",
+      "position": [
+        3,
+        0.288,
+        3
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_62_5v3",
+      "assetId": "crate",
+      "name": "Ящик разбитый",
+      "position": [
+        7.5,
+        0.191,
+        5.5
+      ],
+      "rotation": [
+        0,
+        25,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_42_47v",
+      "assetId": "barrel_group",
+      "name": "Группа бочек",
+      "position": [
+        -5,
+        0.027,
+        3
+      ],
+      "rotation": [
+        0,
+        30,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_43_49y",
+      "assetId": "barrel",
+      "name": "Бочка ржавая",
+      "position": [
+        -6.5,
+        0,
+        4.2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_45_5ms",
+      "assetId": "container",
+      "name": "Контейнер ржавый",
+      "position": [
+        -12,
+        -0.13,
+        5
+      ],
+      "rotation": [
+        0,
+        75,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_50_44g",
+      "assetId": "barrier_broken",
+      "name": "Блок разрушенный",
+      "position": [
+        -8,
+        0.237,
+        -1
+      ],
+      "rotation": [
+        0,
+        60,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
+    },
+    {
+      "id": "obj_56_4tq",
+      "assetId": "dome",
+      "name": "Купол теплицы",
+      "position": [
+        -11,
+        0.257,
+        10
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "visible": true,
+      "locked": false,
+      "role": "prop",
+      "tint": "#ffffff",
+      "rust": 0.35,
+      "metalness": 0.5,
+      "roughness": 0.75,
+      "emissive": 1
     }
   ]
 }

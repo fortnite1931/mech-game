@@ -208,6 +208,21 @@ function Game() {
     setTimeout(() => startGame(), 30);
   };
 
+  /** Снимок экрана игры в PNG (скачивается в папку загрузок). */
+  const makeScreenshot = () => {
+    const e = engineRef.current;
+    if (!e) return;
+    try {
+      const canvas = e.renderer?.domElement;
+      if (!canvas) return;
+      const dataUrl = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `wasteland_${Date.now()}.png`;
+      a.click();
+    } catch { /* ignore */ }
+  };
+
   const viewOf = (v: ViewMode) => engineRef.current?.play?.setView(v);
   const visionOf = (v: VisionMode) => engineRef.current?.play?.setVision(v);
   const [craftOptions, setCraftOptions] = useState<{ id: string; name: string; desc: string; ok: boolean; missing: string }[]>([]);
@@ -296,6 +311,7 @@ function Game() {
           onRefreshCraft={() => setCraftOptions(engineRef.current?.play?.craftOptions() ?? [])}
           craftOptions={craftOptions}
           onBuild={(kind) => engineRef.current?.play?.setPlaceBuild(kind)}
+          onScreenshot={makeScreenshot}
         />
       )}
 

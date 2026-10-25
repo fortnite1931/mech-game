@@ -70,7 +70,7 @@ export function CockpitFrame({ opacity, scanlines, color }: { opacity: number; s
   );
 }
 
-export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, onView, onVision, onEject, onEnterMech, mechs, onCraft, onUseMedkit, onRefreshCraft, craftOptions, onBuild }: {
+export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, onView, onVision, onEject, onEnterMech, mechs, onCraft, onUseMedkit, onRefreshCraft, craftOptions, onBuild, onScreenshot }: {
   hud: HudState | null; config: MechConfig; objects: SceneObjectState[];
   reticleRef: React.RefObject<HTMLDivElement | null>;
   onExit: () => void; onRestart: () => void; onView: (v: ViewMode) => void; onVision: (v: VisionMode) => void;
@@ -82,6 +82,8 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
   craftOptions?: { id: string; name: string; desc: string; ok: boolean; missing: string }[];
   /** Стройка базы: построить объект по kind (данные из PlayController). */
   onBuild?: (kind: string) => void;
+  /** Сделать скриншот игры в PNG (для диагностики дизайна/багов). */
+  onScreenshot?: () => void;
 }) {
   const color = config.hudColor;
   const view = hud?.view ?? config.defaultView;
@@ -217,6 +219,15 @@ export function PlayHUD({ hud, config, objects, reticleRef, onExit, onRestart, o
           <button onClick={onExit} className="pointer-events-auto flex items-center gap-1.5 rounded border border-red-500/60 bg-red-950/80 px-2.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-red-200 backdrop-blur hover:bg-red-900/80">
             <Square size={11} fill="currentColor" /> Стоп <span className="font-mono text-[9px] opacity-60">Esc</span>
           </button>
+          {onScreenshot && (
+            <button
+              onClick={onScreenshot}
+              title="Снимок экрана (диагностика UI)"
+              className="pointer-events-auto flex items-center gap-1.5 rounded border border-white/20 bg-black/70 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider text-stone-300 backdrop-blur hover:border-amber-400/60 hover:text-amber-300"
+            >
+              📷 Снимок
+            </button>
+          )}
           {!ejected && (
             <button onClick={onEject}
               className="pointer-events-auto flex items-center gap-1.5 rounded border border-amber-500/60 bg-amber-950/80 px-2.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-amber-200 backdrop-blur hover:bg-amber-900/80"
